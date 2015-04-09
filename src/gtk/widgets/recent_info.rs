@@ -100,8 +100,8 @@ impl RecentInfo {
             let mut time_ = 0;
 
             match to_bool(ffi::gtk_recent_info_get_application_info(
-                GTK_RECENT_INFO(self.unwrap_widget()), app_name.borrow_to_glib().0,
-                &mut app_exec, &mut count, &mut time_)) {
+                    GTK_RECENT_INFO(self.unwrap_widget()), app_name.borrow_to_glib().0,
+                    &mut app_exec, &mut count, &mut time_)) {
                 true => Some((FromGlibPtrNotNull::borrow(app_exec), count, time_ as u64)),
                 _ => None
             }
