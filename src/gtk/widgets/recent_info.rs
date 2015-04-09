@@ -66,16 +66,25 @@ impl RecentInfo {
         }
     }
 
-    pub fn get_added(&self) -> i64 {
-        unsafe { ffi::gtk_recent_info_get_added(GTK_RECENT_INFO(self.unwrap_widget())) as i64 }
+    pub fn get_added(&self) -> Option<u64> {
+        match unsafe { ffi::gtk_recent_info_get_added(GTK_RECENT_INFO(self.unwrap_widget())) } {
+            x if x >= 0 => Some(x as u64),
+            _ => None
+        }
     }
 
-    pub fn get_modified(&self) -> i64 {
-        unsafe { ffi::gtk_recent_info_get_modified(GTK_RECENT_INFO(self.unwrap_widget())) as i64 }
+    pub fn get_modified(&self) -> Option<u64> {
+        match unsafe { ffi::gtk_recent_info_get_modified(GTK_RECENT_INFO(self.unwrap_widget())) } {
+            x if x >= 0 => Some(x as u64),
+            _ => None
+        }
     }
 
-    pub fn get_visited(&self) -> i64 {
-        unsafe { ffi::gtk_recent_info_get_visited(GTK_RECENT_INFO(self.unwrap_widget())) as i64 }
+    pub fn get_visited(&self) -> Option<u64> {
+        match unsafe { ffi::gtk_recent_info_get_visited(GTK_RECENT_INFO(self.unwrap_widget())) } {
+            x if x >= 0 => Some(x as u64),
+            _ => None
+        }
     }
 
     pub fn get_private_hint(&self) -> bool {
