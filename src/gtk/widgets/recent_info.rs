@@ -27,10 +27,9 @@ impl RecentInfo {
     pub fn _ref(&self) -> Option<RecentInfo> {
         let tmp_pointer = unsafe { ffi::gtk_recent_info_ref(GTK_RECENT_INFO(self.unwrap_widget())) };
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(gtk::FFIWidget::wrap_widget(tmp_pointer as *mut ffi::C_GtkWidget))
+        match tmp_pointer.is_null() {
+            false => Some(gtk::FFIWidget::wrap_widget(tmp_pointer as *mut ffi::C_GtkWidget)),
+            _ => None
         }
     }
 
@@ -91,26 +90,17 @@ impl RecentInfo {
         unsafe { to_bool(ffi::gtk_recent_info_get_private_hint(GTK_RECENT_INFO(self.unwrap_widget()))) }
     }
 
-    pub fn get_application_info(&self, app_name: &str) -> Option<(String, u32, i64)> {
+    pub fn get_application_info(&self, app_name: &str) -> Option<(String, u32, u64)> {
         unsafe {
             let mut app_exec = ptr::null();
             let mut count = 0;
             let mut time_ = 0;
 
-            let ret = to_bool(
-                ffi::gtk_recent_info_get_application_info(
-                    GTK_RECENT_INFO(self.unwrap_widget()),
-                    app_name.borrow_to_glib().0,
-                    &mut app_exec,
-                    &mut count,
-                    &mut time_));
-
-            if ret {
-                let app_exec = FromGlibPtrNotNull::borrow(app_exec);
-                Some((app_exec, count, time_ as i64))
-            }
-            else {
-                None
+            match to_bool(ffi::gtk_recent_info_get_application_info(
+                GTK_RECENT_INFO(self.unwrap_widget()), app_name.borrow_to_glib().0,
+                &mut app_exec, &mut count, &mut time_)) {
+                true => Some((FromGlibPtrNotNull::borrow(app_exec), count, time_ as u64)),
+                _ => None
             }
         }
     }
