@@ -19,7 +19,7 @@ use gtk::FFIWidget;
 use gtk::cast::GTK_RECENT_INFO;
 use std::ptr;
 use glib::translate::{FromGlibPtr, FromGlibPtrNotNull, FromGlibPtrContainer, ToGlibPtr};
-use libc::c_char;
+use libc::{c_char, time_t};
 
 struct_Widget!(RecentInfo);
 
@@ -67,15 +67,15 @@ impl RecentInfo {
     }
 
     pub fn get_added(&self) -> i64 {
-        unsafe { ffi::gtk_recent_info_get_added(GTK_RECENT_INFO(self.unwrap_widget())) }
+        unsafe { ffi::gtk_recent_info_get_added(GTK_RECENT_INFO(self.unwrap_widget())) as i64 }
     }
 
     pub fn get_modified(&self) -> i64 {
-        unsafe { ffi::gtk_recent_info_get_modified(GTK_RECENT_INFO(self.unwrap_widget())) }
+        unsafe { ffi::gtk_recent_info_get_modified(GTK_RECENT_INFO(self.unwrap_widget())) as i64 }
     }
 
     pub fn get_visited(&self) -> i64 {
-        unsafe { ffi::gtk_recent_info_get_visited(GTK_RECENT_INFO(self.unwrap_widget())) }
+        unsafe { ffi::gtk_recent_info_get_visited(GTK_RECENT_INFO(self.unwrap_widget())) as i64 }
     }
 
     pub fn get_private_hint(&self) -> bool {
@@ -86,7 +86,7 @@ impl RecentInfo {
         unsafe {
             let mut app_exec = ptr::null();
             let mut count = 0u32;
-            let mut time_ = 0i64;
+            let mut time_: time_t = 0;
 
             let ret = to_bool(
                 ffi::gtk_recent_info_get_application_info(
@@ -98,7 +98,7 @@ impl RecentInfo {
 
             if ret {
                 let app_exec = FromGlibPtrNotNull::borrow(app_exec);
-                Some((app_exec, count, time_))
+                Some((app_exec, count, time_ as i64))
             }
             else {
                 None
