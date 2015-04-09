@@ -19,7 +19,7 @@ use gtk::FFIWidget;
 use gtk::cast::GTK_RECENT_INFO;
 use std::ptr;
 use glib::translate::{FromGlibPtr, FromGlibPtrNotNull, FromGlibPtrContainer, ToGlibPtr};
-use libc::{c_char, time_t};
+use libc::c_char;
 
 struct_Widget!(RecentInfo);
 
@@ -85,8 +85,8 @@ impl RecentInfo {
     pub fn get_application_info(&self, app_name: &str) -> Option<(String, u32, i64)> {
         unsafe {
             let mut app_exec = ptr::null();
-            let mut count = 0u32;
-            let mut time_: time_t = 0;
+            let mut count = 0;
+            let mut time_ = 0;
 
             let ret = to_bool(
                 ffi::gtk_recent_info_get_application_info(
