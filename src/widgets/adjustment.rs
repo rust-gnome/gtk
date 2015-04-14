@@ -29,25 +29,23 @@ pub struct Adjustment {
     pointer:   *mut ffi::C_GtkAdjustment
 }
 
-impl Adjustment {
-    pub fn new(value: f64,
-               lower: f64,
-               upper: f64,
-               step_increment: f64,
-               page_increment: f64,
-               page_size: f64) -> Option<Adjustment> {
-        let tmp_pointer = unsafe { ffi::gtk_adjustment_new(value as c_double, lower as c_double,
-                                                           upper as c_double, step_increment as c_double,
-                                                           page_increment as c_double, page_size as c_double) };
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(Adjustment {
-                pointer:    tmp_pointer
-            })
+pub trait AdjustmentBuilder {
+    fn adjustment(&self, value: f64, lower: f64, upper: f64, step_increment: f64,
+        page_increment: f64, page_size: f64) -> Option<Adjustment>;
+}
+
+impl AdjustmentBuilder for ::Gtk {
+    fn adjustment(&self, value: f64, lower: f64, upper: f64, step_increment: f64,
+            page_increment: f64, page_size: f64) -> Option<Adjustment> {
+        match unsafe { ffi::gtk_adjustment_new(value, lower, upper, step_increment,
+                page_increment, page_size) } {
+            pointer if !pointer.is_null() => Some(Adjustment { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl Adjustment {
     pub fn get_value(&self) -> f64 {
         unsafe {
             ffi::gtk_adjustment_get_value(self.pointer) as f64

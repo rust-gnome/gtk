@@ -24,35 +24,44 @@ use gdk;
 /// Image — A widget displaying an image
 struct_Widget!(Image);
 
-impl Image {
-    pub fn new() -> Option<Image> {
+pub trait ImageBuilder {
+    fn image(&self) -> Option<Image>;
+    fn image_from_file(&self, filename: &str) -> Option<Image>;
+    fn image_from_pixbuf(&self, pixbuf: &gdk::Pixbuf) -> Option<Image>;
+    fn image_from_icon_name(&self, icon_name: &str, size: ::IconSize) -> Option<Image>;
+}
+
+impl ImageBuilder for ::Gtk {
+    fn image(&self) -> Option<Image> {
         let tmp_pointer = unsafe {
             ffi::gtk_image_new()
         };
         check_pointer!(tmp_pointer, Image)
     }
 
-    pub fn new_from_file(filename: &str) -> Option<Image> {
+    fn image_from_file(&self, filename: &str) -> Option<Image> {
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_file(filename.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, Image)
     }
 
-    pub fn new_from_pixbuf(pixbuf: &gdk::Pixbuf) -> Option<Image> {
+    fn image_from_pixbuf(&self, pixbuf: &gdk::Pixbuf) -> Option<Image> {
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_pixbuf(pixbuf.unwrap_pointer())
         };
         check_pointer!(tmp_pointer, Image)
     }
 
-    pub fn new_from_icon_name(icon_name: &str, size: ::IconSize) -> Option<Image> {
+    fn image_from_icon_name(&self, icon_name: &str, size: ::IconSize) -> Option<Image> {
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_icon_name(icon_name.borrow_to_glib().0, size)
         };
         check_pointer!(tmp_pointer, Image)
     }
+}
 
+impl Image {
     pub fn set_from_file(&self, filename: &str) {
         unsafe {
             ffi::gtk_image_set_from_file(GTK_IMAGE(self.unwrap_widget()),
@@ -86,3 +95,4 @@ impl_TraitWidget!(Image);
 impl ::MiscTrait for Image {}
 
 impl_widget_events!(Image);
+

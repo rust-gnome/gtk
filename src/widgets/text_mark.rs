@@ -23,19 +23,21 @@ pub struct TextMark {
     pointer: *mut ffi::C_GtkTextMark
 }
 
-impl TextMark {
-    pub fn new(name: &str, left_gravity: bool) -> Option<TextMark> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_text_mark_new(name.borrow_to_glib().0, to_gboolean(left_gravity))
-        };
+pub trait TextMarkBuilder {
+    fn text_mark(&self, name: &str, left_gravity: bool) -> Option<TextMark>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(TextMark { pointer: tmp_pointer })
+impl TextMarkBuilder for ::Gtk {
+    fn text_mark(&self, name: &str, left_gravity: bool) -> Option<TextMark> {
+        match unsafe { ffi::gtk_text_mark_new(name.borrow_to_glib().0,
+                to_gboolean(left_gravity)) } {
+            pointer if !pointer.is_null() => Some(TextMark { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl TextMark {
     pub fn set_visible(&self, setting: bool) {
         unsafe { ffi::gtk_text_mark_set_visible(self.pointer, to_gboolean(setting)) }
     }
@@ -75,3 +77,4 @@ impl TextMark {
 impl_GObjectFunctions!(TextMark, C_GtkTextMark);
 impl_TraitObject!(TextMark, C_GtkTextMark);
 impl_drop!(TextMark, GTK_TEXT_MARK);
+

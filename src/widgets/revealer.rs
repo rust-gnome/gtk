@@ -22,12 +22,18 @@ use glib::{to_bool, to_gboolean};
 /// GtkRevealer — Hide and show with animation
 struct_Widget!(Revealer);
 
-impl Revealer {
-    pub fn new() -> Option<Revealer> {
+pub trait RevealerBuilder {
+    fn revealer(&self) -> Option<Revealer>;
+}
+
+impl RevealerBuilder for ::Gtk {
+    fn revealer(&self) -> Option<Revealer> {
         let tmp_pointer = unsafe { ffi::gtk_revealer_new() };
         check_pointer!(tmp_pointer, Revealer)
     }
+}
 
+impl Revealer {
     pub fn get_reveal_child(&self) -> bool {
         unsafe {
             to_bool(ffi::gtk_revealer_get_reveal_child(GTK_REVEALER(self.pointer)))
@@ -79,3 +85,4 @@ impl ::ContainerTrait for Revealer {}
 impl ::BinTrait for Revealer {}
 
 impl_widget_events!(Revealer);
+

@@ -34,12 +34,18 @@ use glib::to_gboolean;
 */
 struct_Widget!(Paned);
 
-impl Paned {
-    pub fn new(orientation: Orientation) -> Option<Paned> {
+pub trait PanedBuilder {
+    fn paned(&self, orientation: Orientation) -> Option<Paned>;
+}
+
+impl PanedBuilder for ::Gtk {
+    fn paned(&self, orientation: Orientation) -> Option<Paned> {
         let tmp_pointer = unsafe { ffi::gtk_paned_new(orientation) };
         check_pointer!(tmp_pointer, Paned)
     }
+}
 
+impl Paned {
     pub fn add1<T: ::WidgetTrait>(&mut self, child: &T) -> () {
         unsafe {
             ffi::gtk_paned_add1(GTK_PANED(self.pointer), child.unwrap_widget())
@@ -91,3 +97,4 @@ impl_TraitWidget!(Paned);
 impl ::ContainerTrait for Paned {}
 
 impl_widget_events!(Paned);
+

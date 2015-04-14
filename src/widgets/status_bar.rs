@@ -22,13 +22,19 @@ use ffi;
 /// GtkViewport — An adapter which makes widgets scrollable
 struct_Widget!(StatusBar);
 
-impl StatusBar {
-    pub fn new() -> Option<StatusBar> {
+pub trait StatusBarBuilder {
+    fn status_bar(&self) -> Option<StatusBar>;
+}
+
+impl StatusBarBuilder for ::Gtk {
+    fn status_bar(&self) -> Option<StatusBar> {
         let tmp_pointer = unsafe { ffi::gtk_statusbar_new() };
 
         check_pointer!(tmp_pointer, StatusBar)
     }
+}
 
+impl StatusBar {
     pub fn push(&mut self, context_id: u32, text: &str) -> u32 {
         unsafe {
             ffi::gtk_statusbar_push(GTK_STATUSBAR(self.pointer),
@@ -70,3 +76,4 @@ impl ::BoxTrait for StatusBar {}
 impl ::OrientableTrait for StatusBar {}
 
 impl_widget_events!(StatusBar);
+

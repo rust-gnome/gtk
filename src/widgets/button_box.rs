@@ -23,12 +23,18 @@ use glib::{to_bool, to_gboolean};
 /// ButtonBox — A container for arranging buttons
 struct_Widget!(ButtonBox);
 
-impl ButtonBox {
-    pub fn new(orientation: Orientation) -> Option<ButtonBox> {
+pub trait ButtonBoxBuilder {
+    fn button_box(&self, orientation: Orientation) -> Option<ButtonBox>;
+}
+
+impl ButtonBoxBuilder for ::Gtk {
+    fn button_box(&self, orientation: Orientation) -> Option<ButtonBox> {
         let tmp_pointer = unsafe { ffi::gtk_button_box_new(orientation) };
         check_pointer!(tmp_pointer, ButtonBox)
     }
+}
 
+impl ButtonBox {
     pub fn get_layout(&self) -> ButtonBoxStyle {
         unsafe {
             ffi::gtk_button_box_get_layout(GTK_BUTTONBOX(self.pointer))
@@ -66,3 +72,4 @@ impl ::BoxTrait for ButtonBox {}
 impl ::OrientableTrait for ButtonBox {}
 
 impl_widget_events!(ButtonBox);
+

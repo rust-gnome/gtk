@@ -18,8 +18,12 @@ use ffi;
 /// GtkDrawingArea — A widget for custom user interface elements
 struct_Widget!(DrawingArea);
 
-impl DrawingArea {
-    pub fn new() -> Option<DrawingArea> {
+pub trait DrawingAreaBuilder {
+    fn drawing_area(&self) -> Option<DrawingArea>;
+}
+
+impl DrawingAreaBuilder for ::Gtk {
+    fn drawing_area(&self) -> Option<DrawingArea> {
         let tmp_pointer = unsafe { ffi::gtk_drawing_area_new() };
         check_pointer!(tmp_pointer, DrawingArea)
     }
@@ -28,3 +32,4 @@ impl DrawingArea {
 impl_TraitWidget!(DrawingArea);
 
 impl_widget_events!(DrawingArea);
+

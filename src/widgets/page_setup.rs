@@ -21,17 +21,20 @@ pub struct PageSetup {
     pointer: *mut ffi::C_GtkPageSetup
 }
 
-impl PageSetup {
-    pub fn new() -> Option<PageSetup> {
-        let tmp_pointer = unsafe { ffi::gtk_page_setup_new() };
+pub trait PageSetupBuilder {
+    fn page_setup(&self) -> Option<PageSetup>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(PageSetup { pointer: tmp_pointer })
+impl PageSetupBuilder for ::Gtk {
+    fn page_setup(&self) -> Option<PageSetup> {
+        match unsafe { ffi::gtk_page_setup_new() } {
+            pointer if !pointer.is_null() => Some(PageSetup { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl PageSetup {
     pub fn copy(&self) -> Option<PageSetup> {
         let tmp_pointer = unsafe { ffi::gtk_page_setup_copy(self.pointer) };
 
@@ -118,3 +121,4 @@ impl PageSetup {
 }
 
 impl_drop!(PageSetup, GTK_PAGE_SETUP);
+

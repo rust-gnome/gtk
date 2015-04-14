@@ -22,8 +22,12 @@ use FFIWidget;
 
 struct_Widget!(TextBuffer);
 
-impl TextBuffer {
-    pub fn new(text_tag_table: Option<::TextTagTable>) -> Option<TextBuffer> {
+pub trait TextBufferBuilder {
+    fn text_buffer(&self, text_tag_table: Option<::TextTagTable>) -> Option<TextBuffer>;
+}
+
+impl TextBufferBuilder for ::Gtk {
+    fn text_buffer(&self, text_tag_table: Option<::TextTagTable>) -> Option<TextBuffer> {
         let tmp_pointer = unsafe {
             match text_tag_table {
                 Some(ttl) => ffi::gtk_text_buffer_new(ttl.unwrap_pointer()),
@@ -41,3 +45,4 @@ impl_TraitWidget!(TextBuffer);
 impl ::TextBufferTrait for TextBuffer {}
 
 impl_widget_events!(TextBuffer);
+

@@ -23,15 +23,20 @@ use ffi;
 /// Alignment — A widget which controls the alignment and size of its child
 struct_Widget!(Alignment);
 
-impl Alignment {
-    pub fn new(x_align: f32,
-               y_align: f32,
-               x_scale: f32,
-               y_scale: f32) -> Option<Alignment> {
-        let tmp_pointer = unsafe { ffi::gtk_alignment_new(x_align as c_float, y_align as c_float, x_scale as c_float, y_scale as c_float) };
+pub trait AlignmentBuilder {
+    fn alignment(&self, x_align: f32, y_align: f32, x_scale: f32, y_scale: f32) ->
+        Option<Alignment>;
+}
+
+impl AlignmentBuilder for ::Gtk {
+    fn alignment(&self, x_align: f32, y_align: f32, x_scale: f32, y_scale: f32) ->
+            Option<Alignment> {
+        let tmp_pointer = unsafe { ffi::gtk_alignment_new(x_align, y_align, x_scale, y_scale) };
         check_pointer!(tmp_pointer, Alignment)
     }
+}
 
+impl Alignment {
     pub fn set(&mut self,
                x_align: f32,
                y_align: f32,
@@ -71,3 +76,4 @@ impl ::ContainerTrait for Alignment {}
 impl ::BinTrait for Alignment {}
 
 impl_widget_events!(Alignment);
+

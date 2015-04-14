@@ -20,17 +20,20 @@ pub struct TextChildAnchor {
     pointer: *mut ffi::C_GtkTextChildAnchor
 }
 
-impl TextChildAnchor {
-    pub fn new() -> Option<TextChildAnchor> {
-        let tmp_pointer = unsafe { ffi::gtk_text_child_anchor_new() };
+pub trait TextChildAnchorBuilder {
+    fn text_child_anchor(&self) -> Option<TextChildAnchor>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(TextChildAnchor { pointer: tmp_pointer })
+impl TextChildAnchorBuilder for ::Gtk {
+    fn text_child_anchor(&self) -> Option<TextChildAnchor> {
+        match unsafe { ffi::gtk_text_child_anchor_new() } {
+            pointer if !pointer.is_null() => Some(TextChildAnchor { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl TextChildAnchor {
     pub fn get_deleted(&self) -> bool {
         unsafe { to_bool(ffi::gtk_text_child_anchor_get_deleted(self.pointer)) }
     }
@@ -38,3 +41,4 @@ impl TextChildAnchor {
 
 impl_GObjectFunctions!(TextChildAnchor, C_GtkTextChildAnchor);
 impl_TraitObject!(TextChildAnchor, C_GtkTextChildAnchor);
+

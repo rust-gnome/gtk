@@ -22,12 +22,18 @@ use ffi;
 /// Arrow — Displays an arrow
 struct_Widget!(Arrow);
 
-impl Arrow {
-    pub fn new(arrow_type: ArrowType, shadow_type: ShadowType) -> Option<Arrow> {
+pub trait ArrowBuilder {
+    fn arrow(&self, arrow_type: ArrowType, shadow_type: ShadowType) -> Option<Arrow>;
+}
+
+impl ArrowBuilder for ::Gtk {
+    fn arrow(&self, arrow_type: ArrowType, shadow_type: ShadowType) -> Option<Arrow> {
         let tmp_pointer = unsafe { ffi::gtk_arrow_new(arrow_type, shadow_type) };
         check_pointer!(tmp_pointer, Arrow)
     }
+}
 
+impl Arrow {
     pub fn set(&mut self, arrow_type: ArrowType, shadow_type: ShadowType) -> () {
         unsafe {
             ffi::gtk_arrow_set(GTK_ARROW(self.pointer), arrow_type, shadow_type);
@@ -41,3 +47,4 @@ impl_TraitWidget!(Arrow);
 impl ::MiscTrait for Arrow {}
 
 impl_widget_events!(Arrow);
+

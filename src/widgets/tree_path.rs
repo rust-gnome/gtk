@@ -21,58 +21,47 @@ pub struct TreePath {
     pointer:   *mut ffi::C_GtkTreePath
 }
 
-impl TreePath {
-    pub fn new() -> Option<TreePath> {
-        let tmp = unsafe { ffi::gtk_tree_path_new() };
+pub trait TreePathBuilder {
+    fn tree_path(&self) -> Option<TreePath>;
+    fn tree_path_from_string(&self, path: &str) -> Option<TreePath>;
+    #[cfg(feature = "gtk_3_12")]
+    fn tree_path_from_indicesv(&self, indices: &mut [i32]) -> Option<TreePath>;
+    fn tree_path_first(&self) -> Option<TreePath>;
+} 
 
-        if tmp.is_null() {
-            None
-        } else {
-            Some(TreePath {
-                pointer: tmp
-            })
+impl TreePathBuilder for ::Gtk {
+    fn tree_path(&self) -> Option<TreePath> {
+        match unsafe { ffi::gtk_tree_path_new() } {
+            pointer if !pointer.is_null() => Some(TreePath { pointer: pointer }),
+            _ => None
         }
     }
 
-    pub fn new_from_string(path: &str) -> Option<TreePath> {
-        let tmp = unsafe {
-            ffi::gtk_tree_path_new_from_string(path.borrow_to_glib().0)
-        };
-
-        if tmp.is_null() {
-            None
-        } else {
-            Some(TreePath {
-                pointer: tmp
-            })
+    fn tree_path_from_string(&self, path: &str) -> Option<TreePath> {
+        match unsafe { ffi::gtk_tree_path_new_from_string(path.borrow_to_glib().0) } {
+            pointer if !pointer.is_null() => Some(TreePath { pointer: pointer }),
+            _ => None
         }
     }
 
     #[cfg(feature = "gtk_3_12")]
-    pub fn new_from_indicesv(indices: &mut [i32]) -> Option<TreePath> {
-        let tmp = unsafe { ffi::gtk_tree_path_new_from_indicesv(indices.as_mut_ptr(), indices.len() as ::libc::c_ulong) };
-
-        if tmp.is_null() {
-            None
-        } else {
-            Some(TreePath {
-                pointer: tmp
-            })
+    fn tree_path_from_indicesv(&self, indices: &mut [i32]) -> Option<TreePath> {
+        match unsafe { ffi::gtk_tree_path_new_from_indicesv(indices.as_mut_ptr(),
+                indices.len() as ::libc::c_ulong) } {
+            pointer if !pointer.is_null() => Some(TreePath { pointer: pointer }),
+            _ => None
         }
     }
 
-    pub fn new_first() -> Option<TreePath> {
-        let tmp = unsafe { ffi::gtk_tree_path_new_first() };
-
-        if tmp.is_null() {
-            None
-        } else {
-            Some(TreePath {
-                pointer: tmp
-            })
+    fn tree_path_first(&self) -> Option<TreePath> {
+        match unsafe { ffi::gtk_tree_path_new_first() } {
+            pointer if !pointer.is_null() => Some(TreePath { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl TreePath {
     #[allow(unused_variables)]
     pub fn to_string(&self) -> Option<String> {
         unsafe {
@@ -169,3 +158,4 @@ impl TreePath {
         }
     }
 }
+

@@ -21,20 +21,26 @@ use glib::translate::ToGlibPtr;
 /// MenuItem — The widget used for item in menus
 struct_Widget!(MenuItem);
 
-impl MenuItem {
-    pub fn new() -> Option<MenuItem> {
+pub trait MenuItemBuilder {
+    fn menu_item(&self) -> Option<MenuItem>;
+    fn menu_item_with_label(&self, label: &str) -> Option<MenuItem>;
+    fn menu_item_with_mnemonic(&self, mnemonic: &str) -> Option<MenuItem>;
+}
+
+impl MenuItemBuilder for ::Gtk {
+    fn menu_item(&self) -> Option<MenuItem> {
         let tmp_pointer = unsafe { ffi::gtk_menu_item_new() };
         check_pointer!(tmp_pointer, MenuItem)
     }
 
-    pub fn new_with_label(label: &str) -> Option<MenuItem> {
+    fn menu_item_with_label(&self, label: &str) -> Option<MenuItem> {
         let tmp_pointer = unsafe {
             ffi::gtk_menu_item_new_with_label(label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, MenuItem)
     }
 
-    pub fn new_with_mnemonic(mnemonic: &str) -> Option<MenuItem> {
+    fn menu_item_with_mnemonic(&self, mnemonic: &str) -> Option<MenuItem> {
         let tmp_pointer = unsafe {
             ffi::gtk_menu_item_new_with_mnemonic(mnemonic.borrow_to_glib().0)
         };
@@ -50,3 +56,4 @@ impl ::BinTrait for MenuItem {}
 impl ::MenuItemTrait for MenuItem {}
 
 impl_widget_events!(MenuItem);
+

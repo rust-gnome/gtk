@@ -25,12 +25,18 @@ use glib::{to_bool, to_gboolean};
 /// GtkHeaderBar — A Box::new(with) a centered child
 struct_Widget!(HeaderBar);
 
+pub trait HeaderBar {
+    fn header_bar(&self) -> Option<HeaderBar>;
+}
+
 impl HeaderBar {
-    pub fn new() -> Option<HeaderBar> {
+    fn header_bar(&self) -> Option<HeaderBar> {
         let tmp_pointer = unsafe { ffi::gtk_header_bar_new() };
         check_pointer!(tmp_pointer, HeaderBar)
     }
+}
 
+impl HeaderBar {
     pub fn set_title(&mut self, title: &str) {
         unsafe {
             ffi::gtk_header_bar_set_title(GTK_HEADER_BAR(self.pointer),
@@ -112,3 +118,4 @@ impl_TraitWidget!(HeaderBar);
 impl ::ContainerTrait for HeaderBar {}
 
 impl_widget_events!(HeaderBar);
+

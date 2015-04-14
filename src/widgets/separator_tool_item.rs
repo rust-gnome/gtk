@@ -22,12 +22,18 @@ use cast::GTK_SEPARATORTOOLITEM;
 /// ToolItem — The base class of widgets that can be added to ToolShe
 struct_Widget!(SeparatorToolItem);
 
-impl SeparatorToolItem {
-    pub fn new() -> Option<SeparatorToolItem> {
+pub trait SeparatorToolItemBuilder {
+    fn separator_tool_item(&self) -> Option<SeparatorToolItem>;
+}
+
+impl SeparatorToolItemBuilder for ::Gtk {
+    fn separator_tool_item(&self) -> Option<SeparatorToolItem> {
         let tmp_pointer = unsafe { ffi::gtk_separator_tool_item_new() };
         check_pointer!(tmp_pointer, SeparatorToolItem)
     }
+}
 
+impl SeparatorToolItem {
     pub fn set_draw(&mut self, draw: bool) -> () {
         unsafe { ffi::gtk_separator_tool_item_set_draw(GTK_SEPARATORTOOLITEM(self.pointer), to_gboolean(draw)); }
     }
@@ -45,3 +51,4 @@ impl ::BinTrait for SeparatorToolItem {}
 impl ::ToolItemTrait for SeparatorToolItem {}
 
 impl_widget_events!(SeparatorToolItem);
+

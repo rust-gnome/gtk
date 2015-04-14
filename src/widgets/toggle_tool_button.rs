@@ -21,14 +21,20 @@ use glib::translate::ToGlibPtr;
 /// ToggleToolButton — A ToolItem containing a toggle button
 struct_Widget!(ToggleToolButton);
 
-impl ToggleToolButton {
-    pub fn new() -> Option<ToggleToolButton> {
+pub trait ToggleToolButtonBuilder {
+    fn toggle_tool_button(&self) -> Option<ToggleToolButton>;
+    fn toggle_tool_button_from_stock(&self, stock_id: &str) -> Option<ToggleToolButton>;
+}
+
+impl ToggleToolButtonBuilder for ::Gtk {
+    fn toggle_tool_button(&self) -> Option<ToggleToolButton> {
         let tmp_pointer = unsafe { ffi::gtk_toggle_tool_button_new() };
         check_pointer!(tmp_pointer, ToggleToolButton)
     }
 
-    pub fn new_from_stock(stock_id: &str) -> Option<ToggleToolButton> {
-        let tmp_pointer = unsafe { ffi::gtk_toggle_tool_button_new_from_stock(stock_id.borrow_to_glib().0) };
+    fn toggle_tool_button_from_stock(&self, stock_id: &str) -> Option<ToggleToolButton> {
+        let tmp_pointer = unsafe { ffi::gtk_toggle_tool_button_new_from_stock(
+            stock_id.borrow_to_glib().0) };
         check_pointer!(tmp_pointer, ToggleToolButton)
     }
 }
@@ -43,3 +49,4 @@ impl ::ToolButtonTrait for ToggleToolButton {}
 impl ::ToggleToolButtonTrait for ToggleToolButton {}
 
 impl_widget_events!(ToggleToolButton);
+

@@ -27,12 +27,18 @@ use glib::{to_bool, to_gboolean};
 /// Grid — Pack widgets in a rows and columns
 struct_Widget!(Grid);
 
-impl Grid {
-    pub fn new() -> Option<Grid> {
+pub trait GridBuilder {
+    fn grid(&self) -> Option<Grid>;
+}
+
+impl GridBuilder for ::Gtk {
+    fn grid(&self) -> Option<Grid> {
         let tmp_pointer = unsafe { ffi::gtk_grid_new() };
         check_pointer!(tmp_pointer, Grid)
     }
+}
 
+impl Grid {
     pub fn attach<T: ::WidgetTrait>(&mut self,
                                 child: &T,
                                 left: i32,
@@ -159,3 +165,4 @@ impl ::ContainerTrait for Grid {}
 impl ::OrientableTrait for Grid {}
 
 impl_widget_events!(Grid);
+

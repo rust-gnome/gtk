@@ -22,12 +22,19 @@ use ffi;
 /// GtkViewport — An adapter which makes widgets scrollable
 struct_Widget!(Viewport);
 
-impl Viewport {
-    pub fn new(hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Viewport> {
-        let tmp_pointer = unsafe { ffi::gtk_viewport_new(hadjustment.unwrap_pointer(), vadjustment.unwrap_pointer()) };
+pub trait ViewportBuilder {
+    fn viewport(&self, hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Viewport>;
+}
+
+impl ViewportBuilder for ::Gtk {
+    fn viewport(&self, hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Viewport> {
+        let tmp_pointer = unsafe { ffi::gtk_viewport_new(hadjustment.unwrap_pointer(),
+            vadjustment.unwrap_pointer()) };
         check_pointer!(tmp_pointer, Viewport)
     }
+}
 
+impl Viewport {
     pub fn get_shadow_type(&self) -> ShadowType {
         unsafe {
             ffi::gtk_viewport_get_shadow_type(GTK_VIEWPORT(self.pointer))
@@ -49,3 +56,4 @@ impl ::BinTrait for Viewport {}
 impl ::ScrollableTrait for Viewport {}
 
 impl_widget_events!(Viewport);
+

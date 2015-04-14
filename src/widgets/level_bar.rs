@@ -32,17 +32,24 @@ use cast::GTK_LEVELBAR;
 */
 struct_Widget!(LevelBar);
 
-impl LevelBar {
-    pub fn new() -> Option<LevelBar> {
+pub trait LevelBarBuilder {
+    fn level_bar(&self) -> Option<LevelBar>;
+    fn level_bar_for_interval(&self, min: f64, max: f64) -> Option<LevelBar>;
+}
+
+impl LevelBarBuilder for ::Gtk {
+    fn level_bar(&self) -> Option<LevelBar> {
         let tmp_pointer = unsafe { ffi::gtk_level_bar_new() };
         check_pointer!(tmp_pointer, LevelBar)
     }
 
-    pub fn new_for_interval(min: f64, max: f64) -> Option<LevelBar> {
-        let tmp_pointer = unsafe { ffi::gtk_level_bar_new_for_interval(min as c_double, max as c_double) };
+    fn level_bar_for_interval(&self, min: f64, max: f64) -> Option<LevelBar> {
+        let tmp_pointer = unsafe { ffi::gtk_level_bar_new_for_interval(min, max) };
         check_pointer!(tmp_pointer, LevelBar)
     }
+}
 
+impl LevelBar {
     pub fn set_value(&mut self, value: f64) -> () {
         unsafe {
             ffi::gtk_level_bar_set_value(GTK_LEVELBAR(self.pointer), value as c_double);
@@ -144,3 +151,4 @@ impl_TraitWidget!(LevelBar);
 impl ::OrientableTrait for LevelBar {}
 
 impl_widget_events!(LevelBar);
+

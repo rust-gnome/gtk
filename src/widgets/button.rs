@@ -33,21 +33,29 @@ use IconSize;
 */
 struct_Widget!(Button);
 
+pub trait ButtonBuilder {
+    fn button(&self) -> Option<Button>;
+    fn button_with_label(&self, label: &str)-> Option<Button>;
+    fn button_with_mnemonic(&self, mnemonic: &str) -> Option<Button>;
+    #[cfg(feature = "gtk_3_10")]
+    fn button_from_icon_name(&self, icon_name: &str, size: IconSize) -> Option<Button>;
+    fn button_from_stock(&self, stock_id: &str) -> Option<Button>;
+}
 
-impl Button {
-    pub fn new() -> Option<Button> {
+impl ButtonBuilder for ::Gtk {
+    fn button(&self) -> Option<Button> {
         let tmp_pointer = unsafe { ffi::gtk_button_new() };
         check_pointer!(tmp_pointer, Button)
     }
 
-    pub fn new_with_label(label: &str) -> Option<Button> {
+    fn button_with_label(&self, label: &str) -> Option<Button> {
         let tmp_pointer = unsafe {
             ffi::gtk_button_new_with_label(label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, Button)
     }
 
-    pub fn new_with_mnemonic(mnemonic: &str) -> Option<Button> {
+    fn button_with_mnemonic(&self, mnemonic: &str) -> Option<Button> {
         let tmp_pointer = unsafe {
             ffi::gtk_button_new_with_mnemonic(mnemonic.borrow_to_glib().0)
         };
@@ -55,14 +63,14 @@ impl Button {
     }
 
     #[cfg(feature = "gtk_3_10")]
-    pub fn new_from_icon_name(icon_name: &str, size: IconSize) -> Option<Button> {
+    fn button_from_icon_name(&self, icon_name: &str, size: IconSize) -> Option<Button> {
         let tmp_pointer = unsafe {
             ffi::gtk_button_new_from_icon_name(icon_name.borrow_to_glib().0, size)
         };
         check_pointer!(tmp_pointer, Button)
     }
 
-    pub fn new_from_stock(stock_id: &str) -> Option<Button> {
+    fn button_from_stock(&self, stock_id: &str) -> Option<Button> {
         let tmp_pointer = unsafe {
             ffi::gtk_button_new_from_stock(stock_id.borrow_to_glib().0)
         };
@@ -79,3 +87,4 @@ impl ::BinTrait for Button {}
 
 impl_widget_events!(Button);
 impl_button_events!(Button);
+

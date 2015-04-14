@@ -23,19 +23,26 @@ use glib::{to_bool, to_gboolean};
 
 struct_Widget!(TextView);
 
-impl TextView {
-    pub fn new() -> Option<TextView> {
+pub trait TextViewBuilder {
+    fn text_view(&self) -> Option<TextView>;
+    fn text_view_with_buffer(&self, buffer: TextBuffer) -> Option<TextView>;
+}
+
+impl TextViewBuilder for ::Gtk {
+    fn text_view(&self) -> Option<TextView> {
         let tmp_pointer = unsafe { ffi::gtk_text_view_new() };
         check_pointer!(tmp_pointer, TextView)
     }
 
-    pub fn new_with_buffer(buffer: TextBuffer) -> Option<TextView> {
+    fn text_view_with_buffer(&self, buffer: TextBuffer) -> Option<TextView> {
         let tmp_pointer = unsafe {
             ffi::gtk_text_view_new_with_buffer(GTK_TEXT_BUFFER(buffer.unwrap_widget()))
         };
         check_pointer!(tmp_pointer, TextView)
     }
+}
 
+impl TextView {
     pub fn set_buffer(&mut self, buffer: TextBuffer) -> () {
         unsafe {
             ffi::gtk_text_view_set_buffer(GTK_TEXT_VIEW(self.unwrap_widget()), GTK_TEXT_BUFFER(buffer.unwrap_widget()));
@@ -276,3 +283,4 @@ impl_TraitWidget!(TextView);
 impl ::ScrollableTrait for TextView {}
 
 impl_widget_events!(TextView);
+

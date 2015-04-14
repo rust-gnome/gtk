@@ -23,12 +23,18 @@ use glib::{to_bool, to_gboolean};
 
 struct_Widget!(ToolPalette);
 
-impl ToolPalette {
-    pub fn new() -> Option<ToolPalette> {
+pub trait ToolPaletteBuilder {
+    fn tool_palette(&self) -> Option<ToolPalette>;
+}
+
+impl ToolPaletteBuilder for ::Gtk {
+    fn tool_palette(&self) -> Option<ToolPalette> {
         let tmp_pointer = unsafe { ffi::gtk_tool_palette_new() };
         check_pointer!(tmp_pointer, ToolPalette)
     }
+}
 
+impl ToolPalette {
     pub fn get_icon_size(&self) -> ::IconSize {
         unsafe { ffi::gtk_tool_palette_get_icon_size(GTK_TOOL_PALETTE(self.unwrap_widget())) }
     }
@@ -116,3 +122,4 @@ impl_TraitWidget!(ToolPalette);
 impl ::ContainerTrait for ToolPalette {}
 
 impl_widget_events!(ToolPalette);
+

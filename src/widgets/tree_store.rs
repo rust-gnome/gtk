@@ -24,13 +24,19 @@ pub struct TreeStore {
     pointer: *mut ffi::C_GtkTreeStore
 }
 
-impl TreeStore {
-    pub fn new(column_types: &[Type]) -> Option<TreeStore> {
+pub trait TreeStoreBuilder {
+    fn tree_store(&self, column_types: &[Type]) -> Option<TreeStore>;
+}
+
+impl TreeStoreBuilder for ::Gtk {
+    fn tree_store(&self, column_types: &[Type]) -> Option<TreeStore> {
         let column_types_ffi: Vec<GType> = column_types.iter().map(|n| n.to_glib()).collect();
         let tmp_pointer = unsafe { ffi::gtk_tree_store_newv(column_types.len() as i32, column_types_ffi.as_ptr() as *mut GType) };
         check_pointer!(tmp_pointer, TreeStore, G_OBJECT_FROM_TREE_STORE)
     }
+}
 
+impl TreeStore {
     pub fn set_column_types(&self, column_types: &[Type]) {
         let column_types_ffi: Vec<GType> = column_types.iter().map(|n| n.to_glib()).collect();
         unsafe { ffi::gtk_tree_store_set_column_types(self.pointer, column_types.len() as i32, column_types_ffi.as_ptr() as *mut GType) }
@@ -145,3 +151,4 @@ impl TreeStore {
 }
 
 impl_drop!(TreeStore, GTK_TREE_STORE);
+

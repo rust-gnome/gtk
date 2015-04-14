@@ -30,22 +30,30 @@ use gdk_ffi;
 */
 struct_Widget!(ColorButton);
 
-impl ColorButton {
-    pub fn new() -> Option<ColorButton> {
+pub trait ColorButtonBuilder {
+    fn color_button(&self) -> Option<ColorButton>;
+    fn color_button_with_color(&self, color: &gdk::Color) -> Option<ColorButton>;
+    fn color_button_with_rgba(&self, rgba: &gdk_ffi::C_GdkRGBA) -> Option<ColorButton>;
+}
+
+impl ColorButtonBuilder for ::Gtk {
+    fn color_button(&self) -> Option<ColorButton> {
         let tmp_pointer = unsafe { ffi::gtk_color_button_new() };
         check_pointer!(tmp_pointer, ColorButton)
     }
 
-    pub fn new_with_color(color: &gdk::Color) -> Option<ColorButton> {
+    fn color_button_with_color(&self, color: &gdk::Color) -> Option<ColorButton> {
         let tmp_pointer = unsafe { ffi::gtk_color_button_new_with_color(color) };
         check_pointer!(tmp_pointer, ColorButton)
     }
 
-    pub fn new_with_rgba(rgba: &gdk_ffi::C_GdkRGBA) -> Option<ColorButton> {
+    fn color_button_with_rgba(&self, rgba: &gdk_ffi::C_GdkRGBA) -> Option<ColorButton> {
         let tmp_pointer = unsafe { ffi::gtk_color_button_new_with_rgba(rgba) };
         check_pointer!(tmp_pointer, ColorButton)
     }
+}
 
+impl ColorButton {
     pub fn set_color(&mut self, color: &gdk::Color) -> () {
         unsafe {
             ffi::gtk_color_button_set_color(GTK_COLORBUTTON(self.pointer), color)

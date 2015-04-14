@@ -23,12 +23,18 @@ use glib::{to_bool, to_gboolean};
 /// GtkFlowBox — A container that allows reflowing its children
 struct_Widget!(ListBox);
 
-impl ListBox {
-    pub fn new() -> Option<ListBox> {
+pub trait ListBoxBuilder {
+    fn list_box(&self) -> Option<ListBox>;
+}
+
+impl ListBoxBuilder for ::Gtk {
+    fn list_box(&self) -> Option<ListBox> {
         let tmp_pointer = unsafe { ffi::gtk_list_box_new() };
         check_pointer!(tmp_pointer, ListBox)
     }
+}
 
+impl ListBox {
     pub fn prepend<T: ::WidgetTrait>(&mut self, child: &T) {
         unsafe {
             ffi::gtk_list_box_prepend(GTK_LIST_BOX(self.pointer),
@@ -210,3 +216,4 @@ impl ::ContainerTrait for ListBoxRow {}
 impl ::BinTrait for ListBoxRow {}
 
 impl_widget_events!(ListBox);
+

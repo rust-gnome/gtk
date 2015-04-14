@@ -28,12 +28,18 @@ use glib::{to_bool, to_gboolean};
 /// InfoBar — Report important messages to the user
 struct_Widget!(InfoBar);
 
-impl InfoBar {
-    pub fn new() -> Option<InfoBar> {
+pub trait InfoBarBuilder {
+    fn info_bar(&self) -> Option<InfoBar>;
+}
+
+impl InfoBarBuilder for ::Gtk {
+    fn info_bar(&self) -> Option<InfoBar> {
         let tmp_pointer = unsafe { ffi::gtk_info_bar_new() };
         check_pointer!(tmp_pointer, InfoBar)
     }
+}
 
+impl InfoBar {
     pub fn add_action_widget<T: ::WidgetTrait>(&mut self, child: &T, response_id: i32) -> () {
         unsafe {
             ffi::gtk_info_bar_add_action_widget(GTK_INFOBAR(self.pointer), child.unwrap_widget(), response_id as c_int)
@@ -94,3 +100,4 @@ impl ::BoxTrait for InfoBar {}
 impl ::OrientableTrait for InfoBar {}
 
 impl_widget_events!(InfoBar);
+

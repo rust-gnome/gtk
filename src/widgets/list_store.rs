@@ -24,13 +24,19 @@ pub struct ListStore {
     pointer: *mut ffi::C_GtkListStore
 }
 
-impl ListStore {
-    pub fn new(column_types: &[Type]) -> Option<ListStore> {
+pub trait ListStoreBuilder {
+    fn list_store(&self, column_types: &[Type]) -> Option<ListStore>;
+}
+
+impl ListStoreBuilder for ::Gtk {
+    fn list_store(&self, column_types: &[Type]) -> Option<ListStore> {
         let column_types_ffi: Vec<GType> = column_types.iter().map(|n| n.to_glib()).collect();
         let tmp_pointer = unsafe { ffi::gtk_list_store_newv(column_types.len() as i32, column_types_ffi.as_ptr() as *mut GType) };
         check_pointer!(tmp_pointer, ListStore, G_OBJECT_FROM_LIST_STORE)
     }
+}
 
+impl ListStore {
     pub fn set_column_types(&self, column_types: &[Type]) {
         let column_types_ffi: Vec<GType> = column_types.iter().map(|n| n.to_glib()).collect();
         unsafe { ffi::gtk_list_store_set_column_types(self.pointer, column_types.len() as i32, column_types_ffi.as_ptr() as *mut GType) }
@@ -120,3 +126,4 @@ impl ListStore {
 }
 
 impl_drop!(ListStore, GTK_LIST_STORE);
+

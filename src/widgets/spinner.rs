@@ -21,12 +21,18 @@ use ffi;
 /// Spinner — Show a spinner animation
 struct_Widget!(Spinner);
 
-impl Spinner {
-    pub fn new() -> Option<Spinner> {
+pub trait SpinnerBuilder {
+    fn spinner(&self) -> Option<Spinner>;
+}
+
+impl SpinnerBuilder for ::Gtk {
+    fn spinner(&self) -> Option<Spinner> {
         let tmp_pointer = unsafe { ffi::gtk_spinner_new() };
         check_pointer!(tmp_pointer, Spinner)
     }
+}
 
+impl Spinner {
     pub fn start(&mut self) -> () {
         unsafe {
             ffi::gtk_spinner_start(GTK_SPINNER(self.pointer))
@@ -45,3 +51,4 @@ impl_drop!(Spinner);
 impl_TraitWidget!(Spinner);
 
 impl_widget_events!(Spinner);
+

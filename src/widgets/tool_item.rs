@@ -20,8 +20,12 @@ use ffi;
 /// ToolItem — The base class of widgets that can be added to ToolShe
 struct_Widget!(ToolItem);
 
-impl ToolItem {
-    pub fn new() -> Option<ToolItem> {
+pub trait ToolItemBuilder {
+    fn tool_item(&self) -> Option<ToolItem>;
+}
+
+impl ToolItemBuilder for ::Gtk {
+    fn tool_item(&self) -> Option<ToolItem> {
         let tmp_pointer = unsafe { ffi::gtk_tool_item_new() };
         check_pointer!(tmp_pointer, ToolItem)
     }
@@ -35,3 +39,4 @@ impl ::BinTrait for ToolItem {}
 impl ::ToolItemTrait for ToolItem {}
 
 impl_widget_events!(ToolItem);
+

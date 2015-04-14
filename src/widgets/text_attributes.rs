@@ -21,17 +21,20 @@ pub struct TextAttributes {
     pointer: *mut ffi::C_GtkTextAttributes
 }
 
-impl TextAttributes {
-    pub fn new() -> Option<TextAttributes> {
-        let tmp_pointer = unsafe { ffi::gtk_text_attributes_new() };
+pub trait TextAttributesBuilder {
+    fn text_attributes(&self) -> Option<TextAttributes>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(TextAttributes { pointer : tmp_pointer })
+impl TextAttributesBuilder for ::Gtk {
+    fn text_attributes(&self) -> Option<TextAttributes> {
+        match unsafe { ffi::gtk_text_attributes_new() } {
+            pointer if !pointer.is_null() => Some(TextAttributes { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl TextAttributes {
     pub fn copy(&self) -> Option<TextAttributes> {
         let tmp_pointer = unsafe { ffi::gtk_text_attributes_copy(self.pointer) };
 
@@ -63,3 +66,4 @@ impl TextAttributes {
 
 impl_GObjectFunctions!(TextAttributes, C_GtkTextAttributes);
 impl_TraitObject!(TextAttributes, C_GtkTextAttributes);
+

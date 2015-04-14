@@ -36,12 +36,18 @@ use glib::to_bool;
 */
 struct_Widget!(Calendar);
 
-impl Calendar {
-    pub fn new() -> Option<Calendar> {
+pub trait CalendarBuilder {
+    fn calendar(&self) -> Option<Calendar>;
+}
+
+impl CalendarBuilder for ::Gtk {
+    fn calendar(&self) -> Option<Calendar> {
         let tmp_pointer = unsafe { ffi::gtk_calendar_new() };
         check_pointer!(tmp_pointer, Calendar)
     }
+}
 
+impl Calendar {
     pub fn select_month(&mut self, month: u32, year: u32) -> () {
         unsafe {
             ffi::gtk_calendar_select_month(GTK_CALENDAR(self.pointer), month as c_uint, year as c_uint)
@@ -128,3 +134,4 @@ impl_drop!(Calendar);
 impl_TraitWidget!(Calendar);
 
 impl_widget_events!(Calendar);
+

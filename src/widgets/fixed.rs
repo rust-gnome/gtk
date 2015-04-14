@@ -23,12 +23,18 @@ use ffi;
 /// Fixed — A container which allows you to position widgets at fixed coordinates
 struct_Widget!(Fixed);
 
-impl Fixed {
-    pub fn new() -> Option<Fixed> {
+pub trait FixedBuilder {
+    fn fixed(&self) -> Option<Fixed>;
+}
+
+impl FixedBuilder for ::Gtk {
+    fn fixed(&self) -> Option<Fixed> {
         let tmp_pointer = unsafe { ffi::gtk_fixed_new() };
         check_pointer!(tmp_pointer, Fixed)
     }
+}
 
+impl Fixed {
     pub fn put<T: ::WidgetTrait>(&mut self,
                              widget: &T,
                              x: i32,
@@ -55,3 +61,4 @@ impl_TraitWidget!(Fixed);
 impl ::ContainerTrait for Fixed {}
 
 impl_widget_events!(Fixed);
+

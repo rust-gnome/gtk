@@ -21,8 +21,12 @@ use ffi;
 /// Frame — A bin with a decorative frame and optional label
 struct_Widget!(Frame);
 
-impl Frame {
-    pub fn new(label: Option<&str>) -> Option<Frame> {
+pub trait FrameBuilder {
+    fn frame(&self, label: Option<&str>) -> Option<Frame>; 
+}
+
+impl FrameBuilder for ::Gtk {
+    fn frame(&self, label: Option<&str>) -> Option<Frame> {
         let tmp_pointer = unsafe {
             ffi::gtk_frame_new(label.borrow_to_glib().0)
         };
@@ -38,3 +42,4 @@ impl ::ContainerTrait for Frame {}
 impl ::BinTrait for Frame {}
 
 impl_widget_events!(Frame);
+

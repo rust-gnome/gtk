@@ -20,8 +20,14 @@ use std::str;
 
 struct_Widget!(PageSetupUnixDialog);
 
-impl PageSetupUnixDialog {
-    pub fn new(title: &str, parent: Option<::Window>) -> Option<PageSetupUnixDialog> {
+pub trait PageSetupUnixDialogBuilder {
+    fn page_setup_unix_dialog(&self, title: &str, parent: Option<::Window>) ->
+        Option<PageSetupUnixDialog>;
+}
+
+impl PageSetupUnixDialogBuilder for ::Gtk {
+    fn page_setup_unix_dialog(&self, title: &str, parent: Option<::Window>) ->
+            Option<PageSetupUnixDialog> {
         let tmp_pointer = unsafe {
             title.with_c_str(|c_str|{
                 ffi::gtk_page_setup_unix_dialog_new(match parent {
@@ -37,7 +43,9 @@ impl PageSetupUnixDialog {
             Some(::FFIWidget::wrap_widget(tmp_pointer))
         }
     }
+}
 
+impl PageSetupUnixDialog {
     pub fn set_page_setup(&self, page_setup: &::PageSetup) {
         unsafe { ffi::gtk_page_setup_unix_dialog_set_page_setup(GTK_PAGE_SETUP_UNIX_DIALOG(self.unwrap_widget()), GTK_PAGE_SETUP(page_setup.unwrap_widget())) }
     }
@@ -76,3 +84,4 @@ impl ::WindowTrait for PageSetupUnixDialog {}
 impl ::DialogTrait for PageSetupUnixDialog {}
 
 impl_widget_events!(PageSetupUnixDialog);
+

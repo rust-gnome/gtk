@@ -20,8 +20,12 @@ use ffi;
 /// MenuItem — The widget used for item in menus
 struct_Widget!(SeparatorMenuItem);
 
-impl SeparatorMenuItem {
-    pub fn new() -> Option<SeparatorMenuItem> {
+pub trait SeparatorMenuItemBuilder {
+    fn separator_menu_item(&self) -> Option<SeparatorMenuItem>;
+}
+
+impl SeparatorMenuItemBuilder for ::Gtk {
+    fn separator_menu_item(&self) -> Option<SeparatorMenuItem> {
         let tmp_pointer = unsafe { ffi::gtk_separator_menu_item_new() };
         check_pointer!(tmp_pointer, SeparatorMenuItem)
     }
@@ -35,3 +39,4 @@ impl ::BinTrait for SeparatorMenuItem {}
 impl ::MenuItemTrait for SeparatorMenuItem {}
 
 impl_widget_events!(SeparatorMenuItem);
+

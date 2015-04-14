@@ -21,12 +21,18 @@ use glib::{to_bool, to_gboolean};
 
 struct_Widget!(EventBox);
 
-impl EventBox {
-    pub fn new() -> Option<EventBox> {
+pub trait EventBoxBuilder {
+    fn event_box(&self) -> Option<EventBox>;
+}
+
+impl EventBoxBuilder for ::Gtk {
+    fn event_box(&self) -> Option<EventBox> {
         let tmp_pointer = unsafe { ffi::gtk_event_box_new() };
         check_pointer!(tmp_pointer, EventBox)
     }
+}
 
+impl EventBox {
     pub fn set_above_child(&mut self, above_child: bool) {
         unsafe {
             ffi::gtk_event_box_set_above_child(GTK_EVENT_BOX(self.pointer), to_gboolean(above_child))
@@ -55,3 +61,4 @@ impl ::ContainerTrait for EventBox {}
 impl ::BinTrait for EventBox {}
 
 impl_widget_events!(EventBox);
+

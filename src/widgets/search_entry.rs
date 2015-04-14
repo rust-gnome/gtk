@@ -24,8 +24,12 @@ use ffi;
 */
 struct_Widget!(SearchEntry);
 
-impl SearchEntry {
-    pub fn new() -> Option<SearchEntry> {
+pub trait SearchEntryBuilder {
+    fn search_entry(&self) -> Option<SearchEntry>;
+}
+
+impl SearchEntryBuilder for ::Gtk {
+    fn search_entry(&self) -> Option<SearchEntry> {
         let tmp_pointer = unsafe { ffi::gtk_search_entry_new() };
         check_pointer!(tmp_pointer, SearchEntry)
     }
@@ -38,3 +42,4 @@ impl ::EntryTrait for SearchEntry {}
 impl ::EditableTrait for SearchEntry {}
 
 impl_widget_events!(SearchEntry);
+

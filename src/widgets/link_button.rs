@@ -27,21 +27,28 @@ use glib::{to_bool, to_gboolean};
 */
 struct_Widget!(LinkButton);
 
-impl LinkButton {
-    pub fn new(uri: &str) -> Option<LinkButton> {
+pub trait LinkButtonBuilder {
+    fn link_button(&self, uri: &str) -> Option<LinkButton>;
+    fn link_button_with_label(&self, uri: &str, label: &str) -> Option<LinkButton>;
+}
+
+impl LinkButtonBuilder for ::Gtk {
+    fn link_button(&self, uri: &str) -> Option<LinkButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_link_button_new(uri.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, LinkButton)
     }
 
-    pub fn new_with_label(uri: &str, label: &str) -> Option<LinkButton> {
+    fn link_button_with_label(&self, uri: &str, label: &str) -> Option<LinkButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_link_button_new_with_label(uri.borrow_to_glib().0, label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, LinkButton)
     }
+}
 
+impl LinkButton {
     pub fn get_uri(&self) -> Option<String> {
         unsafe {
             FromGlibPtr::borrow(
@@ -72,3 +79,4 @@ impl ::ButtonTrait for LinkButton {}
 
 impl_widget_events!(LinkButton);
 impl_button_events!(LinkButton);
+

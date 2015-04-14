@@ -22,12 +22,18 @@ use FFIWidget;
 /// GtkStackSwitcher — A controller for GtkStack
 struct_Widget!(StackSwitcher);
 
-impl StackSwitcher {
-    pub fn new() -> Option<StackSwitcher> {
+pub trait StackSwitcherBuilder {
+    fn stack_switcher(&self) -> Option<StackSwitcher>;
+}
+
+impl StackSwitcherBuilder for ::Gtk {
+    fn stack_switcher(&self) -> Option<StackSwitcher> {
         let tmp_pointer = unsafe { ffi::gtk_stack_switcher_new() };
         check_pointer!(tmp_pointer, StackSwitcher)
     }
+}
 
+impl StackSwitcher {
     pub fn set_stack(&mut self, stack: ::Stack) {
         unsafe {
             ffi::gtk_stack_switcher_set_stack(GTK_STACK_SWITCHER(self.pointer),
@@ -52,3 +58,4 @@ impl ::ContainerTrait for StackSwitcher {}
 impl ::BoxTrait for StackSwitcher {}
 
 impl_widget_events!(StackSwitcher);
+

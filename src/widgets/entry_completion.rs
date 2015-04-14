@@ -22,19 +22,21 @@ use glib::translate::{FromGlibPtr, ToGlibPtr};
 
 struct_Widget!(EntryCompletion);
 
-impl EntryCompletion {
-    pub fn new() -> Option<EntryCompletion> {
-        let tmp_pointer = unsafe { ffi::gtk_entry_completion_new() };
+pub trait EntryCompletionBuilder {
+    fn entry_completion(&self) -> Option<EntryCompletion>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(EntryCompletion {
-                    pointer: tmp_pointer as *mut ffi::C_GtkWidget
-                })
+impl EntryCompletionBuilder for ::Gtk {
+    fn entry_completion(&self) -> Option<EntryCompletion> {
+        match unsafe { ffi::gtk_entry_completion_new() } {
+            pointer if !pointer.is_null() => Some(EntryCompletion {
+                pointer: pointer as *mut ffi::C_GtkWidget }),
+            _ => None
         }
     }
+}
 
+impl EntryCompletion {
     pub fn get_entry<T: ::WidgetTrait>(&self) -> Option<T> {
         let tmp_pointer = unsafe { ffi::gtk_entry_completion_get_entry(GTK_ENTRY_COMPLETION(self.pointer)) };
 
@@ -194,3 +196,4 @@ impl_TraitWidget!(EntryCompletion);
 impl ::CellLayoutTrait for EntryCompletion {}
 
 impl_widget_events!(EntryCompletion);
+

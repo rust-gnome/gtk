@@ -21,14 +21,20 @@ use FFIWidget;
 
 struct_Widget!(Socket);
 
-impl Socket {
-    pub fn new() -> Option<Socket> {
+pub trait SocketBuilder {
+    fn socket(&self) -> Option<Socket>;
+}
+
+impl SocketBuilder for ::Gtk {
+    fn socket(&self) -> Option<Socket> {
         let tmp_pointer = unsafe { ffi::gtk_socket_new() };
 
         check_pointer!(tmp_pointer, Socket)
     }
+}
 
-    /*pub fn add_id(&self, window: Window) {
+/*impl Socket {
+    pub fn add_id(&self, window: Window) {
         unsafe { ffi::gtk_socket_add_id(GTK_SOCKET(self.unwrap_widget()), window) };
     }
 
@@ -40,8 +46,8 @@ impl Socket {
         let tmp_pointer = unsafe { ffi::gtk_socket_get_plug_window(GTK_SOCKET(self.unwrap_widget())) };
 
         // add end of code
-    }*/
-}
+    }
+}*/
 
 impl_drop!(Socket);
 impl_TraitWidget!(Socket);
@@ -49,3 +55,4 @@ impl_TraitWidget!(Socket);
 impl ::ContainerTrait for Socket {}
 
 impl_widget_events!(Socket);
+

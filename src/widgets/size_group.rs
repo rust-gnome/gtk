@@ -22,8 +22,12 @@ pub struct SizeGroup {
     pointer: *mut ffi::C_GtkSizeGroup
 }
 
-impl SizeGroup {
-    pub fn new(mode: ::SizeGroupMode) -> Option<SizeGroup> {
+pub trait SizeGroupBuilder {
+    fn size_group(&self, mode: ::SizeGroupMode) -> Option<SizeGroup>;
+}
+
+impl SizeGroupBuilder for ::Gtk {
+    fn size_group(&self, mode: ::SizeGroupMode) -> Option<SizeGroup> {
         let tmp_pointer = unsafe { ffi::gtk_size_group_new(mode) };
 
         if tmp_pointer.is_null() {
@@ -34,7 +38,9 @@ impl SizeGroup {
             })
         }
     }
+}
 
+impl SizeGroup {
     pub fn set_mode(&self, mode: ::SizeGroupMode) {
         unsafe { ffi::gtk_size_group_set_mode(self.pointer, mode) }
     }

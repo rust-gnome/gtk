@@ -27,19 +27,26 @@ use cast::GTK_FONTBUTTON;
 */
 struct_Widget!(FontButton);
 
-impl FontButton {
-    pub fn new() -> Option<FontButton> {
+pub trait FontButtonBuilder {
+    fn font_button(&self) -> Option<FontButton>;
+    fn font_button_with_font(&self, font_name: &str) -> Option<FontButton>;
+}
+
+impl FontButtonBuilder for ::Gtk {
+    fn font_button(&self) -> Option<FontButton> {
         let tmp_pointer = unsafe { ffi::gtk_font_button_new() };
         check_pointer!(tmp_pointer, FontButton)
     }
 
-    pub fn new_with_font(font_name: &str) -> Option<FontButton> {
+    fn font_button_with_font(&self, font_name: &str) -> Option<FontButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_font_button_new_with_font(font_name.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, FontButton)
     }
+}
 
+impl FontButton {
     pub fn set_font_name(&mut self, font_name: &str) -> bool {
         unsafe { to_bool(ffi::gtk_font_button_set_font_name(GTK_FONTBUTTON(self.pointer), font_name.borrow_to_glib().0)) }
     }
@@ -105,3 +112,4 @@ impl ::ButtonTrait for FontButton {}
 
 impl_widget_events!(FontButton);
 impl_button_events!(FontButton);
+

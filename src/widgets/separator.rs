@@ -21,8 +21,12 @@ use Orientation;
 /// Separator — A separator widget
 struct_Widget!(Separator);
 
-impl Separator {
-    pub fn new(orientation: Orientation) -> Option<Separator> {
+pub trait SeparatorBuilder {
+    fn separator(&self, orientation: Orientation) -> Option<Separator>;
+}
+
+impl SeparatorBuilder for ::Gtk {
+    fn separator(&self, orientation: Orientation) -> Option<Separator> {
         let tmp_pointer = unsafe { ffi::gtk_separator_new(orientation) };
         check_pointer!(tmp_pointer, Separator)
     }
@@ -34,3 +38,4 @@ impl_TraitWidget!(Separator);
 impl ::OrientableTrait for Separator {}
 
 impl_widget_events!(Separator);
+
