@@ -1,23 +1,23 @@
 #![feature(core)]
 
 extern crate cairo;
-extern crate gtk;
+extern crate gtk as rgtk;
 
 use std::f64::consts::PI_2;
 
-use gtk::Connect;
-use gtk::traits::*;
-use gtk::signals::{DeleteEvent, Draw};
-use gtk::DrawingArea;
+use rgtk::{Connect, Gtk};
+use rgtk::traits::*;
+use rgtk::signals::{DeleteEvent, Draw};
+use rgtk::widgets::{DrawingAreaBuilder, WindowBuilder};
 
 use cairo::enums::FontSlant::FontSlantNormal;
 use cairo::enums::FontWeight::FontWeightNormal;
 use cairo::Context;
 
 fn main() {
-    gtk::init();
+    let gtk = Gtk::new();
 
-    drawable(500, 500, &mut |cr: Context| {
+    drawable(&gtk, 500, 500, &mut |cr: Context| {
         cr.set_dash(&[3., 2., 1.], 1.);
         assert_eq!(cr.get_dash(), (vec![3., 2., 1.], 1.));
 
@@ -65,7 +65,7 @@ fn main() {
         cr.fill();
     });
 
-    drawable(500, 500, &mut |cr: Context| {
+    drawable(&gtk, 500, 500, &mut |cr: Context| {
         cr.scale(500f64, 500f64);
 
         cr.select_font_face("Sans", FontSlantNormal, FontWeightNormal);
@@ -88,21 +88,23 @@ fn main() {
         cr.fill();
     });
 
-    gtk::main();
+    gtk.main();
 }
 
-pub fn drawable<T>(width: i32, height: i32, draw_fn: &mut T) where T: FnMut(cairo::Context) {
-    let mut window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
-    let drawing_area = Box::new(DrawingArea::new)().unwrap();
+pub fn drawable<T>(gtk: &Gtk, width: i32, height: i32, draw_fn: &mut T) where
+        T: FnMut(cairo::Context) {
+    let mut window = gtk.window(rgtk::WindowType::TopLevel).unwrap();
+    let drawing_area = gtk.drawing_area().unwrap();
 
     Connect::connect(&drawing_area, Draw::new(draw_fn));
 
     window.set_default_size(width, height);
 
     Connect::connect(&window, DeleteEvent::new(&mut |_|{
-        gtk::main_quit();
+        gtk.main_quit();
         true
     }));
     window.add(&drawing_area);
     window.show_all();
 }
+

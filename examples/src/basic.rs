@@ -4,31 +4,33 @@
 
 #![crate_type = "bin"]
 
-extern crate gtk;
+extern crate gtk as rgtk;
 
-use gtk::Connect;
-use gtk::traits::*;
-use gtk::signals::{DeleteEvent};
+use rgtk::{Connect, Gtk};
+use rgtk::traits::*;
+use rgtk::signals::{DeleteEvent};
+use rgtk::widgets::{ButtonBuilder, WindowBuilder};
 
 fn main() {
-    gtk::init();
+    let gtk = Gtk::new();
 
-    let mut window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
+    let mut window = gtk.window(rgtk::WindowType::TopLevel).unwrap();
 
     window.set_title("First GTK+ Program");
     window.set_border_width(10);
-    window.set_window_position(gtk::WindowPosition::Center);
+    window.set_window_position(rgtk::WindowPosition::Center);
     window.set_default_size(350, 70);
 
     Connect::connect(&window, DeleteEvent::new(&mut |_| {
-        gtk::main_quit();
+        gtk.main_quit();
         true
     }));
 
-    let button = gtk::Button::new_with_label("Click me!").unwrap();
+    let button = gtk.button_with_label("Click me!").unwrap();
 
     window.add(&button);
 
     window.show_all();
-    gtk::main();
+    gtk.main();
 }
+

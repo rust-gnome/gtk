@@ -35,3 +35,7 @@ name = "text_viewer"
 
 [[bin]]
 name = "treeview"
+
+[[bin]]
+name = "note_book"
+
