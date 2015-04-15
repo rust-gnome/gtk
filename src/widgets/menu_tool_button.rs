@@ -24,8 +24,15 @@ use glib::translate::ToGlibPtr;
 /// MenuToolButton — A ToolItem containing a button with an additional dropdown menu
 struct_Widget!(MenuToolButton);
 
-impl MenuToolButton {
-    pub fn new<T: ::WidgetTrait>(icon_widget: Option<&T>, label: Option<&str>) -> Option<MenuToolButton> {
+pub trait MenuToolButtonBuilder {
+    fn menu_tool_button<T: ::WidgetTrait>(&self, icon_widget: Option<&T>, label: Option<&str>) ->
+            Option<MenuToolButton>;
+    fn menu_tool_button_from_stock(&self, stock_id: &str) -> Option<MenuToolButton>;
+}
+
+impl MenuToolButtonBuilder for ::Gtk {
+    fn menu_tool_button<T: ::WidgetTrait>(&self, icon_widget: Option<&T>, label: Option<&str>) ->
+            Option<MenuToolButton> {
         let tmp_pointer = unsafe {
             let icon_widget_ptr = match icon_widget {
                 Some(i) => i.unwrap_widget(),
@@ -37,13 +44,15 @@ impl MenuToolButton {
         check_pointer!(tmp_pointer, MenuToolButton)
     }
 
-    pub fn new_from_stock(stock_id: &str) -> Option<MenuToolButton> {
+    fn menu_tool_button_from_stock(&self, stock_id: &str) -> Option<MenuToolButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_menu_tool_button_new_from_stock(stock_id.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, MenuToolButton)
     }
+}
 
+impl MenuToolButton {
     pub fn set_arrow_tooltip_text(&mut self, text: &str) -> () {
         unsafe {
             ffi::gtk_menu_tool_button_set_arrow_tooltip_text(GTK_MENUTOOLBUTTON(self.pointer), text.borrow_to_glib().0)
@@ -68,3 +77,4 @@ impl ::ToolItemTrait for MenuToolButton {}
 impl ::ToolButtonTrait for MenuToolButton {}
 
 impl_widget_events!(MenuToolButton);
+

@@ -21,22 +21,30 @@ use {TreeModel, TreePath};
 
 struct_Widget!(IconView);
 
-impl IconView {
-    pub fn new() -> Option<IconView> {
+pub trait IconViewBuilder {
+    fn icon_view(&self) -> Option<IconView>;
+    /*fn icon_view_with_area(&self, area: &::CellArea) -> Option<IconView>;*/
+    fn icon_view_with_model(&self, model: &TreeModel) -> Option<IconView>;
+}
+
+impl IconViewBuilder for ::Gtk {
+    fn icon_view(&self) -> Option<IconView> {
         let tmp_pointer = unsafe { ffi::gtk_icon_view_new() };
         check_pointer!(tmp_pointer, IconView)
     }
 
-    /*pub fn new_with_area(area: &::CellArea) -> Option<IconView> {
+    /*fn icon_view_with_area(&self, area: &::CellArea) -> Option<IconView> {
         let tmp_pointer = unsafe { ffi::gtk_icon_view_new_with_area(::FFIWidget::unwrap(area)) };
         check_pointer!(tmp_pointer, IconView)
     }*/
 
-    pub fn new_with_model(model: &TreeModel) -> Option<IconView> {
+    fn icon_view_with_model(&self, model: &TreeModel) -> Option<IconView> {
         let tmp_pointer = unsafe { ffi::gtk_icon_view_new_with_model(model.unwrap_pointer()) };
         check_pointer!(tmp_pointer, IconView)
     }
+}
 
+impl IconView {
     pub fn set_model(&self, model: &TreeModel) {
         unsafe { ffi::gtk_icon_view_set_model(GTK_ICON_VIEW(self.pointer), model.unwrap_pointer()) }
     }
@@ -305,3 +313,4 @@ impl ::ScrollableTrait for IconView {}
 impl ::CellLayoutTrait for IconView {}
 
 impl_widget_events!(IconView);
+

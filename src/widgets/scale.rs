@@ -30,21 +30,25 @@ use glib::{to_bool, to_gboolean};
 */
 struct_Widget!(Scale);
 
-impl Scale {
-    pub fn new(orientation: Orientation,
-               adjustment: &::Adjustment) -> Option<Scale> {
+pub trait ScaleBuilder {
+    fn scale(&self, orientation: Orientation, adjustment: &::Adjustment) -> Option<Scale>;
+    fn scale_with_range(&self, orientation: Orientation, min: f64, max: f64, step: f64) -> Option<Scale>;
+}
+
+impl ScaleBuilder for ::Gtk {
+    fn scale(&self, orientation: Orientation, adjustment: &::Adjustment) -> Option<Scale> {
         let tmp_pointer = unsafe { ffi::gtk_scale_new(orientation, adjustment.unwrap_pointer()) };
         check_pointer!(tmp_pointer, Scale)
     }
 
-    pub fn new_with_range(orientation: Orientation,
-                          min: f64,
-                          max: f64,
-                          step: f64) -> Option<Scale> {
-        let tmp_pointer = unsafe { ffi::gtk_scale_new_with_range(orientation, min as c_double, max as c_double, step as c_double) };
+    fn scale_with_range(&self, orientation: Orientation, min: f64, max: f64, step: f64) ->
+            Option<Scale> {
+        let tmp_pointer = unsafe { ffi::gtk_scale_new_with_range(orientation, min, max, step) };
         check_pointer!(tmp_pointer, Scale)
     }
+}
 
+impl Scale {
     pub fn set_digits(&mut self, digits: i32) -> () {
         unsafe {
             ffi::gtk_scale_set_digits(GTK_SCALE(self.pointer), digits as c_int);
@@ -116,3 +120,4 @@ impl ::RangeTrait for Scale {}
 
 impl_widget_events!(Scale);
 impl_range_events!(Scale);
+

@@ -29,8 +29,12 @@ use WindowType;
 */
 struct_Widget!(Window);
 
-impl Window {
-    pub fn new(window_type: WindowType) -> Option<Window> {
+pub trait WindowBuilder {
+    fn window(&self, window_type: WindowType) -> Option<Window>;
+}
+
+impl WindowBuilder for ::Gtk {
+    fn window(&self, window_type: WindowType) -> Option<Window> {
         let tmp_pointer = unsafe { ffi::gtk_window_new(window_type) };
         check_pointer!(tmp_pointer, Window)
     }
@@ -44,3 +48,4 @@ impl ::WindowTrait for Window {}
 impl ::BinTrait for Window {}
 
 impl_widget_events!(Window);
+

@@ -24,14 +24,20 @@ use glib::{to_bool, to_gboolean};
 
 struct_Widget!(ToolItemGroup);
 
-impl ToolItemGroup {
-    pub fn new(label: &str) -> Option<ToolItemGroup> {
+pub trait ToolItemGroupBuilder {
+    fn tool_item_group(&self, label: &str) -> Option<ToolItemGroup>;
+}
+
+impl ToolItemGroupBuilder for ::Gtk {
+    fn tool_item_group(&self, label: &str) -> Option<ToolItemGroup> {
         let tmp_pointer = unsafe {
             ffi::gtk_tool_item_group_new(label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, ToolItemGroup)
     }
+}
 
+impl ToolItemGroup {
     pub fn get_collapsed(&self) -> bool {
         unsafe { to_bool(ffi::gtk_tool_item_group_get_collapsed(GTK_TOOL_ITEM_GROUP(self.unwrap_widget()))) }
     }
@@ -122,3 +128,4 @@ impl ::ContainerTrait for ToolItemGroup {}
 impl ::BinTrait for ToolItemGroup {}
 
 impl_widget_events!(ToolItemGroup);
+

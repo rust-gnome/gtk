@@ -29,15 +29,20 @@ use ffi;
 */
 struct_Widget!(Label);
 
-impl Label {
-    pub fn new(text: &str) -> Option<Label> {
+pub trait LabelBuilder {
+    fn label(&self, text: &str) -> Option<Label>;
+    fn label_with_mnemonic(&self, text: &str) -> Option<Label>;
+}
+
+impl LabelBuilder for ::Gtk {
+    fn label(&self, text: &str) -> Option<Label> {
         let tmp_pointer = unsafe {
             ffi::gtk_label_new(text.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, Label)
     }
 
-    pub fn new_with_mnemonic(text: &str) -> Option<Label> {
+    fn label_with_mnemonic(&self, text: &str) -> Option<Label> {
         let tmp_pointer = unsafe {
             ffi::gtk_label_new_with_mnemonic(text.borrow_to_glib().0)
         };
@@ -52,3 +57,4 @@ impl ::MiscTrait for Label {}
 impl ::LabelTrait for Label {}
 
 impl_widget_events!(Label);
+

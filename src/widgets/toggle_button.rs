@@ -25,26 +25,31 @@ use ffi;
 */
 struct_Widget!(ToggleButton);
 
-impl ToggleButton {
-    pub fn new() -> Option<ToggleButton> {
+pub trait ToggleButtonBuilder {
+    fn toggle_button(&self) -> Option<ToggleButton>;
+    fn toggle_button_with_label(&self, label: &str) -> Option<ToggleButton>;
+    fn toggle_button_with_mnemonic(&self, mnemonic: &str) -> Option<ToggleButton>;
+}
+
+impl ToggleButtonBuilder for ::Gtk {
+    fn toggle_button(&self) -> Option<ToggleButton> {
         let tmp_pointer = unsafe { ffi::gtk_toggle_button_new() };
         check_pointer!(tmp_pointer, ToggleButton)
     }
 
-    pub fn new_with_label(label: &str) -> Option<ToggleButton> {
+    fn toggle_button_with_label(&self, label: &str) -> Option<ToggleButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_toggle_button_new_with_label(label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, ToggleButton)
     }
 
-    pub fn new_with_mnemonic(mnemonic: &str) -> Option<ToggleButton> {
+    fn toggle_button_with_mnemonic(&self, mnemonic: &str) -> Option<ToggleButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_toggle_button_new_with_mnemonic(mnemonic.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, ToggleButton)
     }
-
 }
 
 impl_drop!(ToggleButton);
@@ -56,3 +61,4 @@ impl ::ToggleButtonTrait for ToggleButton {}
 
 impl_widget_events!(ToggleButton);
 impl_button_events!(ToggleButton);
+

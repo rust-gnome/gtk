@@ -20,12 +20,18 @@ use ffi;
 
 struct_Widget!(ActionBar);
 
-impl ActionBar {
-    pub fn new() -> Option<ActionBar> {
+pub trait ActionBarBuilder {
+    fn action_bar(&self) -> Option<ActionBar>;    
+}
+
+impl ActionBarBuilder for ::Gtk {
+    fn action_bar(&self) -> Option<ActionBar> {
         let tmp_pointer = unsafe { ffi::gtk_action_bar_new() };
         check_pointer!(tmp_pointer, ActionBar)
     }
+}
 
+impl ActionBar {
     pub fn get_center_widget<T: ::WidgetTrait>(&self) -> Option<T> {
         let tmp_pointer = unsafe {
             ffi::gtk_action_bar_get_center_widget(GTK_ACTION_BAR(self.pointer))
@@ -66,3 +72,4 @@ impl ::ContainerTrait for ActionBar {}
 impl ::BinTrait for ActionBar {}
 
 impl_widget_events!(ActionBar);
+

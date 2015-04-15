@@ -22,12 +22,18 @@ use glib::{to_bool, to_gboolean};
 
 struct_Widget!(Popover);
 
-impl Popover {
-    pub fn new<T: ::WidgetTrait>(relative_to: &T) -> Option<Popover> {
+pub trait PopoverBuilder {
+    fn popover<T: ::WidgetTrait>(&self, relative_to: &T) -> Option<Popover>;
+}
+
+impl PopoverBuilder for ::Gtk {
+    fn popover<T: ::WidgetTrait>(&self, relative_to: &T) -> Option<Popover> {
         let tmp_pointer = unsafe { ffi::gtk_popover_new(relative_to.unwrap_widget()) };
         check_pointer!(tmp_pointer, Popover)
     }
+}
 
+impl Popover {
     pub fn set_relative_to<T: ::WidgetTrait>(&self, relative_to: &T) {
         unsafe { ffi::gtk_popover_set_relative_to(GTK_POPOVER(self.pointer), relative_to.unwrap_widget()) }
     }
@@ -66,3 +72,4 @@ impl ::ContainerTrait for Popover {}
 impl ::BinTrait for Popover {}
 
 impl_widget_events!(Popover);
+

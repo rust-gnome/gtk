@@ -23,47 +23,45 @@ use glib;
 // FIXME: PaperSize is not a widget nor a GObject -> GBoxed
 struct_Widget!(PaperSize);
 
+pub trait PaperSizeBuilder {
+    fn paper_size(name: &str) -> Option<PaperSize>;
+    fn paper_size_from_ppd(ppd_name: &str, ppd_display_name: &str, width: f64, height: f64) ->
+            Option<PaperSize>;
+    fn paper_size_custom(name: &str, display_name: &str, width: f64, height: f64, unit: ::Unit) ->
+            Option<PaperSize>; 
+}
+
+impl PaperSizeBuilder for ::Gtk {
+    fn paper_size(name: &str) -> Option<PaperSize> {
+        match unsafe { ffi::gtk_paper_size_new(name.borrow_to_glib().0) } {
+            pointer if !pointer.is_null() => Some(::FFIWidget::wrap_widget(
+                pointer as *mut ffi::C_GtkWidget)),
+            _ => None
+        }
+    }
+
+    fn paper_size_from_ppd(ppd_name: &str, ppd_display_name: &str, width: f64, height: f64) ->
+            Option<PaperSize> {
+        match unsafe { ffi::gtk_paper_size_new_from_ppd(ppd_name.borrow_to_glib().0,
+                ppd_display_name.borrow_to_glib().0, width, height) } {
+            pointer if !pointer.is_null() => Some(::FFIWidget::wrap_widget(
+                pointer as *mut ffi::C_GtkWidget)),
+            _ => None
+        }
+    }
+
+    fn paper_size_custom(name: &str, display_name: &str, width: f64, height: f64, unit: ::Unit) ->
+            Option<PaperSize> {
+        match unsafe { ffi::gtk_paper_size_new_custom(name.borrow_to_glib().0,
+                display_name.borrow_to_glib().0, width, height, unit) } {
+            pointer if !pointer.is_null() => Some(::FFIWidget::wrap_widget(
+                pointer as *mut ffi::C_GtkWidget)),
+            _ => None
+        } 
+    }
+}
+
 impl PaperSize {
-    pub fn new(name: &str) -> Option<PaperSize> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_paper_size_new(name.borrow_to_glib().0)
-        };
-
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(::FFIWidget::wrap_widget(tmp_pointer as *mut ffi::C_GtkWidget))
-        }
-    }
-
-    pub fn new_from_ppd(ppd_name: &str, ppd_display_name: &str, width: f64, height: f64) -> Option<PaperSize> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_paper_size_new_from_ppd(ppd_name.borrow_to_glib().0,
-                                             ppd_display_name.borrow_to_glib().0,
-                                             width, height)
-        };
-
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(::FFIWidget::wrap_widget(tmp_pointer as *mut ffi::C_GtkWidget))
-        }
-    }
-
-    pub fn new_custom(name: &str, display_name: &str, width: f64, height: f64, unit: ::Unit) -> Option<PaperSize> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_paper_size_new_custom(name.borrow_to_glib().0,
-                                           display_name.borrow_to_glib().0,
-                                           width, height, unit)
-        };
-
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(::FFIWidget::wrap_widget(tmp_pointer as *mut ffi::C_GtkWidget))
-        }
-    }
-
     pub fn copy(&self) -> Option<PaperSize> {
         let tmp_pointer = unsafe { ffi::gtk_paper_size_copy(GTK_PAPER_SIZE(self.unwrap_widget())) };
 
@@ -180,3 +178,4 @@ impl Clone for PaperSize {
 impl_TraitWidget!(PaperSize);
 
 impl_widget_events!(PaperSize);
+

@@ -23,14 +23,20 @@ pub struct TextIter {
     pointer: *mut ffi::C_GtkTextIter
 }
 
-impl TextIter {
-    pub fn new() -> Option<TextIter> {
+pub trait TextIterBuilder {
+    fn text_iter(&self) -> Option<TextIter>;
+}
+
+impl TextIterBuilder for ::Gtk {
+    fn text_iter(&self) -> Option<TextIter> {
         let iter = TextIter {
             pointer: unsafe { ::std::mem::uninitialized() }
         };
         iter.copy()
     }
+}
 
+impl TextIter {
     pub fn get_buffer(&self) -> Option<::TextBuffer> {
         let tmp_pointer = unsafe { ffi::gtk_text_iter_get_buffer(self.pointer as *const ffi::C_GtkTextIter) };
 
@@ -405,3 +411,4 @@ impl TextIter {
 
 impl_GObjectFunctions!(TextIter, C_GtkTextIter);
 impl_TraitObject!(TextIter, C_GtkTextIter);
+

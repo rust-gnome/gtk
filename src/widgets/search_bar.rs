@@ -23,12 +23,18 @@ use FFIWidget;
 /// Box — A container box
 struct_Widget!(SearchBar);
 
-impl SearchBar {
-    pub fn new() -> Option<SearchBar> {
+pub trait SearchBarBuilder {
+    fn search_bar(&self) -> Option<SearchBar>;
+}
+
+impl SearchBarBuilder for ::Gtk {
+    fn search_bar(&self) -> Option<SearchBar> {
         let tmp_pointer = unsafe { ffi::gtk_search_bar_new() };
         check_pointer!(tmp_pointer, SearchBar)
     }
+}
 
+impl SearchBar {
     pub fn connect_entry(&mut self, entry: &::Entry) -> () {
         unsafe {
             ffi::gtk_search_bar_connect_entry(GTK_SEARCHBAR(self.pointer), GTK_ENTRY(entry.unwrap_widget()));
@@ -59,3 +65,4 @@ impl ::ContainerTrait for SearchBar {}
 impl ::BinTrait for SearchBar {}
 
 impl_widget_events!(SearchBar);
+

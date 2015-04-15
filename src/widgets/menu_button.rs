@@ -22,12 +22,18 @@ use ArrowType;
 /// MenuButton — A widget that shows a menu when clicked on
 struct_Widget!(MenuButton);
 
-impl MenuButton {
-    pub fn new() -> Option<MenuButton> {
+pub trait MenuButtonBuilder {
+    fn menu_button(&self) -> Option<MenuButton>;
+}
+
+impl MenuButtonBuilder for ::Gtk {
+    fn menu_button(&self) -> Option<MenuButton> {
         let tmp_pointer = unsafe { ffi::gtk_menu_button_new() };
         check_pointer!(tmp_pointer, MenuButton)
     }
+}
 
+impl MenuButton {
     pub fn set_popup<T: ::WidgetTrait>(&mut self, popup: &T) -> () {
         unsafe {
             ffi::gtk_menu_button_set_popup(GTK_MENUBUTTON(self.pointer), popup.unwrap_widget());
@@ -61,3 +67,4 @@ impl ::ButtonTrait for MenuButton {}
 impl ::ToggleButtonTrait for MenuButton {}
 
 impl_widget_events!(MenuButton);
+

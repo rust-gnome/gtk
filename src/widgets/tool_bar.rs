@@ -32,12 +32,18 @@ use {IconSize, ReliefStyle, ToolbarStyle};
 */
 struct_Widget!(Toolbar);
 
-impl Toolbar {
-    pub fn new() -> Option<Toolbar> {
+pub trait ToolbarBuilder {
+    fn toolbar(&self) -> Option<Toolbar>;
+}
+
+impl ToolbarBuilder for ::Gtk {
+    fn toolbar(&self) -> Option<Toolbar> {
         let tmp_pointer = unsafe { ffi::gtk_toolbar_new() };
         check_pointer!(tmp_pointer, Toolbar)
     }
+}
 
+impl Toolbar {
     pub fn insert<T: ::ToolItemTrait>(&mut self,
                                   item: &T,
                                   pos: i32) -> () {
@@ -140,3 +146,4 @@ impl ::ToolShellTrait for Toolbar {}
 impl ::OrientableTrait for Toolbar {}
 
 impl_widget_events!(Toolbar);
+

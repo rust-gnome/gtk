@@ -36,13 +36,18 @@ use ffi;
 */
 struct_Widget!(Entry);
 
-impl Entry {
-    pub fn new() -> Option<Entry> {
+pub trait EntryBuilder {
+    fn entry(&self) -> Option<Entry>;
+    fn entry_with_buffer(&self, buffer: &::EntryBuffer) -> Option<Entry>;
+}
+
+impl EntryBuilder for ::Gtk {
+    fn entry(&self) -> Option<Entry> {
         let tmp_pointer = unsafe { ffi::gtk_entry_new() };
         check_pointer!(tmp_pointer, Entry)
     }
 
-    pub fn new_with_buffer(buffer: &::EntryBuffer) -> Option<Entry> {
+    fn entry_with_buffer(&self, buffer: &::EntryBuffer) -> Option<Entry> {
         let tmp_pointer = unsafe { ffi::gtk_entry_new_with_buffer(buffer.unwrap_pointer()) };
         check_pointer!(tmp_pointer, Entry)
     }
@@ -55,3 +60,4 @@ impl ::EntryTrait for Entry {}
 impl ::EditableTrait for Entry {}
 
 impl_widget_events!(Entry);
+

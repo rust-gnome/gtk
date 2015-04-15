@@ -26,12 +26,18 @@ use glib::{to_bool, to_gboolean};
 */
 struct_Widget!(Switch);
 
-impl Switch {
-    pub fn new() -> Option<Switch> {
+pub trait SwitchBuilder {
+    fn switch(&self) -> Option<Switch>;
+}
+
+impl SwitchBuilder for ::Gtk {
+    fn switch(&self) -> Option<Switch> {
         let tmp_pointer = unsafe { ffi::gtk_switch_new() };
         check_pointer!(tmp_pointer, Switch)
     }
+}
 
+impl Switch {
     pub fn set_active(&mut self, is_active: bool) -> () {
         unsafe { ffi::gtk_switch_set_active(GTK_SWITCH(self.pointer), to_gboolean(is_active)); }
     }
@@ -45,3 +51,4 @@ impl_drop!(Switch);
 impl_TraitWidget!(Switch);
 
 impl_widget_events!(Switch);
+

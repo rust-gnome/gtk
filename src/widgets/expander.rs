@@ -26,22 +26,28 @@ use FFIWidget;
 /// Expander — A container which can hide its child
 struct_Widget!(Expander);
 
-impl Expander {
-    pub fn new(label: &str) -> Option<Expander> {
+pub trait ExpanderBuilder {
+    fn expander(&self, label: &str) -> Option<Expander>;
+    fn expander_with_mnemonic(&self, mnemonic: &str) -> Option<Expander>;
+}
+
+impl ExpanderBuilder for ::Gtk {
+    fn expander(&self, label: &str) -> Option<Expander> {
         let tmp_pointer = unsafe {
             ffi::gtk_expander_new(label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, Expander)
     }
 
-    pub fn new_with_mnemonic(mnemonic: &str) -> Option<Expander> {
+    fn expander_with_mnemonic(&self, mnemonic: &str) -> Option<Expander> {
         let tmp_pointer = unsafe {
             ffi::gtk_expander_new_with_mnemonic(mnemonic.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, Expander)
     }
+}
 
-
+impl Expander {
     pub fn set_expanded(&mut self, expanded: bool) -> () {
         unsafe { ffi::gtk_expander_set_expanded(GTK_EXPANDER(self.pointer), to_gboolean(expanded)); }
     }
@@ -127,3 +133,4 @@ impl ::ContainerTrait for Expander {}
 impl ::BinTrait for Expander {}
 
 impl_widget_events!(Expander);
+

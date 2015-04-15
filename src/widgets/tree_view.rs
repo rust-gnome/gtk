@@ -24,17 +24,24 @@ use glib::{to_bool, to_gboolean};
 /// TreeView — A widget for displaying both trees and lists
 struct_Widget!(TreeView);
 
-impl TreeView {
-    pub fn new() -> Option<TreeView> {
+pub trait TreeViewBuilder {
+    fn tree_view(&self) -> Option<TreeView>;
+    fn tree_view_with_model(&self, model: &::TreeModel) -> Option<TreeView>;
+}
+
+impl TreeViewBuilder for ::Gtk {
+    fn tree_view(&self) -> Option<TreeView> {
         let tmp_pointer = unsafe { ffi::gtk_tree_view_new() };
         check_pointer!(tmp_pointer, TreeView)
     }
 
-    pub fn new_with_model(model: &::TreeModel) -> Option<TreeView> {
+    fn tree_view_with_model(&self, model: &::TreeModel) -> Option<TreeView> {
         let tmp_pointer = unsafe { ffi::gtk_tree_view_new_with_model(model.unwrap_pointer()) };
         check_pointer!(tmp_pointer, TreeView)
     }
+}
 
+impl TreeView {
     pub fn get_headers_visible(&self) -> bool {
         unsafe {
             to_bool(ffi::gtk_tree_view_get_headers_visible(GTK_TREE_VIEW(self.pointer)))
@@ -423,3 +430,4 @@ impl ::ScrollableTrait for TreeView {}
 
 impl_widget_events!(TreeView);
 impl_tree_view_events!(TreeView);
+

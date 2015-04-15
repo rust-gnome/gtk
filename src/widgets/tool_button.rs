@@ -23,8 +23,15 @@ use ffi;
 /// ToolButton — A ToolItem subclass that displays buttons
 struct_Widget!(ToolButton);
 
-impl ToolButton {
-    pub fn new<T: ::WidgetTrait>(icon_widget: Option<&T>, label: Option<&str>) -> Option<ToolButton> {
+pub trait ToolButtonBuilder {
+    fn tool_button<T: ::WidgetTrait>(&self, icon_widget: Option<&T>, label: Option<&str>) ->
+        Option<ToolButton>;
+    fn tool_button_from_stock(&self, stock_id: &str) -> Option<ToolButton>;
+}
+
+impl ToolButtonBuilder for ::Gtk {
+    fn tool_button<T: ::WidgetTrait>(&self, icon_widget: Option<&T>, label: Option<&str>) ->
+            Option<ToolButton> {
         let tmp_pointer = unsafe {
             let icon_widget_ptr = match icon_widget {
                 Some(i) => i.unwrap_widget(),
@@ -35,7 +42,7 @@ impl ToolButton {
         check_pointer!(tmp_pointer, ToolButton)
     }
 
-    pub fn new_from_stock(stock_id: &str) -> Option<ToolButton> {
+    fn tool_button_from_stock(&self, stock_id: &str) -> Option<ToolButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_tool_button_new_from_stock(stock_id.borrow_to_glib().0)
         };
@@ -53,3 +60,4 @@ impl ::ToolButtonTrait for ToolButton {}
 
 impl_widget_events!(ToolButton);
 impl_button_events!(ToolButton);
+

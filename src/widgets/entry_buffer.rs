@@ -33,20 +33,20 @@ pub struct EntryBuffer {
     pointer: *mut ffi::C_GtkEntryBuffer,
 }
 
-impl EntryBuffer {
-    pub fn new(initial_chars: Option<&str>) -> Option<EntryBuffer> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_entry_buffer_new(initial_chars.borrow_to_glib().0, -1)
-        };
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(EntryBuffer {
-                pointer: tmp_pointer,
-            })
+pub trait EntryBufferBuilder {
+    fn entry_buffer(&self, initial_chars: Option<&str>) -> Option<EntryBuffer>;
+}
+
+impl EntryBufferBuilder for ::Gtk {
+    fn entry_buffer(&self, initial_chars: Option<&str>) -> Option<EntryBuffer> {
+        match unsafe { ffi::gtk_entry_buffer_new(initial_chars.borrow_to_glib().0, -1) } {
+            pointer if !pointer.is_null() => Some(EntryBuffer { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl EntryBuffer {
     pub fn get_text(&self) -> Option<String> {
         unsafe {
             FromGlibPtr::borrow(
@@ -124,3 +124,4 @@ impl EntryBuffer {
 }
 
 impl_drop!(EntryBuffer, GTK_ENTRY_BUFFER);
+

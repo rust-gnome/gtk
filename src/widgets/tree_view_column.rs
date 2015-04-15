@@ -25,12 +25,18 @@ pub struct TreeViewColumn {
     pointer: *mut ffi::C_GtkTreeViewColumn
 }
 
-impl TreeViewColumn {
-    pub fn new() -> Option<TreeViewColumn> {
+pub trait TreeViewColumnBuilder {
+    fn tree_view_column(&self) -> Option<TreeViewColumn>;
+}
+
+impl TreeViewColumnBuilder for ::Gtk {
+    fn tree_view_column(&self) -> Option<TreeViewColumn> {
         let tmp_pointer = unsafe { ffi::gtk_tree_view_column_new() };
         check_pointer!(tmp_pointer, TreeViewColumn, G_OBJECT_FROM_TREE_VIEW_COLUMN)
     }
+}
 
+impl TreeViewColumn {
     pub fn clear(&mut self) {
         unsafe {
             ffi::gtk_tree_view_column_clear(self.pointer)
@@ -348,3 +354,4 @@ impl Clone for TreeViewColumn {
         }
     }
 }
+

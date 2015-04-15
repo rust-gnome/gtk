@@ -24,12 +24,18 @@ use glib::{to_bool, to_gboolean};
 /// GtkNotebook — A tabbed notebook container
 struct_Widget!(NoteBook);
 
-impl NoteBook {
-    pub fn new() -> Option<NoteBook> {
+pub trait NoteBookBuilder {
+    fn notebook(&self) -> Option<NoteBook>;
+}
+
+impl NoteBookBuilder for ::Gtk {
+    fn notebook(&self) -> Option<NoteBook> {
         let tmp_pointer = unsafe { ffi::gtk_notebook_new() };
         check_pointer!(tmp_pointer, NoteBook)
     }
+}
 
+impl NoteBook {
     pub fn append_page<Child: ::WidgetTrait, TabLabel: ::WidgetTrait>(&mut self, child: &Child,
             tab_label: Option<&TabLabel>) -> Option<u32> {
         match unsafe { ffi::gtk_notebook_append_page(GTK_NOTEBOOK(self.pointer),

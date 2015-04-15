@@ -21,19 +21,24 @@ pub struct TextTagTable {
     pointer: *mut ffi::C_GtkTextTagTable
 }
 
-impl TextTagTable {
-    pub fn new() -> Option<TextTagTable> {
-        let tmp_pointer = unsafe { ffi::gtk_text_tag_table_new() };
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(TextTagTable { pointer: tmp_pointer })
+pub trait TextTagTableBuilder {
+    fn text_tag_table(&self) -> Option<TextTagTable>;
+}
+
+impl TextTagTableBuilder for ::Gtk {
+    fn text_tag_table(&self) -> Option<TextTagTable> {
+        match unsafe { ffi::gtk_text_tag_table_new() } {
+            pointer if !pointer.is_null() => Some(TextTagTable { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl TextTagTable {
     pub fn unwrap_pointer(&self) -> *mut ffi::C_GtkTextTagTable {
         self.pointer
     }
 }
 
 impl_drop!(TextTagTable, GTK_TEXT_TAG_TABLE);
+

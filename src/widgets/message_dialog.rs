@@ -20,8 +20,16 @@ use glib::translate::ToGlibPtr;
 
 struct_Widget!(MessageDialog);
 
-impl MessageDialog {
-    pub fn new(parent: Option<::Window>, flags: ::DialogFlags, _type: ::MessageType, buttons: ::ButtonsType) -> Option<MessageDialog> {
+pub trait MessageDialogBuilder {
+    fn message_dialog(&self, parent: Option<::Window>, flags: ::DialogFlags, _type: ::MessageType,
+            buttons: ::ButtonsType) -> Option<MessageDialog>;
+    fn message_dialog_with_markup(&self, parent: Option<::Window>, flags: ::DialogFlags,
+            _type: ::MessageType, buttons: ::ButtonsType, markup: &str) -> Option<MessageDialog>;
+}
+
+impl MessageDialogBuilder for ::Gtk {
+    fn message_dialog(&self, parent: Option<::Window>, flags: ::DialogFlags, _type: ::MessageType,
+            buttons: ::ButtonsType) -> Option<MessageDialog> {
         let tmp_pointer = unsafe { ffi::gtk_message_dialog_new(match parent {
                 Some(ref p) => GTK_WINDOW(p.unwrap_widget()),
                 None => ::std::ptr::null_mut()
@@ -35,9 +43,10 @@ impl MessageDialog {
         }
     }
 
-    pub fn new_with_markup(parent: Option<::Window>, flags: ::DialogFlags, _type: ::MessageType, buttons: ::ButtonsType, markup: &str) -> Option<MessageDialog> {
+    fn message_dialog_with_markup(&self, parent: Option<::Window>, flags: ::DialogFlags,
+            _type: ::MessageType, buttons: ::ButtonsType, markup: &str) -> Option<MessageDialog> {
         //gtk_message_dialog_new_with_markup
-        match MessageDialog::new(parent, flags, _type, buttons) {
+        match self.message_dialog(parent, flags, _type, buttons) {
             Some(m) => {
                 m.set_markup(markup);
                 Some(m)
@@ -45,7 +54,9 @@ impl MessageDialog {
             None => None
         }
     }
+}
 
+impl MessageDialog {
     pub fn set_markup(&self, markup: &str) -> () {
         unsafe {
             ffi::gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(self.unwrap_widget()), markup.borrow_to_glib().0)
@@ -72,3 +83,4 @@ impl ::WindowTrait for MessageDialog {}
 impl ::DialogTrait for MessageDialog {}
 
 impl_widget_events!(MessageDialog);
+

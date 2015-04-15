@@ -21,17 +21,21 @@ use glib::translate::{FromGlibPtr, ToGlibPtr};
 
 struct_Widget!(PrintSettings);
 
-impl PrintSettings {
-    pub fn new() -> Option<PrintSettings> {
-        let tmp_pointer = unsafe { ffi::gtk_print_settings_new() };
+pub trait PrintSettingsBuilder {
+    fn print_settings(&self) -> Option<PrintSettings>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(::FFIWidget::wrap_widget(tmp_pointer as *mut ffi::C_GtkWidget))
+impl PrintSettingsBuilder for ::Gtk {
+    fn print_settings(&self) -> Option<PrintSettings> {
+        match unsafe { ffi::gtk_print_settings_new() } {
+            pointer if !pointer.is_null() => Some(::FFIWidget::wrap_widget(
+                pointer as *mut ffi::C_GtkWidget)),
+            _ => None
         }
     }
+}
 
+impl PrintSettings {
     pub fn copy(&self) -> Option<PrintSettings> {
         let tmp_pointer = unsafe { ffi::gtk_print_settings_copy(GTK_PRINT_SETTINGS(self.unwrap_widget())) };
 
@@ -347,3 +351,4 @@ impl_drop!(PrintSettings);
 impl_TraitWidget!(PrintSettings);
 
 impl_widget_events!(PrintSettings);
+

@@ -22,19 +22,20 @@ pub struct TextTag {
     pointer: *mut ffi::C_GtkTextTag
 }
 
-impl TextTag {
-    pub fn new(name: &str) -> Option<TextTag> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_text_tag_new(name.borrow_to_glib().0)
-        };
+pub trait TextTagBuilder {
+    fn text_tag(&self, name: &str) -> Option<TextTag>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(TextTag { pointer : tmp_pointer })
+impl TextTagBuilder for ::Gtk {
+    fn text_tag(&self, name: &str) -> Option<TextTag> {
+        match unsafe { ffi::gtk_text_tag_new(name.borrow_to_glib().0) } {
+            pointer if !pointer.is_null() => Some(TextTag { pointer: pointer }),
+            _ => None
         }
     }
+}
 
+impl TextTag {
     pub fn get_priority(&self) -> i32 {
         unsafe { ffi::gtk_text_tag_get_priority(self.pointer) }
     }
@@ -46,3 +47,4 @@ impl TextTag {
 
 impl_GObjectFunctions!(TextTag, C_GtkTextTag);
 impl_TraitObject!(TextTag, C_GtkTextTag);
+

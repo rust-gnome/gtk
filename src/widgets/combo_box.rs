@@ -19,33 +19,42 @@ use ffi;
 
 struct_Widget!(ComboBox);
 
-impl ComboBox {
-    pub fn new() -> Option<ComboBox> {
+pub trait ComboBoxBuilder {
+    fn combo_box() -> Option<ComboBox>;
+    fn combo_box_with_entry() -> Option<ComboBox>;
+    fn combo_box_with_model(model: &::TreeModel) -> Option<ComboBox>;
+    fn combo_box_with_model_and_entry(model: &::TreeModel) -> Option<ComboBox>;
+    /*fn combo_box_with_area(area: &::CellArea) -> Option<ComboBox>;
+    fn combo_box_with_area_and_entry(area: &::CellArea) -> Option<ComboBox>;*/
+}
+
+impl ComboBoxBuilder for ::Gtk {
+    fn combo_box() -> Option<ComboBox> {
         let tmp_pointer = unsafe { ffi::gtk_combo_box_new() };
         check_pointer!(tmp_pointer, ComboBox)
     }
 
-    pub fn new_with_entry() -> Option<ComboBox> {
+    fn combo_box_with_entry() -> Option<ComboBox> {
         let tmp_pointer = unsafe { ffi::gtk_combo_box_new_with_entry() };
         check_pointer!(tmp_pointer, ComboBox)
     }
 
-    pub fn new_with_model(model: &::TreeModel) -> Option<ComboBox> {
+    fn combo_box_with_model(model: &::TreeModel) -> Option<ComboBox> {
         let tmp_pointer = unsafe { ffi::gtk_combo_box_new_with_model(model.unwrap_pointer()) };
         check_pointer!(tmp_pointer, ComboBox)
     }
 
-    pub fn new_with_model_and_entry(model: &::TreeModel) -> Option<ComboBox> {
+    fn combo_box_with_model_and_entry(model: &::TreeModel) -> Option<ComboBox> {
         let tmp_pointer = unsafe { ffi::gtk_combo_box_new_with_model_and_entry(model.unwrap_pointer()) };
         check_pointer!(tmp_pointer, ComboBox)
     }
 
-    /*pub fn new_with_area(area: &::CellArea) -> Option<ComboBox> {
+    /*fn combo_box_with_area(area: &::CellArea) -> Option<ComboBox> {
         let tmp_pointer = unsafe { ffi::gtk_combo_box_new_with_area(area.unwrap_pointer()) };
         check_pointer!(tmp_pointer, ComboBox)
     }
 
-    pub fn new_with_area_and_entry(area: &::CellArea) -> Option<ComboBox> {
+    fn combo_box_with_area_and_entry(area: &::CellArea) -> Option<ComboBox> {
         let tmp_pointer = unsafe { ffi::gtk_combo_box_new_with_area_and_entry(area.unwrap_pointer()) };
         check_pointer!(tmp_pointer, ComboBox)
     }*/

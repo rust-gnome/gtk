@@ -28,8 +28,12 @@ use std::ops::Drop;
 /// Box — A container box
 struct_Widget!(Box);
 
-impl Box {
-    pub fn new(orientation: Orientation, spacing: i32) -> Option<Box> {
+pub trait BoxBuilder {
+    fn _box(&self, orientation: Orientation, spacing: i32) -> Option<Box>;
+}
+
+impl BoxBuilder for ::Gtk {
+    fn _box(&self, orientation: Orientation, spacing: i32) -> Option<Box> {
         let tmp_pointer = unsafe { ffi::gtk_box_new(orientation, spacing as c_int) };
         check_pointer!(tmp_pointer, Box)
     }
@@ -43,3 +47,4 @@ impl ::BoxTrait for Box {}
 impl ::OrientableTrait for Box {}
 
 impl_widget_events!(Box);
+

@@ -21,12 +21,18 @@ use ffi;
 /// GtkOverlay — A container which overlays widgets on top of each other
 struct_Widget!(Overlay);
 
-impl Overlay {
-    pub fn new() -> Option<Overlay> {
+pub trait OverlayBuilder {
+    fn overlay(&self) -> Option<Overlay>;
+}
+
+impl OverlayBuilder for ::Gtk {
+    fn overlay(&self) -> Option<Overlay> {
         let tmp_pointer = unsafe { ffi::gtk_overlay_new() };
         check_pointer!(tmp_pointer, Overlay)
     }
+}
 
+impl Overlay {
     pub fn add_overlay<T: ::WidgetTrait>(&mut self, widget: &T) {
         unsafe {
             ffi::gtk_overlay_add_overlay(GTK_OVERLAY(self.pointer), widget.unwrap_widget())
@@ -41,3 +47,4 @@ impl ::ContainerTrait for Overlay {}
 impl ::BinTrait for Overlay {}
 
 impl_widget_events!(Overlay);
+

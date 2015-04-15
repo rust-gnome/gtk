@@ -20,20 +20,20 @@ pub struct TreeIter {
     is_owned: bool,
 }
 
-impl TreeIter {
-    pub fn new() -> Option<TreeIter> {
-        let tmp_pointer = unsafe { ffi::gtk_tree_iter_copy(::std::mem::uninitialized()) };
+pub trait TreeIterBuilder {
+    fn tree_iter(&self) -> Option<TreeIter>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(TreeIter {
-                pointer: tmp_pointer,
-                is_owned: true,
-            })
+impl TreeIterBuilder for ::Gtk {
+    fn tree_iter(&self) -> Option<TreeIter> {
+        match unsafe { ffi::gtk_tree_iter_copy(::std::mem::uninitialized()) } {
+            pointer if !pointer.is_null() => Some(TreeIter { pointer: pointer, is_owned: true }),
+            _ => None
         }
     }
+}
 
+impl TreeIter {
     pub fn copy(&self) -> Option<TreeIter> {
         let tmp_pointer = unsafe { ffi::gtk_tree_iter_copy(self.pointer) };
 
@@ -69,3 +69,4 @@ impl Drop for TreeIter {
         }
     }
 }
+

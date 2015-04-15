@@ -20,8 +20,12 @@ use ffi;
 /// VolumeButton — A button which pops up a volume control
 struct_Widget!(VolumeButton);
 
-impl VolumeButton {
-    pub fn new() -> Option<VolumeButton> {
+pub trait VolumeButtonBuilder {
+    fn volume_button(&self) -> Option<VolumeButton>;
+}
+
+impl VolumeButtonBuilder for ::Gtk {
+    fn volume_button(&self) -> Option<VolumeButton> {
         let tmp_pointer = unsafe { ffi::gtk_volume_button_new() };
         check_pointer!(tmp_pointer, VolumeButton)
     }
@@ -36,3 +40,4 @@ impl ::ScaleButtonTrait for VolumeButton {}
 impl ::OrientableTrait for VolumeButton {}
 
 impl_widget_events!(VolumeButton);
+

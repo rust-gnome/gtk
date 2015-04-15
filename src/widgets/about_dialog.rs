@@ -22,17 +22,20 @@ use glib::translate::{FromGlibPtr, FromGlibPtrContainer, ToGlibPtr};
 
 struct_Widget!(AboutDialog);
 
-impl AboutDialog {
-    pub fn new() -> Option<AboutDialog> {
-        let tmp_pointer = unsafe { ffi::gtk_about_dialog_new() };
+pub trait AboutDialogBuilder {
+    fn about_dialog(&self) -> Option<AboutDialog>;
+}
 
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(::FFIWidget::wrap_widget(tmp_pointer))
+impl AboutDialogBuilder for ::Gtk {
+    fn about_dialog(&self) -> Option<AboutDialog> {
+        match unsafe { ffi::gtk_about_dialog_new() } {
+            pointer if !pointer.is_null() => Some(::FFIWidget::wrap_widget(pointer)),
+            _ => None
         }
     }
+}
 
+impl AboutDialog {
     pub fn get_program_name(&self) -> Option<String> {
         unsafe {
             FromGlibPtr::borrow(
@@ -256,3 +259,4 @@ impl ::WindowTrait for AboutDialog {}
 impl ::DialogTrait for AboutDialog {}
 
 impl_widget_events!(AboutDialog);
+

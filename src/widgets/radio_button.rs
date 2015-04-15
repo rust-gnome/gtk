@@ -24,28 +24,32 @@ use cast::GTK_RADIOBUTTON;
 /// A choice from multiple check buttons
 struct_Widget!(RadioButton);
 
-impl RadioButton {
-    pub fn new() -> Option<RadioButton> {
+pub trait RadioButtonBuilder {
+    fn radio_button(&self) -> Option<RadioButton>;
+    fn radio_button_with_label(&self, label: &str) -> Option<RadioButton>;
+    fn radio_button_with_mnemonic(&self, mnemonic: &str) -> Option<RadioButton>;
+}
+
+impl RadioButtonBuilder for ::Gtk {
+    fn radio_button(&self) -> Option<RadioButton> {
         let tmp_pointer = unsafe { ffi::gtk_radio_button_new(ptr::null_mut()) };
         check_pointer!(tmp_pointer, RadioButton)
     }
 
-    pub fn new_with_label(label: &str) -> Option<RadioButton> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_radio_button_new_with_label(ptr::null_mut(),
-                                                 label.borrow_to_glib().0)
-        };
+    fn radio_button_with_label(&self, label: &str) -> Option<RadioButton> {
+        let tmp_pointer = unsafe { ffi::gtk_radio_button_new_with_label(ptr::null_mut(),
+            label.borrow_to_glib().0) };
         check_pointer!(tmp_pointer, RadioButton)
     }
 
-    pub fn new_with_mnemonic(mnemonic: &str) -> Option<RadioButton> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_radio_button_new_with_mnemonic(ptr::null_mut(),
-                                                    mnemonic.borrow_to_glib().0)
-        };
+    fn radio_button_with_mnemonic(&self, mnemonic: &str) -> Option<RadioButton> {
+        let tmp_pointer = unsafe { ffi::gtk_radio_button_new_with_mnemonic(ptr::null_mut(),
+            mnemonic.borrow_to_glib().0) };
         check_pointer!(tmp_pointer, RadioButton)
     }
+}
 
+impl RadioButton {
     pub fn join(&mut self, group_source: &mut RadioButton) {
         unsafe {
             ffi::gtk_radio_button_join_group(GTK_RADIOBUTTON(self.pointer),

@@ -21,20 +21,26 @@ use ffi;
 /// CheckButton — Create widgets with a discrete toggle button
 struct_Widget!(CheckButton);
 
-impl CheckButton {
-    pub fn new() -> Option<CheckButton> {
+pub trait CheckButtonBuilder {
+    fn check_button(&self) -> Option<CheckButton>;
+    fn check_button_with_label(&self, label: &str) -> Option<CheckButton>;
+    fn check_button_with_mnemonic(&self, mnemonic: &str) -> Option<CheckButton>;
+}
+
+impl CheckButtonBuilder for ::Gtk {
+    fn check_button(&self) -> Option<CheckButton> {
         let tmp_pointer = unsafe { ffi::gtk_check_button_new() };
         check_pointer!(tmp_pointer, CheckButton)
     }
 
-    pub fn new_with_label(label: &str) -> Option<CheckButton> {
+    fn check_button_with_label(&self, label: &str) -> Option<CheckButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_check_button_new_with_label(label.borrow_to_glib().0)
         };
         check_pointer!(tmp_pointer, CheckButton)
     }
 
-    pub fn new_with_mnemonic(mnemonic: &str) -> Option<CheckButton> {
+    fn check_button_with_mnemonic(&self, mnemonic: &str) -> Option<CheckButton> {
         let tmp_pointer = unsafe {
             ffi::gtk_check_button_new_with_mnemonic(mnemonic.borrow_to_glib().0)
         };
@@ -50,3 +56,4 @@ impl ::ButtonTrait for CheckButton {}
 impl ::ToggleButtonTrait for CheckButton {}
 
 impl_widget_events!(CheckButton);
+

@@ -23,12 +23,18 @@ use glib::{to_bool, to_gboolean};
 /// GtkFlowBox — A container that allows reflowing its children
 struct_Widget!(FlowBox);
 
-impl FlowBox {
-    pub fn new() -> Option<FlowBox> {
+pub trait FlowBoxBuilder {
+    fn flow_box(&self) -> Option<FlowBox>;
+}
+
+impl FlowBoxBuilder for ::Gtk {
+    fn flow_box(&self) -> Option<FlowBox> {
         let tmp_pointer = unsafe { ffi::gtk_revealer_new() };
         check_pointer!(tmp_pointer, FlowBox)
     }
+}
 
+impl FlowBox {
     pub fn set_homogeneous(&mut self, homogeneous: bool) {
         unsafe {
             ffi::gtk_flow_box_set_homogeneous(GTK_FLOW_BOX(self.pointer),

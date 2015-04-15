@@ -20,9 +20,16 @@ use ffi;
 /// GtkScrollBar — A Scrollbar
 struct_Widget!(ScrollBar);
 
-impl ScrollBar {
-    pub fn new(orientation: ::Orientation, adjustment: &::Adjustment) -> Option<ScrollBar> {
-        let tmp_pointer = unsafe { ffi::gtk_scrollbar_new(orientation, adjustment.unwrap_pointer()) };
+pub trait ScrollBarBuilder {
+    fn scroll_bar(&self, orientation: ::Orientation, adjustment: &::Adjustment) ->
+        Option<ScrollBar>;
+}
+
+impl ScrollBarBuilder for ::Gtk {
+    fn scroll_bar(&self, orientation: ::Orientation, adjustment: &::Adjustment) ->
+            Option<ScrollBar> {
+        let tmp_pointer = unsafe { ffi::gtk_scrollbar_new(orientation,
+            adjustment.unwrap_pointer()) };
         check_pointer!(tmp_pointer, ScrollBar)
     }
 }
@@ -35,3 +42,4 @@ impl ::OrientableTrait for ScrollBar {}
 
 impl_widget_events!(ScrollBar);
 impl_range_events!(ScrollBar);
+

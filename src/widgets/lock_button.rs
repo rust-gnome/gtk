@@ -23,12 +23,18 @@ use glib::GlibContainer;
 /// GtkLockButton — A widget to unlock or lock privileged operations
 struct_Widget!(LockButton);
 
-impl LockButton {
-    pub fn new(permission: &Permission) -> Option<LockButton> {
+pub trait LockButtonBuilder {
+    fn lock_button(&self, permission: &Permission) -> Option<LockButton>;
+}
+
+impl LockButtonBuilder for ::Gtk {
+    fn lock_button(&self, permission: &Permission) -> Option<LockButton> {
         let tmp_pointer = unsafe { ffi::gtk_lock_button_new(permission.unwrap()) };
         check_pointer!(tmp_pointer, LockButton)
     }
+}
 
+impl LockButton {
     pub fn get_permission(&self) -> Option<Permission> {
         let tmp_pointer = unsafe { ffi::gtk_lock_button_get_permission(GTK_LOCKBUTTON(self.pointer)) };
 
@@ -53,3 +59,4 @@ impl ::ActionableTrait for LockButton {}
 
 impl_widget_events!(LockButton);
 impl_button_events!(LockButton);
+

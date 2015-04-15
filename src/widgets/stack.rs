@@ -25,12 +25,18 @@ use glib::{to_bool, to_gboolean};
 /// GtkStack — A stacking container
 struct_Widget!(Stack);
 
-impl Stack {
-    pub fn new() -> Option<Stack> {
+pub trait StackBuilder {
+    fn stack(&self) -> Option<Stack>;
+}
+
+impl StackBuilder for ::Gtk {
+    fn stack(&self) -> Option<Stack> {
         let tmp_pointer = unsafe { ffi::gtk_stack_new() };
         check_pointer!(tmp_pointer, Stack)
     }
+}
 
+impl Stack {
     pub fn add_named<T: ::WidgetTrait>(&mut self, child: &T, name: &str) {
         unsafe {
             ffi::gtk_stack_add_named(GTK_STACK(self.pointer),
@@ -129,3 +135,4 @@ impl_TraitWidget!(Stack);
 impl ::ContainerTrait for Stack {}
 
 impl_widget_events!(Stack);
+

@@ -21,15 +21,21 @@ use cast::{GTK_LAYOUT};
 /// GtkLayout — Infinite scrollable area containing child widgets and/or custom drawing
 struct_Widget!(Layout);
 
-impl Layout {
-    pub fn new(hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Layout> {
+pub trait LayoutBuilder {
+    fn layout(&self, hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Layout>;
+}
+
+impl LayoutBuilder for ::Gtk {
+    fn layout(&self, hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Layout> {
         let tmp_pointer = unsafe {
             ffi::gtk_layout_new(hadjustment.unwrap_pointer(),
                                 vadjustment.unwrap_pointer())
         };
         check_pointer!(tmp_pointer, Layout)
     }
+}
 
+impl Layout {
     pub fn put<T: ::WidgetTrait>(&mut self, child: &T, x: i32, y: i32) {
         unsafe {
             ffi::gtk_layout_put(GTK_LAYOUT(self.pointer),
@@ -71,3 +77,4 @@ impl ::ContainerTrait for Layout {}
 impl ::ScrollableTrait for Layout {}
 
 impl_widget_events!(Layout);
+

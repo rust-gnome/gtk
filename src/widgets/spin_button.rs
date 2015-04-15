@@ -34,19 +34,27 @@ use cast::{GTK_SPINBUTTON};
 */
 struct_Widget!(SpinButton);
 
+pub trait SpinButtonBuilder {
+    fn spin_button(&self, adjustment: &::Adjustment, climb_rate: f64, digits: u32) ->
+        Option<SpinButton>;
+    fn spin_button_with_range(&self, min: f64, max: f64, step: f64) -> Option<SpinButton>;
+}
+
+impl SpinButtonBuilder for ::Gtk {
+    fn spin_button(&self, adjustment: &::Adjustment, climb_rate: f64, digits: u32) ->
+            Option<SpinButton> {
+        let tmp_pointer = unsafe { ffi::gtk_spin_button_new(adjustment.unwrap_pointer(), climb_rate,
+            digits) };
+        check_pointer!(tmp_pointer, SpinButton)
+    }
+
+    fn spin_button_with_range(&self, min: f64, max: f64, step: f64) -> Option<SpinButton> {
+        let tmp_pointer = unsafe { ffi::gtk_spin_button_new_with_range(min, max, step) };
+        check_pointer!(tmp_pointer, SpinButton)
+    }
+}
+
 impl SpinButton {
-    pub fn new(adjustment: &::Adjustment,
-               climb_rate: f64,
-               digits: u32) -> Option<SpinButton> {
-        let tmp_pointer = unsafe { ffi::gtk_spin_button_new(adjustment.unwrap_pointer(), climb_rate as c_double, digits as c_uint) };
-        check_pointer!(tmp_pointer, SpinButton)
-    }
-
-    pub fn new_with_range(min: f64, max: f64, step: f64) -> Option<SpinButton> {
-        let tmp_pointer = unsafe { ffi::gtk_spin_button_new_with_range(min as c_double, max as c_double, step as c_double) };
-        check_pointer!(tmp_pointer, SpinButton)
-    }
-
     pub fn configure(&mut self, adjustment: &::Adjustment, climb_rate: f64, digits: u32) -> () {
         unsafe {
             ffi::gtk_spin_button_configure(GTK_SPINBUTTON(self.pointer), adjustment.unwrap_pointer(), climb_rate as c_double, digits as c_uint);
@@ -186,3 +194,4 @@ impl ::OrientableTrait for SpinButton {}
 
 impl_widget_events!(SpinButton);
 impl_connect!(SpinButton -> ChangedValue, ValueChanged, Wrapped); // Input, Output
+
