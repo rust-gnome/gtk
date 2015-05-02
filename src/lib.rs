@@ -71,144 +71,8 @@ pub use self::rt::{
 
 /// GTK Widgets for all versions
 pub use self::widgets::{
-    Widget,
     Window,
-    Label,
     Button,
-    Box,
-    ButtonBox,
-    Frame,
-    AspectFrame,
-    Fixed,
-    Separator,
-    FontButton,
-    ToggleButton,
-    CheckButton,
-    ColorButton,
-    LinkButton,
-    Adjustment,
-    ScaleButton,
-    VolumeButton,
-    Grid,
-    EntryBuffer,
-    Entry,
-    Switch,
-    Range,
-    Scale,
-    SpinButton,
-    Spinner,
-    Image,
-    ProgressBar,
-    Arrow,
-    Calendar,
-    Alignment,
-    Expander,
-    Paned,
-    InfoBar,
-    Toolbar,
-    ToolItem,
-    SeparatorToolItem,
-    ToolButton,
-    ToggleToolButton,
-    MenuToolButton,
-    Dialog,
-    AboutDialog,
-    ColorChooserDialog,
-    FontChooserDialog,
-    MessageDialog,
-    NoteBook,
-    Overlay,
-    Layout,
-    FileFilter,
-    FileChooserDialog,
-    AppInfo,
-    AppLaunchContext,
-    AppChooserDialog,
-    DrawingArea,
-    PageSetup,
-    PaperSize,
-    PrintSettings,
-    RecentChooserDialog,
-    //PageSetupUnixDialog
-    RecentInfo,
-    RecentFilter,
-    RecentFilterInfo,
-    RecentData,
-    RecentManager,
-    TextView,
-    TextBuffer,
-    TextTagTable,
-    ScrolledWindow,
-    RadioButton,
-    TreeView,
-    TreeViewColumn,
-    TreePath,
-    TreeIter,
-    TreeModel,
-    ListStore,
-    TreeStore,
-    MenuItem,
-    SeparatorMenuItem,
-    CheckMenuItem,
-    ScrollBar,
-    Viewport,
-    StatusBar,
-    CellRendererText,
-    CellRendererToggle,
-    LockButton,
-    EntryCompletion,
-    IconView,
-    TreeSelection,
-    RecentChooserWidget,
-    ComboBox,
-    //g_type,
-    ComboBoxText,
-    TextMark,
-    TextTag,
-    TextAttributes,
-    TextIter,
-    TextChildAnchor,
-    ToolPalette,
-    ToolItemGroup,
-    SizeGroup,
-    AppChooserWidget,
-    FileChooserWidget,
-    ColorChooserWidget,
-    FontChooserWidget,
-    EventBox
-};
-
-#[cfg(target_os = "linux")]
-pub use self::widgets::{Socket};
-
-#[cfg(feature = "gtk_3_6")]
-/// GTK Widgets for versions since GTK 3.6
-pub use self::widgets::{
-    MenuButton,
-    LevelBar,
-};
-
-#[cfg(feature = "gtk_3_10")]
-/// GTK Widgets for versions since GTK 3.10
-pub use self::widgets::{
-    SearchEntry,
-    SearchBar,
-    Stack,
-    StackSwitcher,
-    Revealer,
-    HeaderBar,
-    ListBox,
-    ListBoxRow,
-    PlacesSidebar
-};
-
-#[cfg(feature = "gtk_3_12")]
-/// GTK Widgets for versions since GTK 3.12
-pub use self::widgets::{
-    FlowBox,
-    FlowBoxChild,
-    ActionBar,
-    Popover
 };
 
 /// GTK Enum types
@@ -294,50 +158,6 @@ pub use ffi::enums::ToolPaletteDragTargets;
 pub use ffi::enums::DestDefaults;
 pub use ffi::enums::SizeGroupMode;
 
-/// Gtk Traits
-pub use self::traits::FFIWidget;
-pub use self::traits::GObjectTrait;
-pub use self::traits::BoxTrait;
-pub use self::traits::ActionableTrait;
-pub use self::traits::AppChooserTrait;
-pub use self::traits::BinTrait;
-pub use self::traits::ButtonTrait;
-pub use self::traits::ButtonSignals;
-pub use self::traits::CellEditableTrait;
-pub use self::traits::CellLayoutTrait;
-pub use self::traits::CellRendererTrait;
-pub use self::traits::CheckMenuItemTrait;
-pub use self::traits::ColorChooserTrait;
-pub use self::traits::ComboBoxTrait;
-pub use self::traits::ContainerTrait;
-pub use self::traits::DialogButtons;
-pub use self::traits::DialogTrait;
-pub use self::traits::EditableTrait;
-pub use self::traits::EntryTrait;
-pub use self::traits::FileChooserTrait;
-pub use self::traits::FontChooserTrait;
-pub use self::traits::FrameTrait;
-pub use self::traits::LabelTrait;
-pub use self::traits::MenuItemTrait;
-pub use self::traits::MenuShellTrait;
-pub use self::traits::MiscTrait;
-pub use self::traits::OrientableTrait;
-pub use self::traits::RangeTrait;
-pub use self::traits::RecentChooserTrait;
-pub use self::traits::ScaleButtonTrait;
-pub use self::traits::ScrollableTrait;
-pub use self::traits::ScrolledWindowTrait;
-pub use self::traits::TextBufferTrait;
-pub use self::traits::ToggleButtonTrait;
-pub use self::traits::ToggleToolButtonTrait;
-pub use self::traits::ToolButtonTrait;
-pub use self::traits::ToolButtonSignals;
-pub use self::traits::ToolItemTrait;
-pub use self::traits::ToolShellTrait;
-pub use self::traits::WidgetTrait;
-pub use self::traits::WidgetSignals;
-pub use self::traits::WindowTrait;
-
 /// GTK various struct
 pub use self::types::{
     Tooltip,
@@ -348,6 +168,6 @@ mod cast;
 mod rt;
 
 pub mod traits;
-pub mod signal;
+//pub mod signal;
 pub mod widgets;
 pub mod types;
