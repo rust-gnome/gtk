@@ -69,12 +69,6 @@ pub use self::rt::{
 };
 
 
-/// GTK Widgets for all versions
-pub use self::widgets::{
-    Window,
-    Button,
-};
-
 /// GTK Enum types
 pub use ffi::enums::WindowType;
 pub use ffi::enums::TextDirection;
@@ -158,16 +152,21 @@ pub use ffi::enums::ToolPaletteDragTargets;
 pub use ffi::enums::DestDefaults;
 pub use ffi::enums::SizeGroupMode;
 
-/// GTK various struct
-pub use self::types::{
-    Tooltip,
-};
-
 mod macros;
 mod cast;
 mod rt;
 
-pub mod traits;
-//pub mod signal;
-pub mod widgets;
-pub mod types;
+mod types;
+
+pub mod prelude;
+
+pub mod object;
+pub mod widget;
+pub mod container;
+pub mod button;
+pub mod window;
+
+//pub mod traits;
+pub mod signal;
+//pub mod widgets;
+//pub mod types;

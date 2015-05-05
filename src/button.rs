@@ -1,0 +1,199 @@
+// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// See the COPYRIGHT file at the top-level directory of this distribution.
+// Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
+
+use glib::translate::*;
+use object::{GtkObject, Downcast, Upcast};
+use widget::Widget;
+
+use ffi;
+use {ReliefStyle, PositionType};
+
+pub type Button = GtkObject<ffi::C_GtkButton>;
+
+impl Button {
+    pub fn new() -> Button {
+        unsafe {
+            Widget::borrow_from_glib(ffi::gtk_button_new()).downcast_unchecked()
+        }
+    }
+
+    pub fn new_with_label(label: &str) -> Button {
+        unsafe {
+            Widget::borrow_from_glib(ffi::gtk_button_new_with_label(label.lend_to_glib().0))
+                .downcast_unchecked()
+        }
+    }
+
+    pub fn new_with_mnemonic(mnemonic: &str) -> Button {
+        unsafe {
+            Widget::borrow_from_glib(ffi::gtk_button_new_with_mnemonic(mnemonic.lend_to_glib().0))
+                .downcast_unchecked()
+        }
+    }
+
+    #[cfg(feature = "gtk_3_10")]
+    pub fn new_from_icon_name(icon_name: &str, size: IconSize) -> Button {
+        unsafe {
+            Widget::borrow_from_glib(
+                ffi::gtk_button_new_from_icon_name(icon_name.lend_to_glib().0, size))
+                .downcast_unchecked()
+        }
+    }
+
+    pub fn new_from_stock(stock_id: &str) -> Button {
+        unsafe {
+            Widget::borrow_from_glib(ffi::gtk_button_new_from_stock(stock_id.lend_to_glib().0))
+                .downcast_unchecked()
+        }
+    }
+}
+
+pub trait ButtonTrait {
+    fn pressed(&self);
+    fn released(&self);
+    fn clicked(&self);
+    fn enter(&self);
+    fn leave(&self);
+    fn set_relief(&self, new_style: ReliefStyle);
+    fn get_relief(&self) -> ReliefStyle;
+    fn get_label(&self) -> Option<String>;
+    fn set_label(&self, label: &str);
+    fn get_use_stock(&self) -> bool;
+    fn set_use_stock(&self, use_stock: bool);
+    fn get_use_underline(&self) -> bool;
+    fn set_use_underline(&self, use_underline: bool);
+    fn set_focus_on_click(&self, focus_on_click: bool);
+    fn get_focus_on_click(&self) -> bool;
+    fn set_alignment(&self, x_align: f32, y_align: f32);
+    fn get_alignment(&self) -> (f32, f32);
+    fn set_image<T: Upcast<Widget>>(&self, image: &T);
+    fn set_image_position(&self, position: PositionType);
+    fn get_image_position(&self) -> PositionType;
+    fn set_always_show_image(&self, always_show: bool);
+    fn get_always_show_image(&self) -> bool;
+}
+
+impl<W: Upcast<Button>> ButtonTrait for W {
+    fn pressed(&self) {
+        unsafe {
+            ffi::gtk_button_pressed(self.upcast().lend_to_glib().0);
+        }
+    }
+
+    fn released(&self) {
+        unsafe {
+            ffi::gtk_button_released(self.upcast().lend_to_glib().0);
+        }
+    }
+
+    fn clicked(&self) {
+        unsafe {
+            ffi::gtk_button_clicked(self.upcast().lend_to_glib().0);
+        }
+    }
+
+    fn enter(&self) {
+        unsafe {
+            ffi::gtk_button_enter(self.upcast().lend_to_glib().0);
+        }
+    }
+
+    fn leave(&self) {
+        unsafe {
+            ffi::gtk_button_leave(self.upcast().lend_to_glib().0);
+        }
+    }
+
+    fn set_relief(&self, new_style: ReliefStyle) {
+        unsafe {
+            ffi::gtk_button_set_relief(self.upcast().lend_to_glib().0, new_style);
+        }
+    }
+
+    fn get_relief(&self) -> ReliefStyle {
+        unsafe {
+            ffi::gtk_button_get_relief(self.upcast().lend_to_glib().0)
+        }
+    }
+
+    fn get_label(&self) -> Option<String> {
+        unsafe {
+            FromGlibPtr::borrow_from_glib(
+                ffi::gtk_button_get_label(self.upcast().lend_to_glib().0))
+        }
+    }
+
+    fn set_label(&self, label: &str) {
+        unsafe {
+            ffi::gtk_button_set_label(self.upcast().lend_to_glib().0, label.lend_to_glib().0)
+        }
+    }
+
+    fn get_use_stock(&self) -> bool {
+        unsafe { from_glib(ffi::gtk_button_get_use_stock(self.upcast().lend_to_glib().0)) }
+    }
+
+    fn set_use_stock(&self, use_stock: bool) {
+        unsafe { ffi::gtk_button_set_use_stock(self.upcast().lend_to_glib().0, use_stock.to_glib()); }
+    }
+
+    fn get_use_underline(&self) -> bool {
+        unsafe { from_glib(ffi::gtk_button_get_use_underline(self.upcast().lend_to_glib().0)) }
+    }
+
+    fn set_use_underline(&self, use_underline: bool) {
+        unsafe { ffi::gtk_button_set_use_underline(self.upcast().lend_to_glib().0, use_underline.to_glib()); }
+    }
+
+    fn set_focus_on_click(&self, focus_on_click: bool) {
+        unsafe { ffi::gtk_button_set_focus_on_click(self.upcast().lend_to_glib().0, focus_on_click.to_glib()); }
+    }
+
+    fn get_focus_on_click(&self) -> bool {
+        unsafe { from_glib(ffi::gtk_button_get_focus_on_click(self.upcast().lend_to_glib().0)) }
+    }
+
+    fn set_alignment(&self, x_align: f32, y_align: f32) {
+        unsafe {
+            ffi::gtk_button_set_alignment(self.upcast().lend_to_glib().0, x_align, y_align)
+        }
+    }
+
+    fn get_alignment(&self) -> (f32, f32) {
+        let mut x_align = 0.1;
+        let mut y_align = 0.1;
+        unsafe {
+            ffi::gtk_button_get_alignment(self.upcast().lend_to_glib().0, &mut x_align, &mut y_align);
+        }
+        (x_align, y_align)
+    }
+
+    fn set_image<T: Upcast<Widget>>(&self, image: &T) {
+        unsafe {
+            ffi::gtk_button_set_image(self.upcast().lend_to_glib().0, image.upcast().lend_to_glib().0);
+        }
+    }
+
+    fn set_image_position(&self, position: PositionType) {
+        unsafe {
+            ffi::gtk_button_set_image_position(self.upcast().lend_to_glib().0, position);
+        }
+    }
+
+    fn get_image_position(&self) -> PositionType {
+        unsafe {
+            ffi::gtk_button_get_image_position(self.upcast().lend_to_glib().0)
+        }
+    }
+
+    #[cfg(feature = "gtk_3_6")]
+    fn set_always_show_image(&self, always_show: bool) {
+        unsafe { ffi::gtk_button_set_always_show_image(self.upcast().lend_to_glib().0, always_show.to_glib()); }
+    }
+
+    #[cfg(feature = "gtk_3_6")]
+    fn get_always_show_image(&self) -> bool {
+        unsafe { from_glib(ffi::gtk_button_get_always_show_image(self.upcast().lend_to_glib().0)) }
+    }
+}

@@ -79,7 +79,7 @@ pub fn get_interface_age() -> u32 {
 
 pub fn check_version(required_major: u32, required_minor: u32, required_micro: u32) -> Option<String> {
     unsafe {
-        FromGlibPtr::borrow(
+        FromGlibPtr::borrow_from_glib(
             ffi::gtk_check_version(required_major as c_uint, required_minor as c_uint, required_micro as c_uint))
     }
  }
