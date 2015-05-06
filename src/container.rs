@@ -3,13 +3,13 @@
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
 use glib::translate::*;
-use object::{GtkObject, Upcast};
+use object::{Object, Upcast};
 use widget::Widget;
 use ffi;
 
 use ResizeMode;
 
-pub type Container = GtkObject<ffi::C_GtkContainer>;
+pub type Container = Object<ffi::C_GtkContainer>;
 
 pub trait ContainerTrait {
     fn add<T: Upcast<Widget>>(&self, widget: &T);

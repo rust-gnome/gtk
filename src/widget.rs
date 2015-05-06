@@ -9,9 +9,9 @@ use gdk_ffi;
 
 use glib::translate::*;
 use glib::type_::Type;
-use object::{GtkObject, Upcast};
+use object::{Object, Upcast};
 
-pub type Widget = GtkObject<ffi::C_GtkWidget>;
+pub type Widget = Object<ffi::C_GtkWidget>;
 
 pub trait WidgetTrait {
     fn show_all(&self);

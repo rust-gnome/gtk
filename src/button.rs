@@ -3,13 +3,13 @@
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
 use glib::translate::*;
-use object::{GtkObject, Downcast, Upcast};
+use object::{Object, Downcast, Upcast};
 use widget::Widget;
 
 use ffi;
 use {ReliefStyle, PositionType};
 
-pub type Button = GtkObject<ffi::C_GtkButton>;
+pub type Button = Object<ffi::C_GtkButton>;
 
 impl Button {
     pub fn new() -> Button {

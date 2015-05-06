@@ -3,13 +3,13 @@
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
 use glib::translate::*;
-use object::{GtkObject, Downcast, Upcast};
+use object::{Object, Downcast, Upcast};
 use widget::Widget;
 
 use ffi;
 use {WindowPosition, WindowType};
 
-pub type Window = GtkObject<ffi::C_GtkWindow>;
+pub type Window = Object<ffi::C_GtkWindow>;
 
 impl Window {
     pub fn new(window_type: WindowType) -> Window {

@@ -8,16 +8,21 @@ use glib::type_::StaticType;
 
 pub use glib::object::{Downcast, Upcast};
 
-#[derive(Clone)]
-pub struct GtkObject<T>(Ref, PhantomData<T>);
+pub struct Object<T>(Ref, PhantomData<T>);
 
-impl<T> Wrapper for GtkObject<T>
-where GtkObject<T>: StaticType {
+impl<T> Wrapper for Object<T>
+where Object<T>: StaticType {
     type GlibType = T;
     #[inline]
-    unsafe fn wrap(r: Ref) -> GtkObject<T> { GtkObject(r, PhantomData) }
+    unsafe fn wrap(r: Ref) -> Object<T> { Object(r, PhantomData) }
     #[inline]
     fn as_ref(&self) -> &Ref { &self.0 }
     #[inline]
     fn unwrap(self) -> Ref { self.0 }
+}
+
+impl<T> Clone for Object<T> {
+    fn clone(&self) -> Object<T> {
+        Object(self.0.clone(), PhantomData)
+    }
 }

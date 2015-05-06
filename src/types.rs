@@ -1,13 +1,13 @@
-use glib::object::{Object, Upcast, VirtualRef, Wrapper};
+use glib::object::{Upcast, VirtualRef, Wrapper};
 use glib::translate::from_glib;
 use glib::type_::{StaticType, Type};
-use object::GtkObject;
+use object::Object;
 use ffi;
 use glib_ffi;
 
 macro_rules! gtype {
     ($ty:ident, $func:ident) => (
-        impl StaticType for GtkObject<ffi::$ty> {
+        impl StaticType for Object<ffi::$ty> {
             fn static_type() -> Type { unsafe { from_glib(ffi::$func()) } }
         }
     )
@@ -24,7 +24,7 @@ gtype!(C_GtkWindow, gtk_window_get_type);
 
 macro_rules! hier {
     ($sub:ident, $sup:ident) => (
-        unsafe impl Upcast<GtkObject<ffi::$sup>> for GtkObject<ffi::$sub> {
+        unsafe impl Upcast<Object<ffi::$sup>> for Object<ffi::$sub> {
             fn virt(&self) -> VirtualRef<ffi::$sup> { VirtualRef::new(self.as_ref()) }
         }
     );
@@ -36,7 +36,7 @@ macro_rules! hier {
     )
 }
 
-unsafe impl<T> Upcast<Object> for GtkObject<T> where GtkObject<T>: StaticType {
+unsafe impl<T> Upcast<::glib::object::Object> for Object<T> where Object<T>: StaticType {
     fn virt(&self) -> VirtualRef<glib_ffi::C_GObject> { VirtualRef::new(&self.as_ref()) }
 }
 
