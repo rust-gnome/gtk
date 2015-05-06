@@ -24,44 +24,44 @@ pub trait ContainerTrait {
 impl<W: Upcast<Container>> ContainerTrait for W {
     fn add<T: Upcast<Widget>>(&self, widget: &T) {
         unsafe {
-            ffi::gtk_container_add(self.upcast().lend_to_glib().0, widget.upcast().lend_to_glib().0);
+            ffi::gtk_container_add(self.upcast().to_glib_none().0, widget.upcast().to_glib_none().0);
         }
     }
 
     fn remove<T: Upcast<Widget>>(&self, widget: &T) {
         unsafe {
-            ffi::gtk_container_remove(self.upcast().lend_to_glib().0, widget.upcast().lend_to_glib().0);
+            ffi::gtk_container_remove(self.upcast().to_glib_none().0, widget.upcast().to_glib_none().0);
         }
     }
 
     fn get_resize_mode(&self) -> ResizeMode {
         unsafe {
-            ffi::gtk_container_get_resize_mode(self.upcast().lend_to_glib().0)
+            ffi::gtk_container_get_resize_mode(self.upcast().to_glib_none().0)
         }
     }
 
     fn set_resize_mode(&self, resize_mode: ResizeMode) {
         unsafe {
-            ffi::gtk_container_set_resize_mode(self.upcast().lend_to_glib().0, resize_mode);
+            ffi::gtk_container_set_resize_mode(self.upcast().to_glib_none().0, resize_mode);
         }
     }
 
     fn get_border_width(&self) -> u32 {
         unsafe {
-            ffi::gtk_container_get_border_width(self.upcast().lend_to_glib().0) as u32
+            ffi::gtk_container_get_border_width(self.upcast().to_glib_none().0) as u32
         }
     }
 
     fn set_border_width(&self, border_width: u32) {
         unsafe {
-            ffi::gtk_container_set_border_width(self.upcast().lend_to_glib().0, border_width);
+            ffi::gtk_container_set_border_width(self.upcast().to_glib_none().0, border_width);
         }
     }
 
     fn get_children(&self) -> Vec<Widget> {
         unsafe {
-            Vec::take_outer_from_glib(
-                ffi::gtk_container_get_children(self.upcast().lend_to_glib().0))
+            Vec::from_glib_container(
+                ffi::gtk_container_get_children(self.upcast().to_glib_none().0))
         }
     }
 }
