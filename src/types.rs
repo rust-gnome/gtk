@@ -1,9 +1,7 @@
-use glib::object::{Upcast, VirtualRef, Wrapper};
 use glib::translate::from_glib;
 use glib::type_::{StaticType, Type};
-use object::Object;
+use object::{Object, Upcast};
 use ffi;
-use glib_ffi;
 
 macro_rules! gtype {
     ($ty:ident, $func:ident) => (
@@ -24,9 +22,7 @@ gtype!(C_GtkWindow, gtk_window_get_type);
 
 macro_rules! hier {
     ($sub:ident, $sup:ident) => (
-        unsafe impl Upcast<Object<ffi::$sup>> for Object<ffi::$sub> {
-            fn virt(&self) -> VirtualRef<ffi::$sup> { VirtualRef::new(self.as_ref()) }
-        }
+        unsafe impl Upcast<Object<ffi::$sup>> for Object<ffi::$sub> { }
     );
     ($sub:ident, $sup:ident, $($supsup:ident),+) => (
         hier!($sub, $sup);
@@ -36,9 +32,7 @@ macro_rules! hier {
     )
 }
 
-unsafe impl<T> Upcast<::glib::object::Object> for Object<T> where Object<T>: StaticType {
-    fn virt(&self) -> VirtualRef<glib_ffi::C_GObject> { VirtualRef::new(&self.as_ref()) }
-}
+unsafe impl<T> Upcast<::glib::object::Object> for Object<T> where Object<T>: StaticType { }
 
 hier!(C_GtkContainer, C_GtkWidget);
 hier!(C_GtkWindow, C_GtkContainer, C_GtkWidget);
