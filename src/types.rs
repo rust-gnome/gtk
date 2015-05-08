@@ -1,32 +1,39 @@
-pub struct Tooltip;
-/*{
-  GObject parent_instance;
+use glib::translate::from_glib;
+use glib::type_::{StaticType, Type};
+use object::{Object, Upcast};
+use ffi;
 
-  Widget *window;
-  Widget *box;
-  Widget *image;
-  Widget *label;
-  Widget *custom_widget;
+macro_rules! gtype {
+    ($ty:ident, $func:ident) => (
+        impl StaticType for Object<ffi::$ty> {
+            fn static_type() -> Type { unsafe { from_glib(ffi::$func()) } }
+        }
+    )
+}
 
-  Window *current_window;
-  Widget *keyboard_widget;
+gtype!(C_GtkWidget, gtk_widget_get_type);
+gtype!(C_GtkContainer, gtk_container_get_type);
+//gtype!(C_GtkBin, gtk_bin_get_type);
+//gtype!(C_GtkBox, gtk_box_get_type);
+gtype!(C_GtkButton, gtk_button_get_type);
+//gtype!(C_GtkToggleButton, gtk_toggle_button_get_type);
+//gtype!(C_GtkCheckButton, gtk_check_button_get_type);
+gtype!(C_GtkWindow, gtk_window_get_type);
 
-  Widget *tooltip_widget;
-  GdkWindow *toplevel_window;
+macro_rules! hier {
+    ($sub:ident, $sup:ident) => (
+        unsafe impl Upcast<Object<ffi::$sup>> for Object<ffi::$sub> { }
+    );
+    ($sub:ident, $sup:ident, $($supsup:ident),+) => (
+        hier!($sub, $sup);
+        $(
+            hier!($sub, $supsup);
+        )+
+    )
+}
 
-  gdouble last_x;
-  gdouble last_y;
-  GdkWindow *last_window;
+unsafe impl<T> Upcast<::glib::object::Object> for Object<T> where Object<T>: StaticType { }
 
-  guint timeout_id;
-  guint browse_mode_timeout_id;
-
-  GdkRectangle tip_area;
-
-  guint browse_mode_enabled : 1;
-  guint keyboard_mode_enabled : 1;
-  guint tip_area_set : 1;
-  guint custom_was_reset : 1;
-};*/
-
-// pub struct WidgetHelpType;
+hier!(C_GtkContainer, C_GtkWidget);
+hier!(C_GtkWindow, C_GtkContainer, C_GtkWidget);
+hier!(C_GtkButton, C_GtkContainer, C_GtkWidget);

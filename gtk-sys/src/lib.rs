@@ -343,7 +343,7 @@ extern "C" {
     pub fn gtk_window_new                      (wtype : enums::WindowType) -> *mut C_GtkWidget;
     pub fn gtk_window_set_title                (window: *mut C_GtkWindow, title: *const c_char) -> ();
     pub fn gtk_window_get_title                (window: *mut C_GtkWindow) -> *const c_char;
-    pub fn gtk_window_set_default_size         (widget: *mut C_GtkWidget, width: c_int, height: c_int);
+    pub fn gtk_window_set_default_size         (widget: *mut C_GtkWindow, width: c_int, height: c_int);
     pub fn gtk_window_set_position             (window: *mut C_GtkWindow, position: enums::WindowPosition) -> ();
     pub fn gtk_window_set_decorated            (window: *mut C_GtkWindow, setting: Gboolean) -> ();
     pub fn gtk_window_set_titlebar             (window: *mut C_GtkWindow, titlebar: *mut C_GtkWidget) -> ();
@@ -360,6 +360,7 @@ extern "C" {
     // pub fn gtk_window_get_default_widget(window: *const const C_GtkWindow) -> *const const C_GtkWidget;
     // pub fn gtk_window_activate_default(window: *const const C_GtkWindow) -> Gboolean;
     // pub fn gtk_window_get_type() -> ();
+    pub fn gtk_window_get_type                 () -> GType;
 
     //=========================================================================
     // GType
@@ -599,6 +600,7 @@ extern "C" {
     pub fn gtk_widget_destroy                  (widget: *mut C_GtkWidget);
     pub fn gtk_widget_in_destruction           (widget: *mut C_GtkWidget) -> Gboolean;
     pub fn gtk_widget_unparent                 (widget: *mut C_GtkWidget) -> ();
+    pub fn gtk_widget_get_type                 () -> GType;
 
     //----------
     //- MACROS -
@@ -709,6 +711,8 @@ extern "C" {
     pub fn gtk_container_check_resize          (container: *mut C_GtkContainer) -> ();
     pub fn gtk_container_get_border_width      (container: *mut C_GtkContainer) -> c_uint;
     pub fn gtk_container_set_border_width      (container: *mut C_GtkContainer, border_width: c_uint) -> ();
+    pub fn gtk_container_get_type              () -> GType;
+    pub fn gtk_container_get_children          (container: *mut C_GtkContainer) -> *mut C_GList;
 
     //=========================================================================
     // GtkMisc                                                               OK
@@ -995,6 +999,7 @@ extern "C" {
     pub fn gtk_button_set_always_show_image    (button: *mut C_GtkButton, always_show: Gboolean) -> ();
     pub fn gtk_button_get_always_show_image    (button: *mut C_GtkButton) -> Gboolean;
     // pub fn gtk_button_get_event_window         (button: *const const C_GtkButton) -> *const const C_GdkWindow;
+    pub fn gtk_button_get_type                 () -> GType;
 
     //=========================================================================
     // GtkFileChooser                                                    NOT OK
