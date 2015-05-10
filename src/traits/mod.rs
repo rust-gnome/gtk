@@ -14,6 +14,8 @@ pub use self::misc::MiscTrait;
 pub use self::button::ButtonTrait;
 pub use self::label::LabelTrait;
 pub use self::_box::BoxTrait;
+pub use self::flow_box::FlowBoxTrait;
+pub use self::flow_box::FlowBoxChildTrait;
 pub use self::orientable::OrientableTrait;
 pub use self::frame::FrameTrait;
 pub use self::toggle_button::ToggleButtonTrait;
@@ -50,6 +52,7 @@ pub use signal::{
     WidgetSignals,
     ButtonSignals,
     ToolButtonSignals,
+    FlowBoxSignals,
 };
 
 pub mod widget;
@@ -59,6 +62,7 @@ pub mod misc;
 pub mod button;
 pub mod label;
 pub mod _box;
+pub mod flow_box;
 pub mod orientable;
 pub mod frame;
 pub mod toggle_button;

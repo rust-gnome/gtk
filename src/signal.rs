@@ -20,7 +20,7 @@ use cairo::Context;
 use {
     Adjustment, Button, Dialog, DirectionType, Range, ScrollType, SpinButton, StateFlags,
     TextDirection, ToolButton, Tooltip, TreeIter, TreePath, TreeSelection, TreeView,
-    TreeViewColumn, Widget, WidgetHelpType,
+    TreeViewColumn, Widget, WidgetHelpType, FlowBox,
 };
 
 /// Whether to propagate the signal to other handlers
@@ -665,6 +665,42 @@ mod widget {
         f(FFIWidget::wrap_widget(this), previous);
     }
 
+}
+
+pub trait FlowBoxSignals {
+  fn connect_select_all<F: Fn(FlowBox) + 'static>(&self, f: F) ->u64;
+  fn connect_unselect_all<F: Fn(FlowBox) + 'static>(&self, f: F) ->u64;
+}
+
+mod flow_box {
+    use super::into_raw;
+    use std::mem::transmute;
+    use glib::signal::connect;
+    use traits::{FFIWidget, FlowBoxTrait};
+    use ffi::C_GtkFlowBox;
+    use FlowBox;
+
+    impl<T: FFIWidget + FlowBoxTrait> super::FlowBoxSignals for T {
+        fn connect_select_all<F: Fn(FlowBox) + 'static>(&self, f: F) -> u64 {
+            unsafe {
+                let f: Box<Box<Fn(FlowBox) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "select-all",
+                    transmute(void_trampoline), into_raw(f) as *mut _)
+            }
+        }
+
+        fn connect_unselect_all<F: Fn(FlowBox) + 'static>(&self, f: F) -> u64 {
+            unsafe {
+                let f: Box<Box<Fn(FlowBox) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "unselect-all",
+                    transmute(void_trampoline), into_raw(f) as *mut _)
+            }
+        }
+    }
+
+    extern "C" fn void_trampoline(this: *mut C_GtkFlowBox, f: &Box<Fn(FlowBox) + 'static>) {
+        f(FFIWidget::wrap_widget(this as *mut _));
+    }
 }
 
 pub trait ButtonSignals {
