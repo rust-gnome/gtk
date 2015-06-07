@@ -1336,3 +1336,30 @@ extern "C" fn tree_view_column_trampoline(this: *mut GtkTreeViewColumn,
         f: &Box<Fn(TreeViewColumn) + 'static>) {
     f(TreeViewColumn::wrap_pointer(this))
 }
+
+/*pub trait TreeSortableSignals {
+    fn connect_column_changed<F: Fn(TreeSortable) + 'static>(&self, f: F);
+}
+
+mod tree_sortable {
+    use super::into_raw;
+    use std::mem::transmute;
+    use glib::signal::connect;
+    use traits::{FFIWidget, TreeSortableTrait};
+    use ffi::GtkTreeSortable;
+    use TreeSortable;
+
+    impl<T: FFIWidget + TreeSortableSignals> super::TreeSortableSignals for T {
+        fn connect_column_changed<F: Fn(TreeSortable) + 'static>(&self, f: F) {
+            unsafe {
+                let f: Box<Box<Fn(TreeSortable) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "column_changed",
+                    transmute(void_trampoline), into_raw(f) as *mut _)
+            }
+        }
+    }
+
+    extern "C" fn void_trampoline(this: *mut GtkTreeSortable, f: &Box<Fn(TreeSortable) + 'static>) {
+        f(FFIWidget::wrap_widget(this as *mut _));
+    }
+}*/

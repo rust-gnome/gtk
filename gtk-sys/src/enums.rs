@@ -109,7 +109,7 @@ pub enum CornerType {
 /// Availables resize modes
 #[repr(C)]
 #[derive(Clone, PartialEq, PartialOrd, Debug, Copy)]
-pub enum ResizeMode{
+pub enum ResizeMode {
     /// Pass resize request to the parent
     Parent,
     /// Queue resizes on this widget
@@ -121,7 +121,7 @@ pub enum ResizeMode{
 /// Describes how the border of a UI element should be rendered.
 #[repr(C)]
 #[derive(Clone, PartialEq, PartialOrd, Debug, Copy)]
-pub enum BorderStyle{
+pub enum BorderStyle {
     /// No visible border
     None,
     /// A single line segment
@@ -147,7 +147,7 @@ pub enum BorderStyle{
 /// Determines the direction of a sort.
 #[repr(C)]
 #[derive(Clone, PartialEq, PartialOrd, Debug, Copy)]
-pub enum SortType{
+pub enum SortType {
     /// Sorting is in ascending order
     Ascending,
     /// Sorting is in descending order.

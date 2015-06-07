@@ -73,17 +73,14 @@ pub fn GTK_BOX(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkBox {
 
 pub fn GTK_FIXED(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkFixed {
     unsafe { ffi::cast_GtkFixed(widget) }
-
 }
 
 pub fn GTK_BUTTONBOX(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkButtonBox {
     unsafe { ffi::cast_GtkButtonBox(widget) }
-
 }
 
 pub fn GTK_ASPECTFRAME(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkAspectFrame {
     unsafe { ffi::cast_GtkAspectFrame(widget) }
-
 }
 
 pub fn GTK_FONTBUTTON(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkFontButton {
@@ -537,4 +534,8 @@ pub fn GTK_SOCKET(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkSocket {
 
 pub fn GTK_EVENT_BOX(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkEventBox {
     unsafe { ffi::cast_GtkEventBox(widget) }
+}
+
+pub fn GTK_TREE_SORTABLE(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkTreeSortable {
+    unsafe { ffi::cast_GtkTreeSortable(widget) }
 }

@@ -214,7 +214,7 @@ GtkIconView* cast_GtkIconView(GtkWidget* widget) {
     return GTK_ICON_VIEW(widget);
 }
 
-GtkTreeSortable* cast_GtkTreeSortable(GtkTreeModel* tree_model) {
+GtkTreeSortable* cast_GtkTreeSortable(void* tree_model) {
     return GTK_TREE_SORTABLE(tree_model);
 }
 

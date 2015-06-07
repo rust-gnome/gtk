@@ -333,6 +333,8 @@ pub struct GtkSocket;
 pub struct GtkEventBox;
 #[repr(C)]
 pub struct GtkTooltip;
+#[repr(C)]
+pub struct GtkTreeSortable;
 
 //pub type GtkTreeModelForeachFunc = fn(model: *mut GtkTreeModel, path: *mut GtkTreePath, iter: *mut GtkTreeIter, data: gpointer) -> gboolean;
 
@@ -3263,6 +3265,20 @@ extern "C" {
     //let GtkBuilderConnectFunc = fn(builder: *mut GtkBuilder, object: *mut GObject, signal_name: *const c_char, handler_name: *const c_char,
         //connect_object: *mut GObject, flags: enums::GConnectFlags, user_data: *mut c_void);
 
+    //=========================================================================
+    // GtkTreeSortable                                                   NOT OK
+    //=========================================================================
+    //pub fn gtk_tree_sortable_sort_column_changed      (sortable: *mut GtkTreeSortable);
+    pub fn gtk_tree_sortable_get_sort_column_id       (sortable: *mut GtkTreeSortable, sort_column_id: *mut c_int,
+        order: *mut enums::SortType) -> gboolean;
+    pub fn gtk_tree_sortable_set_sort_column_id       (sortable: *mut GtkTreeSortable, sort_column_id: c_int,
+        order: enums::SortType);
+    pub fn gtk_tree_sortable_set_sort_func            (sortable: *mut GtkTreeSortable, sort_column_id: c_int,
+        sort_func: *mut c_void, user_data: *mut c_void, destroy: *mut c_void);
+    pub fn gtk_tree_sortable_set_default_sort_func    (sortable: *mut GtkTreeSortable, sort_column_id: c_int,
+        sort_func: *mut c_void, user_data: *mut c_void, destroy: *mut c_void);
+    pub fn gtk_tree_sortable_has_default_sort_func    (sortable: *mut GtkTreeSortable) -> gboolean;
+
 
     //=========================================================================
     // GTK Casts functions
@@ -3397,4 +3413,5 @@ extern "C" {
     pub fn cast_GtkSocket(widget: *mut GtkWidget) -> *mut GtkSocket;
     pub fn cast_GtkEventBox(widget: *mut GtkWidget) -> *mut GtkEventBox;
     pub fn cast_GtkStyleProvider(widget: *mut GObject) -> *mut GtkStyleProvider;
+    pub fn cast_GtkTreeSortable(widget: *mut GtkWidget) -> *mut GtkTreeSortable;
 }

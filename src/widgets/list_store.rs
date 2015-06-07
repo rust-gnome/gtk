@@ -115,4 +115,6 @@ impl ListStore {
     }
 }
 
+impl TreeSortableTrait for ListStore {}
+
 impl_drop!(ListStore, GTK_LIST_STORE);

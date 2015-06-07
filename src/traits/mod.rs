@@ -46,6 +46,7 @@ pub use self::actionable::ActionableTrait;
 pub use self::cell_layout::CellLayoutTrait;
 pub use self::combo_box::ComboBoxTrait;
 pub use self::gobject::GObjectTrait;
+pub use self::tree_sortable::TreeSortableTrait;
 
 pub use signal::{
     WidgetSignals,
@@ -92,3 +93,4 @@ pub mod actionable;
 pub mod cell_layout;
 pub mod combo_box;
 pub mod gobject;
+pub mod tree_sortable;

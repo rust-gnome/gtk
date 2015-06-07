@@ -140,4 +140,6 @@ impl TreeStore {
     }
 }
 
-impl_drop!(TreeStore, GTK_TREE_STORE);
+impl TreeSortableTrait for TreeModel {}
+
+impl_drop!(TreeModel, GTK_TREE_STORE);

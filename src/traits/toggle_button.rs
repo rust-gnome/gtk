@@ -37,4 +37,3 @@ pub trait ToggleButtonTrait: ::WidgetTrait + ::ContainerTrait + ::ButtonTrait {
         unsafe { to_bool(ffi::gtk_toggle_button_get_inconsistent(GTK_TOGGLEBUTTON(self.unwrap_widget()))) }
     }
 }
-
