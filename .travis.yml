@@ -12,6 +12,8 @@ script:
   - rustc --version
   - mkdir .cargo
   - echo 'paths = ["."]' > .cargo/config
-  - git clone -q --depth 50 -b pending https://github.com/rust-gnome/examples _examples
+  - git clone -q --depth 50 -b crate https://github.com/rust-gnome/examples _examples
   - cd _examples
+  - ./git_deps.sh cairo glib gdk pango sys
+  - rm -rf git/sys/gtk-sys
   - cargo build
