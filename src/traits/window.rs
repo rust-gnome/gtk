@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -41,7 +41,7 @@ pub trait WindowTrait : ::WidgetTrait {
 
     fn set_default_size(&self, width: i32, height: i32){
         unsafe {
-            ffi::gtk_window_set_default_size(self.unwrap_widget(), width, height)
+            ffi::gtk_window_set_default_size(GTK_WINDOW(self.unwrap_widget()), width, height)
         }
     }
 
@@ -51,7 +51,7 @@ pub trait WindowTrait : ::WidgetTrait {
         }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
     fn set_titlebar<T: ::WidgetTrait>(&self, titlebar: &T) {
         unsafe {
             ffi::gtk_window_set_titlebar(GTK_WINDOW(self.unwrap_widget()), titlebar.unwrap_widget());

@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -122,12 +122,12 @@ pub trait ButtonTrait: ::WidgetTrait + ::ContainerTrait {
         }
     }
 
-    #[cfg(feature = "gtk_3_6")]
+    #[cfg(gtk_3_6)]
     fn set_always_show_image(&self, always_show: bool) -> () {
         unsafe { ffi::gtk_button_set_always_show_image(GTK_BUTTON(self.unwrap_widget()), to_gboolean(always_show)); }
     }
 
-    #[cfg(feature = "gtk_3_6")]
+    #[cfg(gtk_3_6)]
     fn get_always_show_image(&self) -> bool {
         unsafe { to_bool(ffi::gtk_button_get_always_show_image(GTK_BUTTON(self.unwrap_widget()))) }
     }

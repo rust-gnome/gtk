@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -18,11 +18,11 @@ impl ToolPalette {
         check_pointer!(tmp_pointer, ToolPalette)
     }
 
-    pub fn get_icon_size(&self) -> ::IconSize {
+    pub fn get_icon_size(&self) -> i32 {
         unsafe { ffi::gtk_tool_palette_get_icon_size(GTK_TOOL_PALETTE(self.unwrap_widget())) }
     }
 
-    pub fn set_icon_size(&self, icon_size: ::IconSize) {
+    pub fn set_icon_size(&self, icon_size: i32) {
         unsafe { ffi::gtk_tool_palette_set_icon_size(GTK_TOOL_PALETTE(self.unwrap_widget()), icon_size) }
     }
 

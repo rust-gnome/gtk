@@ -1,13 +1,14 @@
 [package]
 name = "gtk"
 version = "0.0.3"
-authors = ["The Rust-GNOME Project Developers"]
+authors = ["The Gtk-rs Project Developers"]
+build = "build.rs"
 
 description = "Rust bindings for the GTK+ library"
-repository = "https://github.com/rust-gnome/gtk"
+repository = "https://github.com/gtk-rs/gtk"
 license = "MIT"
-homepage = "https://github.com/rust-gnome/gtk"
-documentation = "https://github.com/rust-gnome/gtk"
+homepage = "https://github.com/gtk-rs/gtk"
+documentation = "https://github.com/gtk-rs/gtk"
 
 readme = "README.md"
 
@@ -16,23 +17,19 @@ keywords = ["gtk", "gnome", "GUI"]
 [lib]
 name = "gtk"
 
-[features]
-default = ["gtk_3_6"]
-gtk_3_4 = ["gtk-sys/gtk_3_4", "gdk/gdk_3_4"]
-gtk_3_6 = ["gtk-sys/gtk_3_6", "gdk/gdk_3_6", "gtk_3_4"]
-gtk_3_8 = ["gtk-sys/gtk_3_8", "gdk/gdk_3_8", "gtk_3_6"]
-gtk_3_10 = ["gtk-sys/gtk_3_10", "gdk/gdk_3_10", "cairo-rs/cairo_1_12", "gtk_3_8"]
-gtk_3_12 = ["gtk-sys/gtk_3_12", "gdk/gdk_3_12", "gtk_3_10"]
-gtk_3_14 = ["gtk-sys/gtk_3_14", "gdk/gdk_3_14", "gtk_3_12"]
+[dependencies.gtk-sys]
+path = "gtk-sys"
 
 [dependencies]
+cairo-rs = "0.0.5"
+cairo-sys-rs = "0.2.0"
+gdk-pixbuf-sys = "0.2.0"
+gdk = "0.1.2"
+gdk-sys = "0.2.0"
+gio-sys = "0.2.0"
+glib = "0.0.4"
+glib-sys = "0.2.0"
+gobject-sys = "0.2.0"
 libc = "0.1"
-gtk-sys = "^0"
-glib = "^0"
-glib-sys = "^0"
-gdk-sys = "^0"
-gdk = "^0"
-pango-sys = "^0"
-pango = "^0"
-cairo-sys-rs = "^0"
-cairo-rs = "^0"
+pango = "0.0.4"
+pango-sys = "0.2.0"

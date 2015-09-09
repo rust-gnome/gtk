@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -6,8 +6,6 @@
 
 use ffi;
 use glib::translate::ToGlibPtr;
-#[cfg(feature = "gtk_3_10")]
-use IconSize;
 
 /**
 * Button — A widget that emits a signal when clicked on
@@ -43,8 +41,8 @@ impl Button {
         check_pointer!(tmp_pointer, Button)
     }
 
-    #[cfg(feature = "gtk_3_10")]
-    pub fn new_from_icon_name(icon_name: &str, size: IconSize) -> Option<Button> {
+    #[cfg(gtk_3_10)]
+    pub fn new_from_icon_name(icon_name: &str, size: i32) -> Option<Button> {
         let tmp_pointer = unsafe {
             ffi::gtk_button_new_from_icon_name(icon_name.to_glib_none().0, size)
         };

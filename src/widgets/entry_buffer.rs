@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -79,22 +79,9 @@ impl EntryBuffer {
         }
     }
 
-    pub fn delete_text(&self, position: u32, n_chars: u32) -> u32 {
+    pub fn delete_text(&self, position: u32, n_chars: i32) -> u32 {
         unsafe {
-            ffi::gtk_entry_buffer_delete_text(self.pointer, position as c_uint, n_chars as c_uint) as u32
-        }
-    }
-
-    pub fn emit_deleted_test(&self, position: u32, n_chars: u32) -> () {
-        unsafe {
-            ffi::gtk_entry_buffer_emit_deleted_text(self.pointer, position as c_uint, n_chars as c_uint)
-        }
-    }
-
-    pub fn emit_inserted_text(&self, position: u32, text: &str) -> () {
-        unsafe {
-            ffi::gtk_entry_buffer_emit_inserted_text(self.pointer, position as c_uint,
-                                                     text.to_glib_none().0, -1);
+            ffi::gtk_entry_buffer_delete_text(self.pointer, position, n_chars) as u32
         }
     }
 

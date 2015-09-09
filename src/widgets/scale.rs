@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -75,11 +75,11 @@ impl Scale {
     }
 
     pub fn get_layout_offsets(&self) -> (i32, i32) {
-        let x = 0;
-        let y = 0;
+        let mut x = 0;
+        let mut y = 0;
 
         unsafe {
-            ffi::gtk_scale_get_layout_offsets(GTK_SCALE(self.pointer), &x, &y);
+            ffi::gtk_scale_get_layout_offsets(GTK_SCALE(self.pointer), &mut x, &mut y);
         }
         (x, y)
     }

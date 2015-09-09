@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -69,7 +69,8 @@ impl Paned {
 
     pub fn get_handle_window(&self) -> ::Window {
         unsafe {
-            ::FFIWidget::wrap_widget(ffi::gtk_paned_get_handle_window(GTK_PANED(self.pointer)))
+            ::FFIWidget::wrap_widget(
+                ffi::gtk_paned_get_handle_window(GTK_PANED(self.pointer)) as *mut _)
         }
     }
 }

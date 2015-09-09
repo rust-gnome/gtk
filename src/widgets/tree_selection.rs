@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -99,19 +99,19 @@ impl TreeSelection {
         if pointer.is_null() {
             None
         } else {
-            unsafe { ::glib_ffi::g_object_ref(pointer as *mut _); }
+            unsafe { ::gobject_ffi::g_object_ref(pointer as *mut _); }
             Some(TreeSelection { pointer: pointer })
         }
     }
 }
 
 impl glib::traits::FFIGObject for TreeSelection {
-    fn unwrap_gobject(&self) -> *mut glib::ffi::GObject {
+    fn unwrap_gobject(&self) -> *mut ::gobject_ffi::GObject {
         ::cast::G_OBJECT_FROM_TREE_SELECTION(self.pointer)
     }
 
-    fn wrap_object(object: *mut glib::ffi::GObject) -> TreeSelection {
-        unsafe { ::glib_ffi::g_object_ref(object as *mut _); }
+    fn wrap_object(object: *mut ::gobject_ffi::GObject) -> TreeSelection {
+        unsafe { ::gobject_ffi::g_object_ref(object as *mut _); }
         TreeSelection { pointer: object as *mut ffi::GtkTreeSelection }
     }
 }

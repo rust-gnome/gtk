@@ -1,10 +1,10 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
 //! Report important messages to the user
 
-#![cfg_attr(not(feature = "gtk_3_10"), allow(unused_imports))]
+#![cfg_attr(not(gtk_3_10), allow(unused_imports))]
 
 use libc::c_int;
 use glib::translate::ToGlibPtr;
@@ -64,12 +64,12 @@ impl InfoBar {
         }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
     pub fn show_close_button(&self, show: bool) -> () {
          unsafe { ffi::gtk_info_bar_set_show_close_button(GTK_INFOBAR(self.pointer), to_gboolean(show)); }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
     pub fn get_show_close_button(&self) -> bool {
         unsafe { to_bool(ffi::gtk_info_bar_get_show_close_button(GTK_INFOBAR(self.pointer))) }
     }

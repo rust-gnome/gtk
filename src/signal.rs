@@ -1,4 +1,4 @@
-// Copyright 2015, The Rust-GNOME Project Developers.
+// Copyright 2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -9,7 +9,8 @@ use glib::signal::connect;
 use glib::translate::*;
 use glib::{FFIGObject, ParamSpec};
 
-use ffi::{gboolean, GtkAdjustment, GtkTreeSelection, GtkTreeViewColumn};
+use glib_ffi::gboolean;
+use ffi::{GtkAdjustment, GtkTreeSelection, GtkTreeViewColumn};
 use gdk::{
     EventAny,
     EventButton,
@@ -138,7 +139,8 @@ mod widget {
     use cairo::{Context, RectangleInt};
     use traits::{FFIWidget, WidgetTrait};
     use gdk_ffi::GdkScreen;
-    use ffi::{gboolean, GtkWidget, GtkTooltip};
+    use glib_ffi::gboolean;
+    use ffi::{GtkWidget, GtkTooltip};
     use {Widget, DirectionType, StateFlags, TextDirection, Tooltip, WidgetHelpType};
     use super::Inhibit;
 
@@ -571,7 +573,7 @@ mod widget {
 
     extern "C" fn draw_trampoline(this: *mut GtkWidget, cr: *mut cairo_t,
             f: &Box<Fn(Widget, Context) -> Inhibit + 'static>) -> gboolean {
-        f(FFIWidget::wrap_widget(this), Context::wrap(cr)).to_glib()
+        unsafe { f(FFIWidget::wrap_widget(this), from_glib_none(cr)).to_glib() }
     }
 
     extern "C" fn event_any_trampoline(this: *mut GtkWidget, event: *mut EventAny,
@@ -874,7 +876,8 @@ mod combobox {
     use std::mem::transmute;
     use glib::signal::connect;
     use glib::translate::*;
-    use ffi::{GtkComboBox, gboolean};
+    use glib_ffi::gboolean;
+    use ffi::GtkComboBox;
     use traits::{FFIWidget, ComboBoxTrait};
     use {ComboBox, ScrollType};
 
@@ -1058,7 +1061,8 @@ mod tree_view {
     use glib::signal::connect;
     use glib::translate::*;
     use traits::FFIWidget;
-    use ffi::{gboolean, GtkTreeIter, GtkTreePath, GtkTreeView, GtkTreeViewColumn};
+    use glib_ffi::gboolean;
+    use ffi::{GtkTreeIter, GtkTreePath, GtkTreeView, GtkTreeViewColumn};
     use {TreeIter, TreePath, TreeView, TreeViewColumn};
 
     impl super::TreeViewSignals for TreeView {
@@ -1234,7 +1238,8 @@ mod range {
     use glib::signal::connect;
     use glib::translate::*;
     use traits::{FFIWidget, RangeTrait};
-    use ffi::{gboolean, GtkRange};
+    use glib_ffi::gboolean;
+    use ffi::{GtkRange};
     use {Range, ScrollType};
     use super::Inhibit;
 

@@ -1,4 +1,4 @@
-# gtk [![Build Status](https://travis-ci.org/rust-gnome/gtk.png?branch=master)](https://travis-ci.org/rust-gnome/gtk) [![Build status](https://ci.appveyor.com/api/projects/status/e3t5yubl172pomlb?svg=true)](https://ci.appveyor.com/project/GuillaumeGomez/gtk-isosc) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rust-gnome/gtk)
+# gtk [![Build Status](https://travis-ci.org/gtk-rs/gtk.png?branch=master)](https://travis-ci.org/gtk-rs/gtk) [![Build status](https://ci.appveyor.com/api/projects/status/e3t5yubl172pomlb?svg=true)](https://ci.appveyor.com/project/GuillaumeGomez/gtk-isosc) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/gtk-rs/gtk)
 
 __Rust__ bindings and wrappers for __GLib__, __GDK 3__, __GTK+ 3__  and __Cairo__.
 
@@ -24,10 +24,8 @@ __gtk__ expects __GTK+__, __GLib__ and __Cairo__ development files to be install
 
 ### OS X
 
-Install [XQuartz](http://xquartz.macosforge.org/landing/), then:
 ```Shell
-> brew install gtk+3 --without-x11
-> export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+> brew install gtk+3
 ```
 
 ### Windows
@@ -58,7 +56,7 @@ Currently supported versions are __GTK+__ 3.4 to 3.14 and __Cairo__ 1.10 to 1.12
 
 We are currently targetting rust master compiler to build __gtk__, make sure you have the latest version before submitting any bugs.
 
-Examples are providing in the [rust-gnome/examples](https://github.com/rust-gnome/examples) repository, you can find some tests showing off the functionality, these can be built and run as follows:
+Examples are providing in the [gtk-rs/examples](https://github.com/gtk-rs/examples) repository, you can find some tests showing off the functionality, these can be built and run as follows:
 
 ```Shell
 > cargo build --release
@@ -83,13 +81,13 @@ Your local copy can be accessed using your browser at
 To include gtk as a cargo dependency you have to add it to your Cargo.toml and specify the GTK version you want using Cargo features:
 ```Toml
 [dependencies.gtk]
-git = "https://github.com/rust-gnome/gtk.git"
+git = "https://github.com/gtk-rs/gtk.git"
 features = ["gtk_3_12"]
 ```
 If it's lower than 3.6:
 ```Toml
 [dependencies.gtk]
-git = "https://github.com/rust-gnome/gtk.git"
+git = "https://github.com/gtk-rs/gtk.git"
 features = ["gtk_3_4"]
 default-features = false
 ```

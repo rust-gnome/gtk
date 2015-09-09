@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -35,7 +35,7 @@ impl Image {
         check_pointer!(tmp_pointer, Image)
     }
 
-    pub fn new_from_icon_name(icon_name: &str, size: ::IconSize) -> Option<Image> {
+    pub fn new_from_icon_name(icon_name: &str, size: i32) -> Option<Image> {
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_icon_name(icon_name.to_glib_none().0, size)
         };
@@ -55,7 +55,7 @@ impl Image {
         };
     }
 
-    pub fn set_from_icon_name(&self, icon_name: &str, size: ::IconSize) {
+    pub fn set_from_icon_name(&self, icon_name: &str, size: i32) {
         unsafe {
             ffi::gtk_image_set_from_icon_name(GTK_IMAGE(self.unwrap_widget()),
                                               icon_name.to_glib_none().0, size)

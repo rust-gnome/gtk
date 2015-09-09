@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -149,7 +149,7 @@ impl Drop for PaperSize {
     fn drop(&mut self) {
         unsafe {
             ffi::gtk_paper_size_free(GTK_PAPER_SIZE(self.unwrap_widget()));
-            ::glib::ffi::g_object_unref(self.pointer as *mut ::libc::c_void);
+            ::gobject_ffi::g_object_unref(self.pointer as *mut ::libc::c_void);
         }
     }
 }
@@ -157,7 +157,7 @@ impl Drop for PaperSize {
 impl Clone for PaperSize {
     fn clone(&self) -> PaperSize {
         let pointer = unsafe {
-            ::glib::ffi::g_object_ref(self.pointer as *mut ::libc::c_void)
+            ::gobject_ffi::g_object_ref(self.pointer as *mut ::libc::c_void)
         };
 
         PaperSize {

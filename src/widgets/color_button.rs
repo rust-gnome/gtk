@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -42,9 +42,9 @@ impl ColorButton {
     }
 
     pub fn get_color(&self) -> gdk::Color {
-        let color = gdk::Color { pixel: 0, red: 0, green: 0, blue: 0 };
+        let mut color = gdk::Color { pixel: 0, red: 0, green: 0, blue: 0 };
         unsafe {
-            ffi::gtk_color_button_get_color(GTK_COLORBUTTON(self.pointer), &color);
+            ffi::gtk_color_button_get_color(GTK_COLORBUTTON(self.pointer), &mut color);
         }
         color
     }
@@ -68,9 +68,9 @@ impl ColorButton {
     }
 
     pub fn get_rgba(&self) -> gdk_ffi::GdkRGBA {
-        let rgba = gdk_ffi::GdkRGBA { red: 0., green: 0., blue: 0., alpha: 0. };
+        let mut rgba = gdk_ffi::GdkRGBA { red: 0., green: 0., blue: 0., alpha: 0. };
         unsafe {
-            ffi::gtk_color_button_get_rgba(GTK_COLORBUTTON(self.pointer), &rgba);
+            ffi::gtk_color_button_get_rgba(GTK_COLORBUTTON(self.pointer), &mut rgba);
         }
         rgba
     }

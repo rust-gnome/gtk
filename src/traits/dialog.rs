@@ -1,10 +1,10 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
 use std::ptr;
 use libc::c_char;
-use glib::translate::ToGlibPtr;
+use glib::translate::*;
 use cast::GTK_DIALOG;
 use ffi;
 
@@ -202,8 +202,8 @@ pub trait DialogTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait + ::WindowT
         unsafe { ffi::gtk_dialog_set_default_response(GTK_DIALOG(self.unwrap_widget()), response_id) }
     }
 
-    fn set_response_sensitive(&self, response_id: i32, setting: ffi::gboolean) -> () {
-        unsafe { ffi::gtk_dialog_set_response_sensitive(GTK_DIALOG(self.unwrap_widget()), response_id, setting) }
+    fn set_response_sensitive(&self, response_id: i32, setting: bool) -> () {
+        unsafe { ffi::gtk_dialog_set_response_sensitive(GTK_DIALOG(self.unwrap_widget()), response_id, setting.to_glib()) }
     }
 
     fn get_response_for_widget<T: ::WidgetTrait>(&self, widget: &T) -> Result<i32, ::ResponseType> {
@@ -246,7 +246,7 @@ pub trait DialogTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait + ::WindowT
         }
     }
 
-    #[cfg(feature = "gtk_3_12")]
+    #[cfg(gtk_3_12)]
     fn get_header_bar<T: ::WidgetTrait>(&self) -> Option<T> {
         let tmp_pointer = unsafe { ffi::gtk_dialog_get_header_bar(GTK_DIALOG(self.unwrap_widget())) };
 

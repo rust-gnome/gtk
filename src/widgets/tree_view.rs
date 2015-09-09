@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -9,7 +9,6 @@ use ffi;
 use cast::GTK_TREE_VIEW;
 use widgets::{TreePath, TreeSelection, TreeViewColumn};
 use glib::{to_bool, to_gboolean};
-use glib_ffi;
 use libc::c_void;
 
 /// TreeView — A widget for displaying both trees and lists
@@ -71,14 +70,14 @@ impl TreeView {
         }
     }
 
-    #[cfg(feature = "gtk_3_8")]
+    #[cfg(gtk_3_8)]
     pub fn get_activate_on_single_click(&self) -> bool {
         unsafe {
             to_bool(ffi::gtk_tree_view_get_activate_on_single_click(GTK_TREE_VIEW(self.pointer)))
         }
     }
 
-    #[cfg(feature = "gtk_3_8")]
+    #[cfg(gtk_3_8)]
     pub fn set_activate_on_single_click(&self, setting: bool) {
         unsafe {
             ffi::gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(self.pointer),
@@ -362,7 +361,7 @@ impl TreeView {
         if tmp_pointer.is_null() {
             None
         } else {
-            unsafe { glib_ffi::g_object_ref(tmp_pointer as *mut c_void) };
+            unsafe { ::gobject_ffi::g_object_ref(tmp_pointer as *mut c_void) };
             Some(::TreeModel::wrap_pointer(tmp_pointer))
         }
     }

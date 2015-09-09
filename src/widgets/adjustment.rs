@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -154,7 +154,7 @@ impl Adjustment {
 
     #[doc(hidden)]
     pub fn wrap_pointer(c_adjustment: *mut ffi::GtkAdjustment) -> Adjustment {
-        unsafe { ::glib_ffi::g_object_ref(c_adjustment as *mut _); }
+        unsafe { ::gobject_ffi::g_object_ref(c_adjustment as *mut _); }
         Adjustment {
             pointer: c_adjustment
         }

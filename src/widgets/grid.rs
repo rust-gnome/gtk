@@ -1,4 +1,4 @@
-// Copyright 2013-2015, The Rust-GNOME Project Developers.
+// Copyright 2013-2015, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
@@ -66,14 +66,14 @@ impl Grid {
         }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
      pub fn remove_row(&self, position: i32) -> () {
         unsafe {
             ffi::gtk_grid_remove_row(GTK_GRID(self.pointer), position as c_int);
         }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
      pub fn remove_column(&self, position: i32) -> () {
         unsafe {
             ffi::gtk_grid_remove_column(GTK_GRID(self.pointer), position as c_int);
@@ -126,14 +126,14 @@ impl Grid {
         }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
     pub fn get_baseline_row(&self) -> i32 {
         unsafe {
             ffi::gtk_grid_get_baseline_row(GTK_GRID(self.pointer)) as i32
         }
     }
 
-    #[cfg(feature = "gtk_3_10")]
+    #[cfg(gtk_3_10)]
     pub fn set_baseline_row(&self, row: i32) -> () {
         unsafe {
             ffi::gtk_grid_set_baseline_row(GTK_GRID(self.pointer), row as c_int);
