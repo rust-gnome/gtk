@@ -1,6 +1,6 @@
 [package]
 name = "gtk"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["The Gtk-rs Project Developers"]
 build = "build.rs"
 
@@ -19,6 +19,7 @@ name = "gtk"
 
 [dependencies.gtk-sys]
 path = "gtk-sys"
+version = "0.2.0"
 
 [dependencies]
 cairo-rs = "0.0.5"
