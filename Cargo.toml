@@ -2,7 +2,7 @@
 name = "gtk"
 version = "0.0.5"
 authors = ["The Gtk-rs Project Developers"]
-build = "build.rs"0
+build = "build.rs"
 
 description = "Rust bindings for the GTK+ library"
 repository = "https://github.com/gtk-rs/gtk"
@@ -28,4 +28,3 @@ pango-sys = "^0"
 pango = "^0"
 cairo-sys-rs = "^0"
 cairo-rs = "^0"
->>>>>>> 9eec41b... Update versions
