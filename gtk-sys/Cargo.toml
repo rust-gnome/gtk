@@ -8,8 +8,9 @@ links = "gtk"
 description = "FFI bindings to GTK+ 3"
 repository = "https://github.com/gtk-rs/gtk"
 license = "MIT"
-homepage = "https://github.com/gtk-rs/gtk"
-documentation = "https://github.com/gtk-rs/gtk"
+homepage = "http://gtk-rs.org/"
+documentation = "http://gtk-rs.org/docs/gtk_sys/"
+keywords = ["gtk", "gtk-rs", "gnome", "GUI"]
 
 [lib]
 name = "gtk_sys"
