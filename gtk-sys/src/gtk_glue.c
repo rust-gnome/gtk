@@ -401,12 +401,6 @@ GtkAppChooserDialog* cast_GtkAppChooserDialog(GtkWidget* widget) {
     return GTK_APP_CHOOSER_DIALOG(widget);
 }
 
-#if defined(GTK_3_6)
-GtkLevelBar* cast_GtkLevelBar(GtkWidget* widget) {
-    return GTK_LEVEL_BAR(widget);
-}
-#endif
-
 GtkFontChooserDialog* cast_GtkFontChooserDialog(GtkWidget* widget) {
     return GTK_FONT_CHOOSER_DIALOG(widget);
 }
@@ -456,7 +450,11 @@ GtkRecentInfo* cast_GtkRecentInfo(GtkWidget* widget) {
 
 /* specific versions */
 
-#if defined(GTK_3_6) || defined(GTK_3_10) || defined(GTK_3_12) || defined(GTK_3_14)
+#if defined(GTK_3_6) || defined(GTK_3_8) || defined(GTK_3_10) || defined(GTK_3_12) || defined(GTK_3_14) || defined(GTK_3_16) || defined(GTK_3_18)
+
+GtkLevelBar* cast_GtkLevelBar(GtkWidget* widget) {
+    return GTK_LEVEL_BAR(widget);
+}
 
 GtkMenuButton* cast_GtkMenuButton(GtkWidget* widget) {
     return GTK_MENU_BUTTON(widget);
@@ -464,7 +462,7 @@ GtkMenuButton* cast_GtkMenuButton(GtkWidget* widget) {
 
 #endif
 
-#if defined(GTK_3_10) || defined(GTK_3_12) || defined(GTK_3_14)
+#if defined(GTK_3_10) || defined(GTK_3_12) || defined(GTK_3_14) || defined(GTK_3_16) || defined(GTK_3_18)
 
 GtkSearchBar* cast_GtkSearchBar(GtkWidget* widget) {
     return GTK_SEARCH_BAR(widget);
@@ -500,7 +498,7 @@ GtkPlacesSidebar *cast_GtkPlacesSidebar(GtkWidget* widget) {
 
 #endif
 
-#if defined(GTK_3_12) || defined(GTK_3_14)
+#if defined(GTK_3_12) || defined(GTK_3_14) || defined(GTK_3_16) || defined(GTK_3_18)
 
 GtkFlowBox* cast_GtkFlowBox(GtkWidget* widget) {
     return GTK_FLOW_BOX(widget);
@@ -520,7 +518,7 @@ GtkPopover *cast_GtkPopover(GtkWidget* widget) {
 
 #endif
 
-#if defined(GTK_3_16)
+#if defined(GTK_3_16) || defined(GTK_3_18)
 
 GtkPopoverMenu *cast_GtkPopoverMenu(GtkWidget* widget) {
     return GTK_POPOVER_MENU(widget);
