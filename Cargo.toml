@@ -1,6 +1,6 @@
 [package]
 name = "gtk"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["The Gtk-rs Project Developers"]
 build = "build.rs"
 
@@ -19,18 +19,18 @@ name = "gtk"
 
 [dependencies.gtk-sys]
 path = "gtk-sys"
-version = "0.2.0"
+version = "0.2.1"
 
 [dependencies]
-cairo-rs = "0.0.5"
-cairo-sys-rs = "0.2.0"
-gdk-pixbuf-sys = "0.2.0"
-gdk = "0.1.2"
-gdk-sys = "0.2.0"
-gio-sys = "0.2.0"
-glib = "0.0.4"
-glib-sys = "0.2.0"
-gobject-sys = "0.2.0"
+cairo-rs = "0.0.6"
+cairo-sys-rs = "0.2.1"
+gdk-pixbuf-sys = "0.2.1"
+gdk = "0.1.4"
+gdk-sys = "0.2.1"
+gio-sys = "0.2.1"
+glib = "0.0.5"
+glib-sys = "0.2.1"
+gobject-sys = "0.2.1"
 libc = "0.1"
 pango = "0.0.4"
-pango-sys = "0.2.0"
+pango-sys = "0.2.1"
