@@ -69,6 +69,8 @@ pub use self::note_book::NoteBook;
 pub use self::stack::Stack;
 #[cfg(gtk_3_10)]
 pub use self::stack_switcher::StackSwitcher;
+#[cfg(gtk_3_16)]
+pub use self::stack_sidebar::StackSidebar;
 #[cfg(gtk_3_10)]
 pub use self::revealer::Revealer;
 pub use self::overlay::Overlay;
@@ -120,6 +122,8 @@ pub use self::recent_chooser_widget::RecentChooserWidget;
 pub use self::combo_box::ComboBox;
 #[cfg(gtk_3_12)]
 pub use self::popover::Popover;
+#[cfg(gtk_3_16)]
+pub use self::popover_menu::PopoverMenu;
 pub use self::combo_box_text::ComboBoxText;
 //pub use self::gtype::g_type;
 pub use self::text_mark::TextMark;
@@ -139,6 +143,8 @@ pub use self::font_chooser_widget::FontChooserWidget;
 #[cfg(target_os = "linux")]
 pub use self::socket::Socket;
 pub use self::event_box::EventBox;
+#[cfg(gtk_3_16)]
+pub use self::gl_area::GLArea;
 
 mod css_provider;
 mod style_context;
@@ -202,6 +208,8 @@ mod note_book;
 mod stack;
 #[cfg(gtk_3_10)]
 mod stack_switcher;
+#[cfg(gtk_3_16)]
+mod stack_sidebar;
 #[cfg(gtk_3_10)]
 mod revealer;
 mod overlay;
@@ -258,6 +266,8 @@ mod recent_chooser_widget;
 mod combo_box;
 #[cfg(gtk_3_12)]
 mod popover;
+#[cfg(gtk_3_16)]
+mod popover_menu;
 mod combo_box_text;
 //mod gtype;
 mod text_mark;
@@ -277,3 +287,5 @@ mod font_chooser_widget;
 #[cfg(target_os = "linux")]
 mod socket;
 mod event_box;
+#[cfg(gtk_3_16)]
+mod gl_area;

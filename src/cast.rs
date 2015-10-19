@@ -241,6 +241,11 @@ pub fn GTK_STACK_SWITCHER(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkStackSwit
     unsafe { ffi::cast_GtkStackSwitcher(widget) }
 }
 
+#[cfg(gtk_3_16)]
+pub fn GTK_STACK_SIDEBAR(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkStackSidebar {
+    unsafe { ffi::cast_GtkStackSidebar(widget) }
+}
+
 #[cfg(gtk_3_10)]
 pub fn GTK_REVEALER(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkRevealer {
     unsafe { ffi::cast_GtkRevealer(widget) }
@@ -392,6 +397,10 @@ pub fn GTK_TREE_VIEW(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkTreeView {
     unsafe { ffi::cast_GtkTreeView(widget) }
 }
 
+pub fn GTK_MENU(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkMenu {
+    unsafe { ffi::cast_GtkMenu(widget) }
+}
+
 pub fn GTK_MENU_SHELL(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkMenuShell {
     unsafe { ffi::cast_GtkMenuShell(widget) }
 }
@@ -489,6 +498,11 @@ pub fn GTK_POPOVER(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkPopover {
     unsafe { ffi::cast_GtkPopover(widget) }
 }
 
+#[cfg(gtk_3_16)]
+pub fn GTK_POPOVER_MENU(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkPopoverMenu {
+    unsafe { ffi::cast_GtkPopoverMenu(widget) }
+}
+
 pub fn GTK_COMBO_BOX_TEXT(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkComboBoxText {
     unsafe { ffi::cast_GtkComboBoxText(widget) }
 }
@@ -537,4 +551,9 @@ pub fn GTK_SOCKET(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkSocket {
 
 pub fn GTK_EVENT_BOX(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkEventBox {
     unsafe { ffi::cast_GtkEventBox(widget) }
+}
+
+#[cfg(gtk_3_16)]
+pub fn GTK_GL_AREA(widget: *mut ffi::GtkWidget) -> *mut ffi::GtkGLArea {
+    unsafe { ffi::cast_GtkGLArea(widget) }
 }

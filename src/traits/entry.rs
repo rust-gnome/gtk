@@ -5,8 +5,8 @@
 use libc::{c_int, c_uint, c_float, c_double};
 use glib::translate::{from_glib_none, from_glib_full, ToGlibPtr};
 
-use {EntryIconPosition, ImageType, InputPurpose, InputHints};
-use cast::GTK_ENTRY;
+use {EntryCompletion, EntryIconPosition, FFIWidget, ImageType, InputPurpose, InputHints};
+use cast::{GTK_ENTRY, GTK_ENTRY_COMPLETION};
 use ffi;
 use glib::{to_bool, to_gboolean};
 
@@ -161,6 +161,22 @@ pub trait EntryTrait: ::WidgetTrait {
         unsafe { to_bool(ffi::gtk_entry_get_visibility(GTK_ENTRY(self.unwrap_widget()))) }
     }
 
+    fn set_completion(&self, completion: &EntryCompletion) -> () {
+        unsafe {
+            ffi::gtk_entry_set_completion(GTK_ENTRY(self.unwrap_widget()), GTK_ENTRY_COMPLETION(completion.unwrap_widget()));
+        }
+    }
+
+    fn get_completion(&self) -> Option<EntryCompletion> {
+        let tmp_pointer = unsafe { ffi::gtk_entry_get_completion(GTK_ENTRY(self.unwrap_widget())) };
+
+        if tmp_pointer.is_null() {
+            None
+        } else {
+            Some(EntryCompletion::wrap_widget(tmp_pointer as *mut ffi::GtkWidget))
+        }
+    }
+
     fn set_cursor_hadjustment(&self, adjustment: &::Adjustment) -> () {
         unsafe {
             ffi::gtk_entry_set_cursor_hadjustment(GTK_ENTRY(self.unwrap_widget()), adjustment.unwrap_pointer())
@@ -295,24 +311,28 @@ pub trait EntryTrait: ::WidgetTrait {
         }
     }
 
+    #[cfg(gtk_3_6)]
     fn set_input_purpose(&self, purpose: InputPurpose) -> () {
         unsafe {
             ffi::gtk_entry_set_input_purpose(GTK_ENTRY(self.unwrap_widget()), purpose)
         }
     }
 
+    #[cfg(gtk_3_6)]
     fn get_input_purpose(&self) -> InputPurpose {
         unsafe {
             ffi::gtk_entry_get_input_purpose(GTK_ENTRY(self.unwrap_widget()))
         }
     }
 
+    #[cfg(gtk_3_6)]
     fn set_input_hints(&self, hints: InputHints) -> () {
         unsafe {
             ffi::gtk_entry_set_input_hints(GTK_ENTRY(self.unwrap_widget()), hints)
         }
     }
 
+    #[cfg(gtk_3_6)]
     fn get_input_hints(&self) -> InputHints {
         unsafe {
             ffi::gtk_entry_get_input_hints(GTK_ENTRY(self.unwrap_widget()))

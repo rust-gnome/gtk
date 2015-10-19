@@ -24,7 +24,7 @@ fn main() {
         .map(|r| r.unwrap());
     let version: (u16, u16) = (parts.next().unwrap_or(0), parts.next().unwrap_or(0));
     let mut cfgs = Vec::new();
-    if version.0 == MIN_MAJOR && version.1 > MIN_MINOR {
+    if version.0 == MIN_MAJOR && version.1 >= MIN_MINOR {
         let major = version.0;
         let mut minor = MIN_MINOR;
         while minor <= version.1 {
@@ -35,7 +35,7 @@ fn main() {
     for cfg in &cfgs {
         println!("cargo:rustc-cfg={}", cfg);
     }
-    println!("cargo:cfg={}", cfgs.connect(" "));
+    println!("cargo:cfg={}", cfgs.join(" "));
 
     env::set_var("PKG_CONFIG_ALLOW_CROSS", "1");
 
@@ -51,7 +51,7 @@ fn main() {
 
     // build include path
     let mut gcc_conf = Config::new();
-    for s in output.split(' ') {
+    for s in output.split_whitespace() {
         if s.starts_with("-I") {
             let path: &Path = s[2..].as_ref();
             gcc_conf.include(path);
