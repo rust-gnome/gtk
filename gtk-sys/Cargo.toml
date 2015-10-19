@@ -1,6 +1,6 @@
 [package]
 name = "gtk-sys"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["The Gtk-rs Project Developers"]
 build = "build.rs"
 links = "gtk"
@@ -16,16 +16,16 @@ keywords = ["gtk", "gtk-rs", "gnome", "GUI"]
 name = "gtk_sys"
 
 [dependencies]
-atk-sys = "0.2.0"
+atk-sys = "0.2.1"
 bitflags = "0.3"
-cairo-sys-rs = "0.2.0"
-gdk-pixbuf-sys = "0.2.0"
-gdk-sys = "0.2.0"
-gio-sys = "0.2.0"
-glib-sys = "0.2.0"
-gobject-sys = "0.2.0"
+cairo-sys-rs = "0.2.1"
+gdk-pixbuf-sys = "0.2.1"
+gdk-sys = "0.2.1"
+gio-sys = "0.2.1"
+glib-sys = "0.2.1"
+gobject-sys = "0.2.1"
 libc = "0.1"
-pango-sys = "0.2.0"
+pango-sys = "0.2.1"
 
 [build-dependencies]
 gcc = "=0.3.9"
