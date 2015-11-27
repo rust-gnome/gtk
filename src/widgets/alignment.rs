@@ -2,14 +2,11 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A widget which controls the alignment and size of its child
-
 use libc::{c_float, c_uint};
 
 use cast::GTK_ALIGNMENT;
 use ffi;
 
-/// Alignment — A widget which controls the alignment and size of its child
 struct_Widget!(Alignment);
 
 impl Alignment {
@@ -17,6 +14,7 @@ impl Alignment {
                y_align: f32,
                x_scale: f32,
                y_scale: f32) -> Option<Alignment> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_alignment_new(x_align as c_float, y_align as c_float, x_scale as c_float, y_scale as c_float) };
         check_pointer!(tmp_pointer, Alignment)
     }

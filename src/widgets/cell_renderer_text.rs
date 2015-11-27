@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Renders text in a cell
-
 use ffi;
 use cast::GTK_CELL_RENDERER_TEXT;
 
@@ -11,6 +9,7 @@ struct_Widget!(CellRendererText);
 
 impl CellRendererText {
     pub fn new() -> Option<CellRendererText> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_cell_renderer_text_new() as *mut ffi::GtkWidget };
 
         check_pointer!(tmp_pointer, CellRendererText)

@@ -175,15 +175,13 @@ pub trait FileChooserTrait: ::WidgetTrait {
         unsafe { ffi::gtk_file_chooser_set_preview_widget(GTK_FILE_CHOOSER(self.unwrap_widget()), preview_widget.unwrap_widget()) }
     }
 
-    fn get_preview_widget<T: ::WidgetTrait>(&self) -> Option<T> {
-        unsafe {
-            let tmp_pointer = ffi::gtk_file_chooser_get_preview_widget(GTK_FILE_CHOOSER(self.unwrap_widget()));
+    unsafe fn get_preview_widget<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_file_chooser_get_preview_widget(GTK_FILE_CHOOSER(self.unwrap_widget()));
 
-            if tmp_pointer.is_null() {
-                None
-            } else {
-                Some(::FFIWidget::wrap_widget(tmp_pointer))
-            }
+        if tmp_pointer.is_null() {
+            None
+        } else {
+            Some(::FFIWidget::wrap_widget(tmp_pointer))
         }
     }
 
@@ -221,15 +219,13 @@ pub trait FileChooserTrait: ::WidgetTrait {
         unsafe { ffi::gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(self.unwrap_widget()), extra_widget.unwrap_widget()) }
     }
 
-    fn get_extra_widget<T: ::WidgetTrait>(&self) -> Option<T> {
-        unsafe {
-            let tmp = ffi::gtk_file_chooser_get_extra_widget(GTK_FILE_CHOOSER(self.unwrap_widget()));
+    unsafe fn get_extra_widget<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp = ffi::gtk_file_chooser_get_extra_widget(GTK_FILE_CHOOSER(self.unwrap_widget()));
 
-            if tmp.is_null() {
-                None
-            } else {
-                Some(::FFIWidget::wrap_widget(tmp))
-            }
+        if tmp.is_null() {
+            None
+        } else {
+            Some(::FFIWidget::wrap_widget(tmp))
         }
     }
 
@@ -246,9 +242,10 @@ pub trait FileChooserTrait: ::WidgetTrait {
     }
 
     fn get_filter(&self) -> Option<::FileFilter> {
-        let tmp = unsafe { ffi::gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(self.unwrap_widget())) };
-
-        ::FileFilter::wrap(tmp)
+        unsafe {
+            let ptr = ffi::gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(self.unwrap_widget()));
+            ::FileFilter::wrap(ptr)
+        }
     }
 
     fn add_shortcut_folder(&self, folder: &str, error: &mut glib::Error) -> bool {

@@ -2,14 +2,11 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Create buttons bound to a URL
-
 use glib::translate::{from_glib_none, ToGlibPtr};
 use cast::GTK_LINKBUTTON;
 use ffi;
 use glib::{to_bool, to_gboolean};
 
-/// LinkButton — Create buttons bound to a URL
 /*
 * # Availables signals :
 * * `activate-link` : Run Last
@@ -18,6 +15,7 @@ struct_Widget!(LinkButton);
 
 impl LinkButton {
     pub fn new(uri: &str) -> Option<LinkButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_link_button_new(uri.to_glib_none().0)
         };
@@ -25,6 +23,7 @@ impl LinkButton {
     }
 
     pub fn new_with_label(uri: &str, label: &str) -> Option<LinkButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_link_button_new_with_label(uri.to_glib_none().0, label.to_glib_none().0)
         };

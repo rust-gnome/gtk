@@ -2,19 +2,17 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A ToolItem containing a button with an additional dropdown menu
-
 use std::ptr;
 
 use cast::GTK_MENUTOOLBUTTON;
 use ffi;
 use glib::translate::ToGlibPtr;
 
-/// MenuToolButton — A ToolItem containing a button with an additional dropdown menu
 struct_Widget!(MenuToolButton);
 
 impl MenuToolButton {
     pub fn new<T: ::WidgetTrait>(icon_widget: Option<&T>, label: Option<&str>) -> Option<MenuToolButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             let icon_widget_ptr = match icon_widget {
                 Some(i) => i.unwrap_widget(),
@@ -27,6 +25,7 @@ impl MenuToolButton {
     }
 
     pub fn new_from_stock(stock_id: &str) -> Option<MenuToolButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_menu_tool_button_new_from_stock(stock_id.to_glib_none().0)
         };

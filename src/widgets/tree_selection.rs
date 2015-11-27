@@ -2,11 +2,11 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkTreeSelection — The selection object for GtkTreeView
-
+use std::ptr;
 use glib;
+use glib::translate::{ToGlibPtr, ToGlibPtrMut, Uninitialized, from_glib, some_if};
 use ffi;
-use {TreeView, TreePath, TreeIter};
+use {TreeView, TreePath, TreeIter, TreeModel};
 
 pub struct TreeSelection {
     pointer: *mut ffi::GtkTreeSelection
@@ -21,8 +21,8 @@ impl TreeSelection {
         unsafe { ffi::gtk_tree_selection_get_mode(self.pointer) }
     }
 
-    pub fn get_user_data<'r, T>(&self) -> &'r mut T {
-        unsafe { ::std::mem::transmute(ffi::gtk_tree_selection_get_user_data(self.pointer)) }
+    pub unsafe fn get_user_data<'r, T>(&self) -> &'r mut T {
+        ::std::mem::transmute(ffi::gtk_tree_selection_get_user_data(self.pointer))
     }
 
     pub fn get_tree_view(&self) -> Option<TreeView> {
@@ -35,11 +35,13 @@ impl TreeSelection {
         }
     }
 
-    pub fn get_selected(&self, model: &::TreeModel, iter: &mut ::TreeIter) -> bool {
-        match unsafe { ffi::gtk_tree_selection_get_selected(self.pointer, &mut model.unwrap_pointer(),
-            iter.unwrap_pointer()) } {
-            0 => false,
-            _ => true
+    pub fn get_selected(&self) -> Option<(TreeModel, TreeIter)> {
+        unsafe {
+            let mut model = ptr::null_mut();
+            let mut iter = TreeIter::uninitialized();
+            let ok = ffi::gtk_tree_selection_get_selected(self.pointer, &mut model,
+                iter.to_glib_none_mut().0);
+            some_if(ok, (TreeModel::wrap_pointer(model), iter))
         }
     }
 
@@ -63,17 +65,21 @@ impl TreeSelection {
     }
 
     pub fn select_iter(&self, iter: &TreeIter) {
-        unsafe { ffi::gtk_tree_selection_select_iter(self.pointer, iter.unwrap_pointer()) }
+        unsafe {
+            ffi::gtk_tree_selection_select_iter(self.pointer, iter.to_glib_none().0 as *mut _)
+        }
     }
 
     pub fn unselect_iter(&self, iter: &TreeIter) {
-        unsafe { ffi::gtk_tree_selection_unselect_iter(self.pointer, iter.unwrap_pointer()) }
+        unsafe {
+            ffi::gtk_tree_selection_unselect_iter(self.pointer, iter.to_glib_none().0 as *mut _)
+        }
     }
 
     pub fn iter_is_selected(&self, iter: &TreeIter) -> bool {
-        match unsafe { ffi::gtk_tree_selection_iter_is_selected(self.pointer, iter.unwrap_pointer()) } {
-            0 => false,
-            _ => true
+        unsafe {
+            from_glib(ffi::gtk_tree_selection_iter_is_selected(self.pointer,
+                                                               iter.to_glib_none().0 as *mut _))
         }
     }
 
@@ -95,11 +101,11 @@ impl TreeSelection {
             end_path.unwrap_pointer()) }
     }
 
-    pub fn wrap(pointer: *mut ffi::GtkTreeSelection) -> Option<TreeSelection> {
+    pub unsafe fn wrap(pointer: *mut ffi::GtkTreeSelection) -> Option<TreeSelection> {
         if pointer.is_null() {
             None
         } else {
-            unsafe { ::gobject_ffi::g_object_ref(pointer as *mut _); }
+            ::gobject_ffi::g_object_ref(pointer as *mut _);
             Some(TreeSelection { pointer: pointer })
         }
     }
@@ -110,8 +116,8 @@ impl glib::traits::FFIGObject for TreeSelection {
         ::cast::G_OBJECT_FROM_TREE_SELECTION(self.pointer)
     }
 
-    fn wrap_object(object: *mut ::gobject_ffi::GObject) -> TreeSelection {
-        unsafe { ::gobject_ffi::g_object_ref(object as *mut _); }
+    unsafe fn wrap_object(object: *mut ::gobject_ffi::GObject) -> TreeSelection {
+        ::gobject_ffi::g_object_ref(object as *mut _);
         TreeSelection { pointer: object as *mut ffi::GtkTreeSelection }
     }
 }

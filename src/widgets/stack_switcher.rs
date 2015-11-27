@@ -2,17 +2,15 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A controller for GtkStack
-
 use ffi;
 use cast::{GTK_STACK_SWITCHER, GTK_STACK};
 use FFIWidget;
 
-/// GtkStackSwitcher — A controller for GtkStack
 struct_Widget!(StackSwitcher);
 
 impl StackSwitcher {
     pub fn new() -> Option<StackSwitcher> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_stack_switcher_new() };
         check_pointer!(tmp_pointer, StackSwitcher)
     }

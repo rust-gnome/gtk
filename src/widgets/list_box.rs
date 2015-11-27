@@ -2,18 +2,16 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A container that allows reflowing its children
-
 use ffi;
 use cast::{GTK_LIST_BOX_ROW, GTK_LIST_BOX};
 use FFIWidget;
 use glib::{to_bool, to_gboolean};
 
-/// GtkFlowBox — A container that allows reflowing its children
 struct_Widget!(ListBox);
 
 impl ListBox {
     pub fn new() -> Option<ListBox> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_list_box_new() };
         check_pointer!(tmp_pointer, ListBox)
     }
@@ -88,13 +86,13 @@ impl ListBox {
     }
 
     pub fn get_adjustment(&self) -> Option<::Adjustment> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_list_box_get_adjustment(GTK_LIST_BOX(self.pointer))
-        };
-        if tmp_pointer.is_null() {
-            None
-        } else {
-            Some(::Adjustment::wrap_pointer(tmp_pointer))
+        unsafe {
+            let ptr = ffi::gtk_list_box_get_adjustment(GTK_LIST_BOX(self.pointer));
+            if ptr.is_null() {
+                None
+            } else {
+                Some(::Adjustment::wrap_pointer(ptr))
+            }
         }
     }
 
@@ -156,6 +154,7 @@ struct_Widget!(ListBoxRow);
 
 impl ListBoxRow {
     pub fn new() -> Option<ListBoxRow> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_list_box_row_new() };
         check_pointer!(tmp_pointer, ListBoxRow)
     }
@@ -166,10 +165,8 @@ impl ListBoxRow {
         }
     }
 
-    pub fn get_header<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_list_box_row_get_header(GTK_LIST_BOX_ROW(self.pointer))
-        };
+    pub unsafe fn get_header<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_list_box_row_get_header(GTK_LIST_BOX_ROW(self.pointer));
 
         if tmp_pointer.is_null() {
             None

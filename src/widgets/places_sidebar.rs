@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkPlacesSidebar — Sidebar that displays frequently-used places in the file system
-
 use ffi;
 use FFIWidget;
 use cast::GTK_PLACES_SIDEBAR;
@@ -13,6 +11,7 @@ struct_Widget!(PlacesSidebar);
 
 impl PlacesSidebar {
     pub fn new() -> Option<PlacesSidebar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_places_sidebar_new() };
         check_pointer!(tmp_pointer, PlacesSidebar)
     }

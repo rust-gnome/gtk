@@ -2,16 +2,14 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A bin with a decorative frame and optional label
-
 use glib::translate::ToGlibPtr;
 use ffi;
 
-/// Frame — A bin with a decorative frame and optional label
 struct_Widget!(Frame);
 
 impl Frame {
     pub fn new(label: Option<&str>) -> Option<Frame> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_frame_new(label.to_glib_none().0)
         };

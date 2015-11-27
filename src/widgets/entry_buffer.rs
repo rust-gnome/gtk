@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Text buffer for ::Entry
-
 use libc::{c_int, c_uint};
 use glib::translate::{from_glib_none, ToGlibPtr};
 use ffi;
@@ -11,7 +9,6 @@ use ffi;
 // TODO:
 // Implements custom signal : inserted-text + deleted-text
 
-/// EntryBuffer — Text buffer for ::Entry
 /*
 * # Signals available:
 * * `deleted-text` : Run First
@@ -24,6 +21,7 @@ pub struct EntryBuffer {
 
 impl EntryBuffer {
     pub fn new(initial_chars: Option<&str>) -> Option<EntryBuffer> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_entry_buffer_new(initial_chars.to_glib_none().0, -1)
         };
@@ -91,7 +89,7 @@ impl EntryBuffer {
     }
 
     #[doc(hidden)]
-    pub fn wrap_pointer(pointer: *mut ffi::GtkEntryBuffer) -> EntryBuffer {
+    pub unsafe fn wrap_pointer(pointer: *mut ffi::GtkEntryBuffer) -> EntryBuffer {
         EntryBuffer {
             pointer:    pointer
         }

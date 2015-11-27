@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Displays a calendar and allows the user to select a date
-
 use libc::{c_uint, c_int};
 
 use CalendarDisplayOptions;
@@ -27,6 +25,7 @@ struct_Widget!(Calendar);
 
 impl Calendar {
     pub fn new() -> Option<Calendar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_calendar_new() };
         check_pointer!(tmp_pointer, Calendar)
     }

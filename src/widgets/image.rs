@@ -2,19 +2,17 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A widget displaying an image
-
 use ffi;
 use cast::GTK_IMAGE;
 use FFIWidget;
 use glib::translate::{from_glib_none, ToGlibPtr};
 use gdk::pixbuf::{Pixbuf, PixbufAnimation};
 
-/// Image — A widget displaying an image
 struct_Widget!(Image);
 
 impl Image {
     pub fn new() -> Option<Image> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_image_new()
         };
@@ -22,6 +20,7 @@ impl Image {
     }
 
     pub fn new_from_file(filename: &str) -> Option<Image> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_file(filename.to_glib_none().0)
         };
@@ -29,6 +28,7 @@ impl Image {
     }
 
     pub fn new_from_pixbuf(pixbuf: &Pixbuf) -> Option<Image> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_pixbuf(pixbuf.to_glib_none().0)
         };
@@ -36,6 +36,7 @@ impl Image {
     }
 
     pub fn new_from_icon_name(icon_name: &str, size: i32) -> Option<Image> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_image_new_from_icon_name(icon_name.to_glib_none().0, size)
         };

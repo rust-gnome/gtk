@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkPopover — Context dependent bubbles
-
 use ffi;
 use cast::GTK_POPOVER;
 use glib::{to_bool, to_gboolean};
@@ -13,6 +11,7 @@ struct_Widget!(Popover);
 
 impl Popover {
     pub fn new<T: ::WidgetTrait>(relative_to: &T) -> Option<Popover> {
+        skip_assert_initialized!();
         let tmp_pointer = unsafe { ffi::gtk_popover_new(relative_to.unwrap_widget()) };
         check_pointer!(tmp_pointer, Popover)
     }
@@ -21,8 +20,8 @@ impl Popover {
         unsafe { ffi::gtk_popover_set_relative_to(GTK_POPOVER(self.pointer), relative_to.unwrap_widget()) }
     }
 
-    pub fn get_relative_to<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_popover_get_relative_to(GTK_POPOVER(self.pointer)) };
+    pub unsafe fn get_relative_to<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_popover_get_relative_to(GTK_POPOVER(self.pointer));
 
         if tmp_pointer.is_null() {
             None

@@ -2,15 +2,13 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A Scrollbar
-
 use ffi;
 
-/// GtkScrollBar — A Scrollbar
 struct_Widget!(ScrollBar);
 
 impl ScrollBar {
     pub fn new(orientation: ::Orientation, adjustment: &::Adjustment) -> Option<ScrollBar> {
+        skip_assert_initialized!();
         let tmp_pointer = unsafe { ffi::gtk_scrollbar_new(orientation, adjustment.unwrap_pointer()) };
         check_pointer!(tmp_pointer, ScrollBar)
     }

@@ -2,17 +2,15 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Hide and show with animation
-
 use ffi;
 use cast::{GTK_REVEALER};
 use glib::{to_bool, to_gboolean};
 
-/// GtkRevealer — Hide and show with animation
 struct_Widget!(Revealer);
 
 impl Revealer {
     pub fn new() -> Option<Revealer> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_revealer_new() };
         check_pointer!(tmp_pointer, Revealer)
     }

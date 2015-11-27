@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A container which can hide its child
-
 use libc::c_int;
 
 use glib::translate::{from_glib_none, ToGlibPtr};
@@ -12,11 +10,11 @@ use ffi;
 use glib::{to_bool, to_gboolean};
 use FFIWidget;
 
-/// Expander — A container which can hide its child
 struct_Widget!(Expander);
 
 impl Expander {
     pub fn new(label: &str) -> Option<Expander> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_expander_new(label.to_glib_none().0)
         };
@@ -24,6 +22,7 @@ impl Expander {
     }
 
     pub fn new_with_mnemonic(mnemonic: &str) -> Option<Expander> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_expander_new_with_mnemonic(mnemonic.to_glib_none().0)
         };

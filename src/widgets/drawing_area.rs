@@ -4,11 +4,11 @@
 
 use ffi;
 
-/// GtkDrawingArea — A widget for custom user interface elements
 struct_Widget!(DrawingArea);
 
 impl DrawingArea {
     pub fn new() -> Option<DrawingArea> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_drawing_area_new() };
         check_pointer!(tmp_pointer, DrawingArea)
     }

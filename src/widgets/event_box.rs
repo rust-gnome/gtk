@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkEventBox — A widget used to catch events for widgets which do not have their own window
-
 use cast::{GTK_EVENT_BOX};
 use ffi;
 use glib::{to_bool, to_gboolean};
@@ -12,6 +10,7 @@ struct_Widget!(EventBox);
 
 impl EventBox {
     pub fn new() -> Option<EventBox> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_event_box_new() };
         check_pointer!(tmp_pointer, EventBox)
     }

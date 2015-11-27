@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkSizeGroup — Grouping widgets so they request the same size
-
 use ffi;
 use glib::{to_bool, to_gboolean};
 
@@ -13,6 +11,7 @@ pub struct SizeGroup {
 
 impl SizeGroup {
     pub fn new(mode: ::SizeGroupMode) -> Option<SizeGroup> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_size_group_new(mode) };
 
         if tmp_pointer.is_null() {

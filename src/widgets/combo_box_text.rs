@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkComboBox — A widget used to choose from a list of items
-
 use ffi;
 use cast::GTK_COMBO_BOX_TEXT;
 use glib::translate::{from_glib_none, ToGlibPtr};
@@ -12,11 +10,13 @@ struct_Widget!(ComboBoxText);
 
 impl ComboBoxText {
     pub fn new() -> Option<ComboBoxText> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_combo_box_text_new() };
         check_pointer!(tmp_pointer, ComboBoxText)
     }
 
     pub fn new_with_entry() -> Option<ComboBoxText> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_combo_box_text_new_with_entry() };
         check_pointer!(tmp_pointer, ComboBoxText)
     }

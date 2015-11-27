@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A stacking container
-
 // FIXME: add missing methods (3.12)
 
 use ffi;
@@ -11,11 +9,11 @@ use cast::GTK_STACK;
 use glib::translate::{from_glib_none, ToGlibPtr};
 use glib::{to_bool, to_gboolean};
 
-/// GtkStack — A stacking container
 struct_Widget!(Stack);
 
 impl Stack {
     pub fn new() -> Option<Stack> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_stack_new() };
         check_pointer!(tmp_pointer, Stack)
     }
@@ -44,8 +42,8 @@ impl Stack {
         }
     }
 
-    pub fn get_visible_child<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_stack_get_visible_child(GTK_STACK(self.pointer)) };
+    pub unsafe fn get_visible_child<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_stack_get_visible_child(GTK_STACK(self.pointer));
         if tmp_pointer.is_null() {
             None
         } else {

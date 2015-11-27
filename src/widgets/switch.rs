@@ -2,13 +2,10 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A "light switch" style toggle
-
 use cast::GTK_SWITCH;
 use ffi;
 use glib::{to_bool, to_gboolean};
 
-/// Switch — A "light switch" style toggle
 /*
 * # Availables signals:
 * * `activate` : Action
@@ -17,6 +14,7 @@ struct_Widget!(Switch);
 
 impl Switch {
     pub fn new() -> Option<Switch> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_switch_new() };
         check_pointer!(tmp_pointer, Switch)
     }

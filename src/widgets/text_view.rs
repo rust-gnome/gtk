@@ -2,25 +2,25 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkTextView — Widget that displays a GtkTextBuffer
-
 use ffi;
 use TextBuffer;
 use FFIWidget;
 use cast::{GTK_TEXT_VIEW, GTK_TEXT_BUFFER};
 use glib::{to_bool, to_gboolean};
-use glib::translate::{ToGlibPtr, ToGlibPtrMut};
+use glib::translate::{ToGlibPtr, ToGlibPtrMut, Uninitialized};
 use TextIter;
 
 struct_Widget!(TextView);
 
 impl TextView {
     pub fn new() -> Option<TextView> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_text_view_new() };
         check_pointer!(tmp_pointer, TextView)
     }
 
     pub fn new_with_buffer(buffer: TextBuffer) -> Option<TextView> {
+        skip_assert_initialized!();
         let tmp_pointer = unsafe {
             ffi::gtk_text_view_new_with_buffer(GTK_TEXT_BUFFER(buffer.unwrap_widget()))
         };

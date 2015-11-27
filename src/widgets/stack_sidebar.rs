@@ -2,18 +2,16 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A controller for StackSidebar
-
 use ffi;
 use cast::{GTK_STACK_SIDEBAR, GTK_STACK};
 use FFIWidget;
 use widgets::Stack;
 
-/// An automatic sidebar widget
 struct_Widget!(StackSidebar);
 
 impl StackSidebar {
     pub fn new() -> Option<StackSidebar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_stack_sidebar_new() };
         check_pointer!(tmp_pointer, StackSidebar)
     }

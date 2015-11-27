@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A widget which indicates progress visually
-
 use libc::c_double;
 use glib::translate::{from_glib_none, ToGlibPtr};
 
@@ -11,11 +9,11 @@ use ffi;
 use glib::{to_bool, to_gboolean};
 use cast::GTK_PROGRESSBAR;
 
-/// ProgressBar — A widget which indicates progress visually
 struct_Widget!(ProgressBar);
 
 impl ProgressBar {
     pub fn new() -> Option<ProgressBar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_progress_bar_new() };
         check_pointer!(tmp_pointer, ProgressBar)
     }

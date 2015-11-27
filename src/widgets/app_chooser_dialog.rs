@@ -11,6 +11,7 @@ struct_Widget!(AppChooserDialog);
 
 impl AppChooserDialog {
     pub fn new_for_content_type(parent: Option<&::Window>, flags: ::DialogFlags, content_type: &str) -> Option<AppChooserDialog> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             let parent = match parent {
                 Some(ref p) => GTK_WINDOW(p.unwrap_widget()),
@@ -28,8 +29,8 @@ impl AppChooserDialog {
         }
     }
 
-    pub fn widget<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_app_chooser_dialog_get_widget(GTK_APP_CHOOSER_DIALOG(self.unwrap_widget())) };
+    pub unsafe fn widget<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_app_chooser_dialog_get_widget(GTK_APP_CHOOSER_DIALOG(self.unwrap_widget()));
 
         if tmp_pointer.is_null() {
             None

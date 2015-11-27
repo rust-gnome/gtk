@@ -7,12 +7,11 @@ use std::ptr;
 use ffi;
 use cast::GTK_SCROLLED_WINDOW;
 
-/// GtkScrolledWindow — Adds scrollbars to its child widget
 struct_Widget!(ScrolledWindow);
 
 impl ScrolledWindow {
     pub fn new(h_adjustment: Option<::Adjustment>, v_adjustment: Option<::Adjustment>) -> Option<ScrolledWindow> {
-
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_scrolled_window_new(
                 h_adjustment.map_or(ptr::null_mut(), |p| { p.unwrap_pointer() }),

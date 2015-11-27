@@ -2,13 +2,10 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A base class for menu objects
-
 use ffi;
 use cast::{GTK_MENU_ITEM, GTK_MENU_SHELL};
 use glib::{to_bool, to_gboolean};
 
-/// A base class for menu objects
 pub trait MenuShellTrait: ::WidgetTrait + ::ContainerTrait {
     fn append<T: ::MenuItemTrait>(&self, widget: &T) {
         unsafe {
@@ -84,15 +81,11 @@ pub trait MenuShellTrait: ::WidgetTrait + ::ContainerTrait {
         }
     }
 
-    fn get_selected_item<T: ::WidgetTrait>(&self) -> T {
-        unsafe {
-            ::FFIWidget::wrap_widget(ffi::gtk_menu_shell_get_selected_item(GTK_MENU_SHELL(self.unwrap_widget())))
-        }
+    unsafe fn get_selected_item<T: ::WidgetTrait>(&self) -> T {
+        ::FFIWidget::wrap_widget(ffi::gtk_menu_shell_get_selected_item(GTK_MENU_SHELL(self.unwrap_widget())))
     }
 
-    fn get_parent_shell<T: ::MenuShellTrait>(&self) -> T {
-        unsafe {
-            ::FFIWidget::wrap_widget(ffi::gtk_menu_shell_get_parent_shell(GTK_MENU_SHELL(self.unwrap_widget())))
-        }
+    unsafe fn get_parent_shell<T: ::MenuShellTrait>(&self) -> T {
+        ::FFIWidget::wrap_widget(ffi::gtk_menu_shell_get_parent_shell(GTK_MENU_SHELL(self.unwrap_widget())))
     }
 }

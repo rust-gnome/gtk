@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkFontChooserWidget — A widget for selecting fonts
-
 use ffi;
 use FFIWidget;
 
@@ -11,6 +9,7 @@ struct_Widget!(FontChooserWidget);
 
 impl FontChooserWidget {
     pub fn new() -> Option<FontChooserWidget> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_color_chooser_widget_new() };
 
         if tmp_pointer.is_null() {

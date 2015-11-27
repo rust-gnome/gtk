@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkSocket — Container for widgets from other processes
-
 use ffi;
 use FFIWidget;
 //use cast::GTK_SOCKET;
@@ -12,6 +10,7 @@ struct_Widget!(Socket);
 
 impl Socket {
     pub fn new() -> Option<Socket> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_socket_new() };
 
         check_pointer!(tmp_pointer, Socket)

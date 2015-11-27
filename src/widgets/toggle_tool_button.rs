@@ -2,21 +2,20 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A ToolItem containing a toggle button
-
 use ffi;
 use glib::translate::ToGlibPtr;
 
-/// ToggleToolButton — A ToolItem containing a toggle button
 struct_Widget!(ToggleToolButton);
 
 impl ToggleToolButton {
     pub fn new() -> Option<ToggleToolButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_toggle_tool_button_new() };
         check_pointer!(tmp_pointer, ToggleToolButton)
     }
 
     pub fn new_from_stock(stock_id: &str) -> Option<ToggleToolButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_toggle_tool_button_new_from_stock(stock_id.to_glib_none().0) };
         check_pointer!(tmp_pointer, ToggleToolButton)
     }

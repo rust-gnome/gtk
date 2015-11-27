@@ -2,16 +2,14 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Infinite scrollable area containing child widgets and/or custom drawing
-
 use ffi;
 use cast::{GTK_LAYOUT};
 
-/// GtkLayout — Infinite scrollable area containing child widgets and/or custom drawing
 struct_Widget!(Layout);
 
 impl Layout {
     pub fn new(hadjustment: &::Adjustment, vadjustment: &::Adjustment) -> Option<Layout> {
+        skip_assert_initialized!();
         let tmp_pointer = unsafe {
             ffi::gtk_layout_new(hadjustment.unwrap_pointer(),
                                 vadjustment.unwrap_pointer())

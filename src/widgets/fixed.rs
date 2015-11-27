@@ -2,18 +2,16 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A container which allows you to position widgets at fixed coordinates
-
 use libc::c_int;
 
 use cast::GTK_FIXED;
 use ffi;
 
-/// Fixed — A container which allows you to position widgets at fixed coordinates
 struct_Widget!(Fixed);
 
 impl Fixed {
     pub fn new() -> Option<Fixed> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_fixed_new() };
         check_pointer!(tmp_pointer, Fixed)
     }

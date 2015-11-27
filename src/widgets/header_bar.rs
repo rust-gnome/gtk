@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A Box::new(with) a centered child
-
 // FIXME: add missing methods (3.12)
 
 use cast::{GTK_HEADER_BAR};
@@ -11,11 +9,11 @@ use ffi;
 use glib::translate::{from_glib_none, ToGlibPtr};
 use glib::{to_bool, to_gboolean};
 
-/// GtkHeaderBar — A Box::new(with) a centered child
 struct_Widget!(HeaderBar);
 
 impl HeaderBar {
     pub fn new() -> Option<HeaderBar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_header_bar_new() };
         check_pointer!(tmp_pointer, HeaderBar)
     }
@@ -53,10 +51,8 @@ impl HeaderBar {
         }
     }
 
-    pub fn get_custom_title<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_header_bar_get_custom_title(GTK_HEADER_BAR(self.pointer))
-        };
+    pub unsafe fn get_custom_title<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_header_bar_get_custom_title(GTK_HEADER_BAR(self.pointer));
 
         if tmp_pointer.is_null() {
             None

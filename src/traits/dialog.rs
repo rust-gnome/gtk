@@ -9,16 +9,6 @@ use cast::GTK_DIALOG;
 use ffi;
 use Box;
 
-/// Pseudo-variadic array of buttons
-///
-/// It's implemented for fixed-sized arrays `[(&str, i32); N]`
-/// and `[(&str, ::ResponseType); N]` (`N <= 16`) to allow passing variable
-/// numbers of buttons to some dialog methods.
-///
-/// ```ignore
-/// Dialog::with_buttons(title, parent, flags,
-///                      [("Ok", ResponseType::Accept), ("Cancel", ResponseType::Cancel)]);
-/// ```
 pub trait DialogButtons {
     unsafe fn invoke1<A0, R>(
         &self,
@@ -34,7 +24,6 @@ pub trait DialogButtons {
         a0: A0, a1: A1, a2: A2) -> R;
 }
 
-/// Predefined popular button combinations
 pub mod buttons {
     use ResponseType;
     use ResponseType::*;
@@ -217,8 +206,8 @@ pub trait DialogTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait + ::WindowT
         }
     }
 
-    fn get_widget_for_reponse<T: ::WidgetTrait>(&self, response_id: i32) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_dialog_get_widget_for_response(GTK_DIALOG(self.unwrap_widget()), response_id) };
+    unsafe fn get_widget_for_reponse<T: ::WidgetTrait>(&self, response_id: i32) -> Option<T> {
+        let tmp_pointer = ffi::gtk_dialog_get_widget_for_response(GTK_DIALOG(self.unwrap_widget()), response_id);
 
         if tmp_pointer.is_null() {
             None
@@ -227,8 +216,8 @@ pub trait DialogTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait + ::WindowT
         }
     }
 
-    fn get_action_area<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_dialog_get_action_area(GTK_DIALOG(self.unwrap_widget())) };
+    unsafe fn get_action_area<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_dialog_get_action_area(GTK_DIALOG(self.unwrap_widget()));
 
         if tmp_pointer.is_null() {
             None
@@ -244,8 +233,8 @@ pub trait DialogTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait + ::WindowT
     }
 
     #[cfg(gtk_3_12)]
-    fn get_header_bar<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_dialog_get_header_bar(GTK_DIALOG(self.unwrap_widget())) };
+    unsafe fn get_header_bar<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_dialog_get_header_bar(GTK_DIALOG(self.unwrap_widget()));
 
         if tmp_pointer.is_null() {
             None

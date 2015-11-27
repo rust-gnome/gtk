@@ -2,12 +2,9 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A widget that displays a small to medium amount of text
-
 use glib::translate::ToGlibPtr;
 use ffi;
 
-/// Label — A widget that displays a small to medium amount of text
 /*
 * # Available signals:
 * * `activate-current-link` : Action
@@ -20,6 +17,7 @@ struct_Widget!(Label);
 
 impl Label {
     pub fn new(text: &str) -> Option<Label> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_label_new(text.to_glib_none().0)
         };
@@ -27,6 +25,7 @@ impl Label {
     }
 
     pub fn new_with_mnemonic(text: &str) -> Option<Label> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_label_new_with_mnemonic(text.to_glib_none().0)
         };

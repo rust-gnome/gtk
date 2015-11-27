@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Hide and show with animation
-
 use cast::{GTK_ACTION_BAR};
 use ffi;
 
@@ -11,14 +9,13 @@ struct_Widget!(ActionBar);
 
 impl ActionBar {
     pub fn new() -> Option<ActionBar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_action_bar_new() };
         check_pointer!(tmp_pointer, ActionBar)
     }
 
-    pub fn get_center_widget<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe {
-            ffi::gtk_action_bar_get_center_widget(GTK_ACTION_BAR(self.pointer))
-        };
+    pub unsafe fn get_center_widget<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_action_bar_get_center_widget(GTK_ACTION_BAR(self.pointer));
         if tmp_pointer.is_null() {
             None
         } else {

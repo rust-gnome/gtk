@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A widget with two adjustable panes
-
 use libc::c_int;
 
 use Orientation;
@@ -11,7 +9,6 @@ use cast::GTK_PANED;
 use ffi;
 use glib::to_gboolean;
 
-/// Paned — A widget with two adjustable panes
 /*
 * # Available signals:
 * * `accept-position` : Action
@@ -25,6 +22,7 @@ struct_Widget!(Paned);
 
 impl Paned {
     pub fn new(orientation: Orientation) -> Option<Paned> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_paned_new(orientation) };
         check_pointer!(tmp_pointer, Paned)
     }

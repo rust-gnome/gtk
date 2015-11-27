@@ -2,19 +2,17 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A tabbed notebook container
-
 use ffi;
 use cast::GTK_NOTEBOOK;
 use FFIWidget;
 use glib::translate::{from_glib, from_glib_none, ToGlibPtr};
 use glib::{to_bool, to_gboolean};
 
-/// GtkNotebook — A tabbed notebook container
 struct_Widget!(NoteBook);
 
 impl NoteBook {
     pub fn new() -> Option<NoteBook> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_notebook_new() };
         check_pointer!(tmp_pointer, NoteBook)
     }
@@ -103,8 +101,8 @@ impl NoteBook {
         }
     }
 
-    pub fn get_nth_page<T: ::WidgetTrait>(&self, page_num: i32) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_notebook_get_nth_page(GTK_NOTEBOOK(self.pointer), page_num) };
+    pub unsafe fn get_nth_page<T: ::WidgetTrait>(&self, page_num: i32) -> Option<T> {
+        let tmp_pointer = ffi::gtk_notebook_get_nth_page(GTK_NOTEBOOK(self.pointer), page_num);
 
         if tmp_pointer.is_null() {
             None
@@ -333,9 +331,9 @@ impl NoteBook {
         }
     }
 
-    pub fn get_action_widget<T: ::WidgetTrait>(&self, pack_type: ::PackType) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_notebook_get_action_widget(GTK_NOTEBOOK(self.pointer),
-                                                                       pack_type) };
+    pub unsafe fn get_action_widget<T: ::WidgetTrait>(&self, pack_type: ::PackType) -> Option<T> {
+        let tmp_pointer = ffi::gtk_notebook_get_action_widget(GTK_NOTEBOOK(self.pointer),
+                                                              pack_type);
         if tmp_pointer.is_null() {
             None
         } else {

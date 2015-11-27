@@ -4,7 +4,6 @@
 
 #![no_implicit_prelude]
 
-//! A container box
 use libc::c_int;
 //use std::prelude::{Option, Some, None, RawPtr};
 use std::option::Option;
@@ -14,11 +13,11 @@ use ffi;
 use std::clone::Clone;
 use std::ops::Drop;
 
-/// Box — A container box
 struct_Widget!(Box);
 
 impl Box {
     pub fn new(orientation: Orientation, spacing: i32) -> Option<Box> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_box_new(orientation, spacing as c_int) };
         check_pointer!(tmp_pointer, Box)
     }

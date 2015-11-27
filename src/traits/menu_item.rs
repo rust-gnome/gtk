@@ -2,14 +2,11 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! The widget used for item in menus
-
 use glib::translate::{from_glib_none, ToGlibPtr};
 use ffi;
 use cast::{GTK_MENU, GTK_MENU_ITEM};
 use glib::{to_bool, to_gboolean};
 
-/// The widget used for item in menus
 pub trait MenuItemTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait {
     fn set_submenu<T: ::WidgetTrait>(&self, widget: &T) {
         unsafe {
@@ -18,10 +15,8 @@ pub trait MenuItemTrait: ::WidgetTrait + ::ContainerTrait + ::BinTrait {
         }
     }
 
-    fn get_submenu<T: ::WidgetTrait>(&self) -> T {
-        unsafe {
-            ::FFIWidget::wrap_widget(ffi::gtk_menu_item_get_submenu(GTK_MENU_ITEM(self.unwrap_widget())))
-        }
+    unsafe fn get_submenu<T: ::WidgetTrait>(&self) -> T {
+        ::FFIWidget::wrap_widget(ffi::gtk_menu_item_get_submenu(GTK_MENU_ITEM(self.unwrap_widget())))
     }
 
     fn select(&self) {

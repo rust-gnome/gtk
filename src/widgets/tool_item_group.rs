@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkToolItemGroup — A sub container used in a tool palette
-
 use ffi;
 use ToolItem;
 use FFIWidget;
@@ -15,6 +13,7 @@ struct_Widget!(ToolItemGroup);
 
 impl ToolItemGroup {
     pub fn new(label: &str) -> Option<ToolItemGroup> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_tool_item_group_new(label.to_glib_none().0)
         };
@@ -66,8 +65,8 @@ impl ToolItemGroup {
         }
     }
 
-    pub fn get_label_widget<T: ::WidgetTrait>(&self) -> Option<T> {
-        let tmp_pointer = unsafe { ffi::gtk_tool_item_group_get_label_widget(GTK_TOOL_ITEM_GROUP(self.unwrap_widget())) };
+    pub unsafe fn get_label_widget<T: ::WidgetTrait>(&self) -> Option<T> {
+        let tmp_pointer = ffi::gtk_tool_item_group_get_label_widget(GTK_TOOL_ITEM_GROUP(self.unwrap_widget()));
 
         if tmp_pointer.is_null() {
             None

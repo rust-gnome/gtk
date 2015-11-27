@@ -28,5 +28,5 @@ libc = "0.1"
 pango-sys = "0.2.1"
 
 [build-dependencies]
-gcc = "=0.3.9"
+gcc = "~0.3.9"
 pkg-config = "0.3.5"

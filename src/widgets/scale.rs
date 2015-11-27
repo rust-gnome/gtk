@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A slider widget for selecting a value from a range
-
 use libc::{c_double, c_int};
 use glib::translate::ToGlibPtr;
 
@@ -12,7 +10,6 @@ use cast::GTK_SCALE;
 use ffi;
 use glib::{to_bool, to_gboolean};
 
-/// Scale — A slider widget for selecting a value from a range
 /*
 * # Signal availables:
 * * `format-value` : Run Last
@@ -22,6 +19,7 @@ struct_Widget!(Scale);
 impl Scale {
     pub fn new(orientation: Orientation,
                adjustment: &::Adjustment) -> Option<Scale> {
+        skip_assert_initialized!();
         let tmp_pointer = unsafe { ffi::gtk_scale_new(orientation, adjustment.unwrap_pointer()) };
         check_pointer!(tmp_pointer, Scale)
     }
@@ -30,6 +28,7 @@ impl Scale {
                           min: f64,
                           max: f64,
                           step: f64) -> Option<Scale> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_scale_new_with_range(orientation, min as c_double, max as c_double, step as c_double) };
         check_pointer!(tmp_pointer, Scale)
     }

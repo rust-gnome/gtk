@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Adjustment — A representation of an adjustable bounded value
-
 use libc::c_double;
 use ffi;
 
@@ -25,6 +23,7 @@ impl Adjustment {
                step_increment: f64,
                page_increment: f64,
                page_size: f64) -> Option<Adjustment> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_adjustment_new(value as c_double, lower as c_double,
                                                            upper as c_double, step_increment as c_double,
                                                            page_increment as c_double, page_size as c_double) };
@@ -153,8 +152,8 @@ impl Adjustment {
     }
 
     #[doc(hidden)]
-    pub fn wrap_pointer(c_adjustment: *mut ffi::GtkAdjustment) -> Adjustment {
-        unsafe { ::gobject_ffi::g_object_ref(c_adjustment as *mut _); }
+    pub unsafe fn wrap_pointer(c_adjustment: *mut ffi::GtkAdjustment) -> Adjustment {
+        ::gobject_ffi::g_object_ref(c_adjustment as *mut _);
         Adjustment {
             pointer: c_adjustment
         }

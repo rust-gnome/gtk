@@ -4,7 +4,6 @@
 
 use ffi;
 
-/// GtkTextTagTable — Collection of tags that can be used together
 
 pub struct TextTagTable {
     pointer: *mut ffi::GtkTextTagTable
@@ -12,6 +11,7 @@ pub struct TextTagTable {
 
 impl TextTagTable {
     pub fn new() -> Option<TextTagTable> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_text_tag_table_new() };
         if tmp_pointer.is_null() {
             None

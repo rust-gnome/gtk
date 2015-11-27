@@ -2,18 +2,16 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A container box
-
 use ffi;
 use glib::{to_bool, to_gboolean};
 use cast::{GTK_SEARCHBAR, GTK_ENTRY};
 use FFIWidget;
 
-/// Box — A container box
 struct_Widget!(SearchBar);
 
 impl SearchBar {
     pub fn new() -> Option<SearchBar> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_search_bar_new() };
         check_pointer!(tmp_pointer, SearchBar)
     }

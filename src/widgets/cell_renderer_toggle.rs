@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Renders a toggle button in a cell
-
 use ffi;
 use glib::{to_bool, to_gboolean};
 
@@ -11,6 +9,7 @@ struct_Widget!(CellRendererToggle);
 
 impl CellRendererToggle {
     pub fn new() -> Option<CellRendererToggle> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_cell_renderer_toggle_new() as *mut ffi::GtkWidget };
 
         check_pointer!(tmp_pointer, CellRendererToggle)

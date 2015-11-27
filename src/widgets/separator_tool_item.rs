@@ -2,17 +2,15 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! The base class of widgets that can be added to ToolShe
-
 use ffi;
 use glib::{to_bool, to_gboolean};
 use cast::GTK_SEPARATORTOOLITEM;
 
-/// ToolItem — The base class of widgets that can be added to ToolShe
 struct_Widget!(SeparatorToolItem);
 
 impl SeparatorToolItem {
     pub fn new() -> Option<SeparatorToolItem> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_separator_tool_item_new() };
         check_pointer!(tmp_pointer, SeparatorToolItem)
     }

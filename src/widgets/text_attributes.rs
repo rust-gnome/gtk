@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! GtkTextTag — A tag that can be applied to text in a GtkTextBuffer
-
 use ffi;
 
 pub struct TextAttributes {
@@ -12,6 +10,7 @@ pub struct TextAttributes {
 
 impl TextAttributes {
     pub fn new() -> Option<TextAttributes> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_text_attributes_new() };
 
         if tmp_pointer.is_null() {

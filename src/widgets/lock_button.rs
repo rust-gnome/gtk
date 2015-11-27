@@ -2,18 +2,16 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! A container for arranging buttons
-
 use cast::GTK_LOCKBUTTON;
 use ffi;
 use glib::Permission;
 use glib::GlibContainer;
 
-/// GtkLockButton — A widget to unlock or lock privileged operations
 struct_Widget!(LockButton);
 
 impl LockButton {
     pub fn new(permission: &Permission) -> Option<LockButton> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe { ffi::gtk_lock_button_new(permission.unwrap()) };
         check_pointer!(tmp_pointer, LockButton)
     }

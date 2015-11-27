@@ -2,8 +2,6 @@
 // See the COPYRIGHT file at the top-level directory of this distribution.
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-//! Application chooser widget that can be embedded in other widgets
-
 use cast::GTK_APP_CHOOSER_WIDGET;
 use ffi;
 use glib::translate::{from_glib_none, ToGlibPtr};
@@ -13,6 +11,7 @@ struct_Widget!(AppChooserWidget);
 
 impl AppChooserWidget {
     pub fn new(content_type: &str) -> Option<AppChooserWidget> {
+        assert_initialized_main_thread!();
         let tmp_pointer = unsafe {
             ffi::gtk_app_chooser_widget_new(content_type.to_glib_none().0)
         };
