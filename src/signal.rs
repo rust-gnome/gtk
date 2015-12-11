@@ -40,6 +40,7 @@ use {
     Dialog,
     DirectionType,
     Entry,
+    TextBuffer,
     MovementStep,
     Range,
     ScrollType,
@@ -811,6 +812,7 @@ mod widget {
 
 }
 
+
 pub trait EntrySignals {
     fn connect_activate<F: Fn(Entry) + 'static>(&self, f: F) -> u64;
     fn connect_backspace<F: Fn(Entry) + 'static>(&self, f: F) -> u64;
@@ -822,6 +824,7 @@ pub trait EntrySignals {
     fn connect_move_cursor<F: Fn(Entry, MovementStep, i32, bool) + 'static>(&self, f: F) -> u64;
     fn connect_insert_at_cursor<F: Fn(Entry, &str) + 'static>(&self, f: F) -> u64;
     fn connect_preedit_changed<F: Fn(Entry, &str) + 'static>(&self, f: F) -> u64;
+    fn connect_changed<F: Fn(Entry) + 'static>(&self, f: F) -> u64;
 }
 
 mod entry {
@@ -915,6 +918,13 @@ mod entry {
                     transmute(string_trampoline), Box::into_raw(f) as *mut _)
             }
         }
+        fn connect_changed<F: Fn(Entry) + 'static>(&self, f: F) -> u64 {
+            unsafe {
+                let f: Box<Box<Fn(Entry) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "changed",
+                    transmute(void_trampoline), Box::into_raw(f) as *mut _)
+            }
+        }
     }
 
     extern "C" fn void_trampoline(this: *mut GtkEntry, f: &Box<Fn(Entry) + 'static>) {
@@ -941,6 +951,34 @@ mod entry {
         let buf = unsafe { CStr::from_ptr(c_str).to_bytes() };
         let string = str::from_utf8(buf).unwrap();
         f(FFIWidget::wrap_widget(this as *mut _), string);
+    }
+}
+
+pub trait TextBufferSignals {
+    fn connect_changed<F: Fn(TextBuffer) + 'static>(&self, f: F) -> u64;
+}
+
+mod text_buffer {
+    use std::mem::transmute;
+    use glib::signal::connect;
+    use traits::{FFIWidget, TextBufferTrait};
+    use ffi::GtkTextBuffer;
+    use super::CallbackGuard;
+    use {TextBuffer};
+
+    impl<T: FFIWidget + TextBufferTrait> super::TextBufferSignals for T {
+        fn connect_changed<F: Fn(TextBuffer) + 'static>(&self, f: F) -> u64 {
+            unsafe {
+                let f: Box<Box<Fn(TextBuffer) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "changed",
+                        transmute(void_trampoline), Box::into_raw(f) as *mut _)
+            }
+        }
+    }
+
+    extern "C" fn void_trampoline(this: *mut GtkTextBuffer, f: &Box<Fn(TextBuffer) + 'static>) {
+        callback_guard!();
+        f(FFIWidget::wrap_widget(this as *mut _));
     }
 }
 
