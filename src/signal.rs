@@ -960,14 +960,11 @@ pub trait TextBufferSignals {
 
 mod text_buffer {
     use std::mem::transmute;
-    use std::str;
-    use std::ffi::CStr;
     use glib::signal::connect;
-    use libc::c_char;
     use traits::{FFIWidget, TextBufferTrait};
     use ffi::GtkTextBuffer;
     use super::CallbackGuard;
-    use {TextBuffer, DeleteType, MovementStep};
+    use {TextBuffer};
 
     impl<T: FFIWidget + TextBufferTrait> super::TextBufferSignals for T {
         fn connect_changed<F: Fn(TextBuffer) + 'static>(&self, f: F) -> u64 {
