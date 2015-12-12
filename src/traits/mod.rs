@@ -52,6 +52,10 @@ pub use signal::{
     ButtonSignals,
     CalendarSignals,
     ComboBoxSignals,
+    EntrySignals,
+    EntryCompletionSignals,
+    MenuItemSignals,
+    TextBufferSignals, 
     ToolButtonSignals,
 };
 

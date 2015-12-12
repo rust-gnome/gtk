@@ -40,7 +40,8 @@ use {
     Dialog,
     DirectionType,
     Entry,
-    TextBuffer,
+    EntryCompletion,
+    MenuItem,
     MovementStep,
     Range,
     ScrollType,
@@ -48,9 +49,11 @@ use {
     StateFlags,
     StatusIcon,
     TextDirection,
+    TextBuffer,
     ToolButton,
     Tooltip,
     TreeIter,
+    TreeModel,
     TreePath,
     TreeSelection,
     TreeView,
@@ -951,6 +954,87 @@ mod entry {
         let buf = unsafe { CStr::from_ptr(c_str).to_bytes() };
         let string = str::from_utf8(buf).unwrap();
         f(FFIWidget::wrap_widget(this as *mut _), string);
+    }
+}
+
+pub trait EntryCompletionSignals {
+    fn connect_action_activated<F: Fn(EntryCompletion, i32) + 'static>(&self, f: F) -> u64;
+    fn connect_match_selected<F: Fn(EntryCompletion, TreeModel, TreeIter) + 'static>(&self, f: F) -> u64;
+}
+
+mod entry_completion {
+    use std::mem::transmute;
+    use glib::translate::*;
+    use glib::signal::connect;
+    use libc::c_int;
+    use traits::{FFIWidget};
+    use ffi::{
+        GtkEntryCompletion,
+        GtkTreeModel,
+        GtkTreeIter,
+    };
+    use super::CallbackGuard;
+    use {EntryCompletion,TreeModel,TreeIter};
+    
+    impl super::EntryCompletionSignals for EntryCompletion {
+        fn connect_action_activated<F: Fn(EntryCompletion, i32) + 'static>(&self, f: F) -> u64 {
+            unsafe {
+                let f: Box<Box<Fn(EntryCompletion, i32) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "action-activated",
+                        transmute(int_trampoline), Box::into_raw(f) as *mut _)
+            }
+        }
+
+        fn connect_match_selected<F: Fn(EntryCompletion, TreeModel, TreeIter) + 'static>(&self, f: F) -> u64{
+            unsafe {
+                let f: Box<Box<Fn(EntryCompletion,TreeModel,TreeIter) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "match-selected",
+                        transmute(model_iter_trampoline), Box::into_raw(f) as *mut _)
+            }
+        }
+    }
+
+    extern "C" fn int_trampoline(this: *mut GtkEntryCompletion, response: c_int,
+            f: &Box<Fn(EntryCompletion, i32) + 'static>) {
+        callback_guard!();
+        f(FFIWidget::wrap_widget(this as *mut _), response);
+    }
+
+    extern "C" fn model_iter_trampoline(this: *mut GtkEntryCompletion, model: *mut GtkTreeModel,
+            iter: *mut GtkTreeIter, f: &Box<Fn(EntryCompletion, TreeModel, TreeIter) -> bool + 'static>) {
+        callback_guard!();
+        unsafe {
+            f(FFIWidget::wrap_widget(this as *mut _), TreeModel::wrap_pointer(model),
+              from_glib_borrow(iter));
+        }
+    }
+}
+
+pub trait MenuItemSignals {
+    fn connect_activate<F: Fn(MenuItem) + 'static>(&self, f: F) -> u64;
+}
+
+mod menu_item {
+    use std::mem::transmute;
+    use glib::signal::connect;
+    use traits::{FFIWidget, MenuItemTrait};
+    use ffi::GtkMenuItem;
+    use super::CallbackGuard;
+    use {MenuItem};
+    
+    impl<T: FFIWidget + MenuItemTrait> super::MenuItemSignals for T{
+        fn connect_activate<F: Fn(MenuItem) + 'static>(&self, f: F) -> u64{
+            unsafe{
+                let f: Box<Box<Fn(MenuItem) + 'static>> = Box::new(Box::new(f));
+                connect(self.unwrap_widget() as *mut _, "activate",
+                        transmute(menu_trampoline), Box::into_raw(f) as *mut _)
+            }
+        }
+    }
+    
+    extern "C" fn menu_trampoline(this: *mut GtkMenuItem, f: &Box<Fn(MenuItem) + 'static>) {
+        callback_guard!();
+        f(FFIWidget::wrap_widget(this as *mut _));
     }
 }
 
