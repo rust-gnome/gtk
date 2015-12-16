@@ -16,6 +16,20 @@ use WindowType;
 */
 struct_Widget!(Window);
 
+/// Go to the  GTK website for complete
+/// [documentation](https://developer.gnome.org/gtk3/stable/GtkWindow.html).
+///
+/// # Examples
+///
+/// ```
+/// use gtk::traits::*;
+///
+/// gtk::init();
+/// let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
+/// window.set_window_position(gtk::WindowPosition::Center);
+/// window.show_all();
+/// ```
+///
 impl Window {
     pub fn new(window_type: WindowType) -> Option<Window> {
         assert_initialized_main_thread!();
