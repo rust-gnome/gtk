@@ -12049,6 +12049,7 @@ extern "C" {
     pub fn cast_GtkTreeView(widget: *mut GtkWidget) -> *mut GtkTreeView;
     pub fn cast_GtkCellRenderer(widget: *mut GtkWidget) -> *mut GtkCellRenderer;
     pub fn cast_GtkMenu(widget: *mut GtkWidget) -> *mut GtkMenu;
+    pub fn cast_GtkMenuBar(widget: *mut GtkWidget) -> *mut GtkMenuBar;
     pub fn cast_GtkMenuShell(widget: *mut GtkWidget) -> *mut GtkMenuShell;
     pub fn cast_GtkMenuItem(widget: *mut GtkWidget) -> *mut GtkMenuItem;
     pub fn cast_GtkCheckMenuItem(widget: *mut GtkWidget) -> *mut GtkCheckMenuItem;
