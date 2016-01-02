@@ -147,6 +147,7 @@ pub use self::event_box::EventBox;
 pub use self::gl_area::GLArea;
 pub use self::status_icon::StatusIcon;
 pub use self::menu::Menu;
+pub use self::menu_bar::MenuBar;
 
 mod css_provider;
 mod style_context;
@@ -293,3 +294,4 @@ mod event_box;
 mod gl_area;
 mod status_icon;
 mod menu;
+mod menu_bar;

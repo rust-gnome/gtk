@@ -159,6 +159,7 @@ pub use self::widgets::{
     EventBox,
     StatusIcon,
     Menu,
+    MenuBar,
 };
 
 #[cfg(target_os = "linux")]
@@ -234,6 +235,7 @@ pub use ffi::GtkMessageType as MessageType;
 pub use ffi::GtkMovementStep as MovementStep;
 pub use ffi::GtkNumberUpLayout as NumberUpLayout;
 pub use ffi::GtkOrientation as Orientation;
+pub use ffi::GtkPackDirection as PackDirection;
 pub use ffi::GtkPackType as PackType;
 pub use ffi::GtkPageOrientation as PageOrientation;
 pub use ffi::GtkPageSet as PageSet;
