@@ -23,5 +23,10 @@ build_script:
   - cd _examples
   - cargo build
   - cargo build --features gtk_3_18
+  - cd ..
+  - git clone -q --depth 50 -b pending https://github.com/gtk-rs/tests _tests
+  - cd _tests
+  - cargo build
+  - cargo build --features gtk_3_18
 
 test: false

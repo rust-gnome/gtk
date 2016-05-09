@@ -22,3 +22,7 @@ script:
   - git clone -q --depth 50 -b pending https://github.com/gtk-rs/examples _examples
   - cd _examples
   - ./build.sh
+  - cd ..
+  - git clone -q --depth 50 -b pending https://github.com/gtk-rs/tests _tests
+  - cd _tests
+  - ./build.sh
