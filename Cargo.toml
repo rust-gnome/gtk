@@ -53,3 +53,22 @@ glib = "^0.1.2"
 gdk = "^0.5.2"
 gdk-pixbuf = "^0.1.2"
 pango = "^0.1.2"
+
+[replace]
+"gtk:0.1.2" = { git = 'https://github.com/gtk-rs/gtk' }
+"gdk:0.5.2" = { git = 'https://github.com/gtk-rs/gdk' }
+"gdk-pixbuf:0.1.2" = { git = 'https://github.com/gtk-rs/gdk-pixbuf' }
+"pango:0.1.2" = { git = 'https://github.com/gtk-rs/pango' }
+"cairo-rs:0.1.2" = { git = 'https://github.com/gtk-rs/cairo' }
+"cairo-sys-rs:0.3.3" = { git = 'https://github.com/gtk-rs/cairo' }
+"gio:0.1.2" = { git = 'https://github.com/gtk-rs/gio' }
+"glib:0.1.2" = { git = 'https://github.com/gtk-rs/glib' }
+"atk-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"gdk-pixbuf-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"gdk-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"gio-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"glib-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"gobject-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"gtk-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"pango-sys:0.3.3" = { git = 'https://github.com/gtk-rs/sys' }
+"gtk-rs-lgpl-docs:0.1.1" = { git = 'https://github.com/gtk-rs/lgpl-docs' }
