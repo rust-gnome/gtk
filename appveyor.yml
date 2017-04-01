@@ -20,6 +20,7 @@ install:
   - pacman --noconfirm -S mingw-w64-%ARCH%-gtk3
 
 build_script:
+  - cargo test
   - mkdir .cargo
   - echo paths = ["."] > .cargo\config
   - git clone -q --depth 50 -b pending https://github.com/gtk-rs/examples _examples
