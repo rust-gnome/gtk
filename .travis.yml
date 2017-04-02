@@ -12,6 +12,7 @@ addons:
     - libgtk-3-dev
 script:
   - rustc --version
+  - dpkg --get-selections | grep gtk
   - echo "GTK_DEBUG=$GTK_DEBUG"
   - export GTK_DEBUG=all
   - ./check_init_asserts
