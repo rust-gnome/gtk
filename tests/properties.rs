@@ -5,14 +5,9 @@ use gtk::prelude::*;
 use gtk::*;
 
 #[test]
+#[cfg(windows)]
 fn properties() {
-    //HACK: workaround for travis (or for Ubuntu 16.04)
-    //gtk::init().unwrap();
-    unsafe {
-        let mut argc = 0;
-        ffi::gtk_init(&mut argc, std::ptr::null_mut());
-        gtk::set_initialized();
-    }
+    gtk::init().unwrap();
 
     let align = Alignment::new(0f32, 0f32, 1f32, 1f32);
     let cell_area_box = CellAreaBox::new();

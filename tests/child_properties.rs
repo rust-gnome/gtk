@@ -5,14 +5,9 @@ use gtk::{BoxExt, Button, ContainerExt, PackType};
 use gtk::Orientation::Vertical;
 
 #[test]
+#[cfg(windows)]
 fn child_properties() {
-    //HACK: workaround for travis (or for Ubuntu 16.04)
-    //gtk::init().unwrap();
-    unsafe {
-        let mut argc = 0;
-        ffi::gtk_init(&mut argc, std::ptr::null_mut());
-        gtk::set_initialized();
-    }
+    gtk::init().unwrap();
 
     let vbox = gtk::Box::new(Vertical, 0);
     let button = Button::new();
