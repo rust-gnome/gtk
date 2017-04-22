@@ -1,11 +1,18 @@
 extern crate gtk;
+extern crate gtk_sys as ffi;
 
 use gtk::{BoxExt, Button, ContainerExt, PackType};
 use gtk::Orientation::Vertical;
 
 #[test]
 fn child_properties() {
-    gtk::init().unwrap();
+    //HACK: workaround for travis (or for Ubuntu 16.04)
+    //gtk::init().unwrap();
+    unsafe {
+        let mut argc = 0;
+        ffi::gtk_init(&mut argc, std::ptr::null_mut());
+        gtk::set_initialized();
+    }
 
     let vbox = gtk::Box::new(Vertical, 0);
     let button = Button::new();

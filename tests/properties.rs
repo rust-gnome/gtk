@@ -1,11 +1,18 @@
 extern crate gtk;
+extern crate gtk_sys as ffi;
 
 use gtk::prelude::*;
 use gtk::*;
 
 #[test]
 fn properties() {
-    gtk::init().unwrap();
+    //HACK: workaround for travis (or for Ubuntu 16.04)
+    //gtk::init().unwrap();
+    unsafe {
+        let mut argc = 0;
+        ffi::gtk_init(&mut argc, std::ptr::null_mut());
+        gtk::set_initialized();
+    }
 
     let align = Alignment::new(0f32, 0f32, 1f32, 1f32);
     let cell_area_box = CellAreaBox::new();
