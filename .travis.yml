@@ -17,8 +17,8 @@ script:
   # catch any sneaked in lgpl docs
   - cargo build --features purge-lgpl-docs
   - git diff -R --exit-code
-  - mkdir .cargo
-  - echo 'paths = ["."]' > .cargo/config
+  # - mkdir .cargo
+  # - echo 'paths = ["."]' > .cargo/config
   - git clone -q --depth 50 -b pending https://github.com/gtk-rs/examples _examples
   - cd _examples
   - ./build.sh
