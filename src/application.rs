@@ -9,7 +9,7 @@ use glib_ffi;
 
 impl Application {
     #[cfg(feature = "v3_6")]
-    fn new(application_id: Option<&str>, flags: ApplicationFlags) -> Result<Application, glib::BoolError> {
+    pub fn new(application_id: Option<&str>, flags: ApplicationFlags) -> Result<Application, glib::BoolError> {
         skip_assert_initialized!();
         try!(rt::init());
         unsafe {
@@ -20,7 +20,7 @@ impl Application {
     }
 
     #[cfg(not(feature = "v3_6"))]
-    fn new(application_id: &str, flags: ApplicationFlags) -> Result<Application, glib::BoolError> {
+    pub fn new(application_id: &str, flags: ApplicationFlags) -> Result<Application, glib::BoolError> {
         skip_assert_initialized!();
         try!(rt::init());
         unsafe {
