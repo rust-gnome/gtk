@@ -145,7 +145,6 @@
 //! their effects!**
 
 extern crate libc;
-#[macro_use]
 extern crate bitflags;
 
 extern crate glib_sys as glib_ffi;
@@ -199,7 +198,6 @@ mod css_provider;
 mod dialog;
 mod drag_context;
 mod entry_buffer;
-mod enums;
 mod file_chooser_dialog;
 mod list_store;
 mod menu;
