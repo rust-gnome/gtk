@@ -89,7 +89,7 @@ impl<O: IsA<TreeModel> + IsA<TreeSortable>> TreeSortableExtManual for O {
             let mut order = mem::uninitialized();
             ffi::gtk_tree_sortable_get_sort_column_id(self.to_glib_none().0, &mut sort_column_id, &mut order);
             if sort_column_id != ffi::GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID {
-                Some((from_glib(sort_column_id), from_glib(order)))
+                Some((from_glib(sort_column_id), order))
             } else {
                 None
             }
@@ -109,7 +109,7 @@ impl<O: IsA<TreeModel> + IsA<TreeSortable>> TreeSortableExtManual for O {
     #[inline]
     fn set_sort_column_id(&self, sort_column_id: SortColumn, order: SortType) {
         unsafe {
-            ffi::gtk_tree_sortable_set_sort_column_id(self.to_glib_none().0, sort_column_id.to_glib(), order.to_glib());
+            ffi::gtk_tree_sortable_set_sort_column_id(self.to_glib_none().0, sort_column_id.to_glib(), order);
         }
     }
 
@@ -117,7 +117,7 @@ impl<O: IsA<TreeModel> + IsA<TreeSortable>> TreeSortableExtManual for O {
         unsafe {
             ffi::gtk_tree_sortable_set_sort_column_id(self.to_glib_none().0,
                                                       ffi::GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID,
-                                                      SortType::Ascending.to_glib());
+                                                      SortType::Ascending);
         }
     }
 

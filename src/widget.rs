@@ -56,10 +56,10 @@ impl<O: IsA<Widget> + IsA<Object>> WidgetExtManual for O {
             ptr::null_mut()
         };
         unsafe { ffi::gtk_drag_dest_set(self.to_glib_none().0,
-                                        flags.to_glib(),
+                                        flags,
                                         t_ptr,
                                         t.len() as i32,
-                                        actions.to_glib())};
+                                        actions)};
     }
 
     fn drag_source_set(&self, start_button_mask: ModifierType, targets: &[TargetEntry], actions: DragAction) {
@@ -80,10 +80,10 @@ impl<O: IsA<Widget> + IsA<Object>> WidgetExtManual for O {
             ptr::null_mut()
         };
         unsafe { ffi::gtk_drag_source_set(self.to_glib_none().0,
-                                          start_button_mask.to_glib(),
+                                          start_button_mask,
                                           t_ptr,
                                           t.len() as i32,
-                                          actions.to_glib())};
+                                          actions)};
     }
 
     fn intersect(&self, area: &Rectangle, mut intersection: Option<&mut Rectangle>) -> bool {
