@@ -38,6 +38,8 @@ pub trait ContainerExt {
 
     //fn child_get<P: IsA<Widget>>(&self, child: &P, first_prop_name: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs);
 
+    fn child_get_property<P: IsA<Widget>>(&self, child: &P, property_name: &str, value: &mut glib::Value);
+
     //fn child_get_valist<P: IsA<Widget>>(&self, child: &P, first_property_name: &str, var_args: /*Unknown conversion*//*Unimplemented*/Unsupported);
 
     fn child_notify<P: IsA<Widget>>(&self, child: &P, child_property: &str);
@@ -46,6 +48,8 @@ pub trait ContainerExt {
     //fn child_notify_by_pspec<P: IsA<Widget>, Q: IsA</*Ignored*/glib::ParamSpec>>(&self, child: &P, pspec: &Q);
 
     //fn child_set<P: IsA<Widget>>(&self, child: &P, first_prop_name: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs);
+
+    fn child_set_property<P: IsA<Widget>>(&self, child: &P, property_name: &str, value: &glib::Value);
 
     //fn child_set_valist<P: IsA<Widget>>(&self, child: &P, first_property_name: &str, var_args: /*Unknown conversion*//*Unimplemented*/Unsupported);
 
@@ -135,6 +139,12 @@ impl<O: IsA<Container> + IsA<glib::object::Object>> ContainerExt for O {
     //    unsafe { TODO: call ffi::gtk_container_child_get() }
     //}
 
+    fn child_get_property<P: IsA<Widget>>(&self, child: &P, property_name: &str, value: &mut glib::Value) {
+        unsafe {
+            ffi::gtk_container_child_get_property(self.to_glib_none().0, child.to_glib_none().0, property_name.to_glib_none().0, value.to_glib_none_mut().0);
+        }
+    }
+
     //fn child_get_valist<P: IsA<Widget>>(&self, child: &P, first_property_name: &str, var_args: /*Unknown conversion*//*Unimplemented*/Unsupported) {
     //    unsafe { TODO: call ffi::gtk_container_child_get_valist() }
     //}
@@ -153,6 +163,12 @@ impl<O: IsA<Container> + IsA<glib::object::Object>> ContainerExt for O {
     //fn child_set<P: IsA<Widget>>(&self, child: &P, first_prop_name: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs) {
     //    unsafe { TODO: call ffi::gtk_container_child_set() }
     //}
+
+    fn child_set_property<P: IsA<Widget>>(&self, child: &P, property_name: &str, value: &glib::Value) {
+        unsafe {
+            ffi::gtk_container_child_set_property(self.to_glib_none().0, child.to_glib_none().0, property_name.to_glib_none().0, value.to_glib_none().0);
+        }
+    }
 
     //fn child_set_valist<P: IsA<Widget>>(&self, child: &P, first_property_name: &str, var_args: /*Unknown conversion*//*Unimplemented*/Unsupported) {
     //    unsafe { TODO: call ffi::gtk_container_child_set_valist() }
