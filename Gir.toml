@@ -201,7 +201,6 @@ generate = [
     "Gtk.TextMark",
     "Gtk.TextSearchFlags",
     "Gtk.TextTagTable",
-    "Gtk.TextViewLayer",
     "Gtk.TextWindowType",
     "Gtk.ToggleButton",
     "Gtk.ToggleToolButton",
@@ -1962,3 +1961,8 @@ status = "generate"
     #value glib.Variant
     name = "action-target"
     ignore = true
+
+[[object]]
+name = "Gtk.TextViewLayer"
+status = "generate"
+version = "3.14"
