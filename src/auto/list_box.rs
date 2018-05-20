@@ -12,6 +12,7 @@ use MovementStep;
 use SelectionMode;
 use Widget;
 use ffi;
+use ffi::GtkListBoxRow;
 use glib;
 use glib::StaticType;
 use glib::Value;
@@ -21,9 +22,11 @@ use glib::signal::SignalHandlerId;
 use glib::signal::connect;
 use glib::translate::*;
 use glib_ffi;
+use glib_ffi::gpointer;
 use gobject_ffi;
 use libc;
 use std::boxed::Box as Box_;
+use std::cmp::Ordering;
 use std::mem;
 use std::mem::transmute;
 use std::ptr;
@@ -126,8 +129,8 @@ pub trait ListBoxExt {
     #[cfg(any(feature = "v3_10", feature = "dox"))]
     fn set_selection_mode(&self, mode: SelectionMode);
 
-    //#[cfg(any(feature = "v3_10", feature = "dox"))]
-    //fn set_sort_func<'a, P: Into<Option<&'a /*Unimplemented*/ListBoxSortFunc>>>(&self, sort_func: P, destroy: /*Unknown conversion*//*Unimplemented*/DestroyNotify);
+    #[cfg(any(feature = "v3_10", feature = "dox"))]
+    fn set_sort_func<'a, F>(&self, sort_func: F) where F: Fn(&ListBoxRow, &ListBoxRow) -> Ordering + 'static;
 
     #[cfg(any(feature = "v3_14", feature = "dox"))]
     fn unselect_all(&self);
@@ -348,10 +351,15 @@ impl<O: IsA<ListBox> + IsA<glib::object::Object> + glib::object::ObjectExt> List
         }
     }
 
-    //#[cfg(any(feature = "v3_10", feature = "dox"))]
-    //fn set_sort_func<'a, P: Into<Option<&'a /*Unimplemented*/ListBoxSortFunc>>>(&self, sort_func: P, destroy: /*Unknown conversion*//*Unimplemented*/DestroyNotify) {
-    //    unsafe { TODO: call ffi::gtk_list_box_set_sort_func() }
-    //}
+    #[cfg(any(feature = "v3_10", feature = "dox"))]
+    fn set_sort_func<'a, F>(&self, sort_func: F) where F: Fn(&ListBoxRow, &ListBoxRow) -> Ordering + 'static {
+        unsafe {
+            ffi::gtk_list_box_set_sort_func(self.to_glib_none().0,
+                                            Some(sort_func_trampoline),
+                                            sort_func_into_raw(sort_func),
+                                            Some(sort_func_destroy_closure))
+        }
+    }
 
     #[cfg(any(feature = "v3_14", feature = "dox"))]
     fn unselect_all(&self) {
@@ -501,6 +509,30 @@ impl<O: IsA<ListBox> + IsA<glib::object::Object> + glib::object::ObjectExt> List
                 transmute(notify_selection_mode_trampoline::<Self> as usize), Box_::into_raw(f) as *mut _)
         }
     }
+}
+
+#[cfg(any(feature = "v3_10", feature = "dox"))]
+unsafe extern "C" fn sort_func_trampoline(iter: *mut GtkListBoxRow,
+                                          iter2: *mut GtkListBoxRow,
+                                          f: gpointer) -> i32 {
+    callback_guard!();
+    let f: &&(Fn(&ListBoxRow, &ListBoxRow) -> Ordering) = transmute(f);
+    f(&from_glib_borrow(iter), &from_glib_borrow(iter2)).to_glib()
+}
+
+#[cfg(any(feature = "v3_10", feature = "dox"))]
+fn sort_func_into_raw<F>(func: F) -> gpointer
+    where F: Fn(&ListBoxRow, &ListBoxRow) -> Ordering + 'static {
+    skip_assert_initialized!();
+    let func: Box<Box<Fn(&ListBoxRow, &ListBoxRow) -> Ordering + 'static>> =
+        Box::new(Box::new(func));
+    Box::into_raw(func) as gpointer
+}
+
+#[cfg(any(feature = "v3_10", feature = "dox"))]
+unsafe extern "C" fn sort_func_destroy_closure(ptr: gpointer) {
+    callback_guard!();
+    Box::<Box<Fn(&ListBoxRow, &ListBoxRow) -> Ordering + 'static>>::from_raw(ptr as *mut _);
 }
 
 unsafe extern "C" fn activate_cursor_row_trampoline<P>(this: *mut ffi::GtkListBox, f: glib_ffi::gpointer)
