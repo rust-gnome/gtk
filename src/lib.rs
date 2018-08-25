@@ -260,6 +260,8 @@ mod tree_sortable;
 mod tree_path;
 mod tree_store;
 mod widget;
+#[cfg(any(feature = "v3_20", feature = "dox"))]
+mod widget_class;
 mod window;
 
 pub mod prelude;
@@ -285,3 +287,5 @@ pub use requisition::Requisition;
 pub use socket::Socket;
 pub use target_entry::TargetEntry;
 pub use tree_sortable::SortColumn;
+#[cfg(any(feature = "v3_20", feature = "dox"))]
+pub use widget_class::WidgetClass;

@@ -10,6 +10,8 @@ use std::ptr;
 use glib::object::{Downcast, IsA};
 use glib::signal::{SignalHandlerId, connect};
 use glib::translate::*;
+#[cfg(any(feature = "v3_20", feature = "dox"))]
+use gobject_ffi;
 use glib_ffi::gboolean;
 #[cfg(any(feature = "v3_8", feature = "dox"))]
 use glib_ffi::gpointer;
@@ -28,8 +30,19 @@ use {
     TargetEntry,
     Widget,
 };
+#[cfg(any(feature = "v3_20", feature = "dox"))]
+use WidgetClass;
 #[cfg(any(feature = "v3_8", feature = "dox"))]
 use::Continue;
+
+impl Widget {
+    #[cfg(any(feature = "v3_20", feature = "dox"))]
+    pub fn get_class(&self) -> WidgetClass {
+        let tmp: *const ffi::GtkWidget = self.to_glib_none().0;
+        let tmp2 = tmp as usize as *const gobject_ffi::GTypeInstance;
+        unsafe { WidgetClass::from_glib((*tmp2).g_class as *mut _) }
+    }
+}
 
 pub trait WidgetExtManual {
     fn drag_dest_set(&self, flags: DestDefaults, targets: &[TargetEntry], actions: DragAction);
