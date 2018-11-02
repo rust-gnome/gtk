@@ -34,6 +34,7 @@ pub use text_buffer::TextBufferExtManual;
 pub use tree_model_filter::TreeModelFilterExtManual;
 pub use tree_sortable::TreeSortableExtManual;
 pub use tree_store::TreeStoreExtManual;
+pub use tree_view_column::TreeViewColumnExtManual;
 pub use widget::WidgetExtManual;
 pub use window::GtkWindowExtManual;
 
