@@ -42,6 +42,9 @@ v3_14 = ["v3_12", "gtk-sys/v3_14", "gdk/v3_14"]
 dox = ["gdk/dox", "gtk-sys/dox"]
 futures = ["futures-core-preview", "fragile", "gio/futures"]
 
+[target.'cfg(all(target_os = "windows", target_env = "msvc"))'.build-dependencies]
+vcpkg = "0.2.6"
+
 [target.'cfg(target_os = "macos")'.build-dependencies]
 cc = "^1.0"
 
