@@ -31,6 +31,7 @@ use glib::signal::SignalHandlerId;
 use glib::signal::connect_raw;
 use glib::translate::*;
 use glib_ffi;
+use glib_ffi::gpointer;
 use gobject_ffi;
 use libc;
 use std::boxed::Box as Box_;
@@ -149,7 +150,7 @@ pub trait IconViewExt: 'static {
 
     fn select_path(&self, path: &TreePath);
 
-    //fn selected_foreach<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/IconViewForeachFunc, data: P);
+    fn selected_foreach<P: FnMut(IconView, TreePath)>(&self, func: P);
 
     #[cfg(any(feature = "v3_8", feature = "dox"))]
     fn set_activate_on_single_click(&self, single: bool);
@@ -496,9 +497,20 @@ impl<O: IsA<IconView>> IconViewExt for O {
         }
     }
 
-    //fn selected_foreach<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/IconViewForeachFunc, data: P) {
-    //    unsafe { TODO: call ffi::gtk_icon_view_selected_foreach() }
-    //}
+    fn selected_foreach<P: FnMut(IconView, TreePath)>(&self, func: P) {
+        let func_data: Option<P> = func.into();
+        unsafe extern "C" fn func_func<P: FnMut(IconView, TreePath)>(icon_view: *mut ffi::GtkIconView, path: *mut ffi::GtkTreePath, data: glib_ffi::gpointer) {
+            let icon_view = from_glib_none(icon_view);
+            let path = from_glib_none(path);
+            let callback: *mut P = data as *const _ as usize as *mut P;
+            (*callback)(icon_view, path);
+        }
+        let func = Some(func_func::<P> as _);
+        let super_callback0: &Option<P> = &func_data;
+        unsafe {
+            ffi::gtk_icon_view_selected_foreach(self.as_ref().to_glib_none().0, func, super_callback0 as *const _ as usize as *mut _);
+        }
+    }
 
     #[cfg(any(feature = "v3_8", feature = "dox"))]
     fn set_activate_on_single_click(&self, single: bool) {

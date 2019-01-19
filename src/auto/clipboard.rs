@@ -11,6 +11,8 @@ use glib;
 use glib::GString;
 use glib::object::IsA;
 use glib::translate::*;
+use glib_ffi::gpointer;
+use std::boxed::Box as Box_;
 use std::fmt;
 use std::mem;
 use std::ptr;
@@ -59,13 +61,13 @@ pub trait ClipboardExt: 'static {
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     fn get_selection(&self) -> Option<gdk::Atom>;
 
-    //fn request_contents(&self, target: &gdk::Atom, callback: /*Unknown conversion*//*Unimplemented*/ClipboardReceivedFunc);
+    fn request_contents<P: FnOnce(Clipboard, SelectionData) + 'static>(&self, target: &gdk::Atom, callback: P);
 
-    //fn request_image(&self, callback: /*Unknown conversion*//*Unimplemented*/ClipboardImageReceivedFunc);
+    fn request_image<P: FnOnce(Clipboard, gdk_pixbuf::Pixbuf) + 'static>(&self, callback: P);
 
-    //fn request_rich_text<P: IsA<TextBuffer>>(&self, buffer: &P, callback: /*Unknown conversion*//*Unimplemented*/ClipboardRichTextReceivedFunc);
+    fn request_rich_text<P: IsA<TextBuffer>, Q: FnOnce(Clipboard, gdk::Atom, GString, usize) + 'static>(&self, buffer: &P, callback: Q);
 
-    //fn request_text(&self, callback: /*Unknown conversion*//*Unimplemented*/ClipboardTextReceivedFunc);
+    fn request_text<P: FnOnce(Clipboard, GString) + 'static>(&self, callback: P);
 
     fn set_image<P: IsA<gdk_pixbuf::Pixbuf>>(&self, pixbuf: &P);
 
@@ -124,21 +126,70 @@ impl<O: IsA<Clipboard>> ClipboardExt for O {
         }
     }
 
-    //fn request_contents(&self, target: &gdk::Atom, callback: /*Unknown conversion*//*Unimplemented*/ClipboardReceivedFunc) {
-    //    unsafe { TODO: call ffi::gtk_clipboard_request_contents() }
-    //}
+    fn request_contents<P: FnOnce(Clipboard, SelectionData) + 'static>(&self, target: &gdk::Atom, callback: P) {
+        let callback_data: Box_<Option<P>> = Box::new(callback.into());
+        unsafe extern "C" fn callback_func<P: FnOnce(Clipboard, SelectionData) + 'static>(clipboard: *mut ffi::GtkClipboard, selection_data: *mut ffi::GtkSelectionData, data: glib_ffi::gpointer) {
+            let clipboard = from_glib_none(clipboard);
+            let selection_data = from_glib_none(selection_data);
+            let callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+            let callback = (*callback).expect("cannot get closure...");
+            callback(clipboard, selection_data)
+        }
+        let callback = if callback_data.is_some() { Some(callback_func::<P> as _) } else { None };
+        let super_callback0: Box_<Option<P>> = callback_data;
+        unsafe {
+            ffi::gtk_clipboard_request_contents(self.as_ref().to_glib_none().0, target.to_glib_none().0, callback, Box::into_raw(super_callback0) as *mut _);
+        }
+    }
 
-    //fn request_image(&self, callback: /*Unknown conversion*//*Unimplemented*/ClipboardImageReceivedFunc) {
-    //    unsafe { TODO: call ffi::gtk_clipboard_request_image() }
-    //}
+    fn request_image<P: FnOnce(Clipboard, gdk_pixbuf::Pixbuf) + 'static>(&self, callback: P) {
+        let callback_data: Box_<Option<P>> = Box::new(callback.into());
+        unsafe extern "C" fn callback_func<P: FnOnce(Clipboard, gdk_pixbuf::Pixbuf) + 'static>(clipboard: *mut ffi::GtkClipboard, pixbuf: *mut gdk_pixbuf_ffi::GdkPixbuf, data: glib_ffi::gpointer) {
+            let clipboard = from_glib_none(clipboard);
+            let pixbuf = from_glib_none(pixbuf);
+            let callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+            let callback = (*callback).expect("cannot get closure...");
+            callback(clipboard, pixbuf)
+        }
+        let callback = if callback_data.is_some() { Some(callback_func::<P> as _) } else { None };
+        let super_callback0: Box_<Option<P>> = callback_data;
+        unsafe {
+            ffi::gtk_clipboard_request_image(self.as_ref().to_glib_none().0, callback, Box::into_raw(super_callback0) as *mut _);
+        }
+    }
 
-    //fn request_rich_text<P: IsA<TextBuffer>>(&self, buffer: &P, callback: /*Unknown conversion*//*Unimplemented*/ClipboardRichTextReceivedFunc) {
-    //    unsafe { TODO: call ffi::gtk_clipboard_request_rich_text() }
-    //}
+    fn request_rich_text<P: IsA<TextBuffer>, Q: FnOnce(Clipboard, gdk::Atom, GString, usize) + 'static>(&self, buffer: &P, callback: Q) {
+        let callback_data: Box_<Option<Q>> = Box::new(callback.into());
+        unsafe extern "C" fn callback_func<P: IsA<TextBuffer>, Q: FnOnce(Clipboard, gdk::Atom, GString, usize) + 'static>(clipboard: *mut ffi::GtkClipboard, format: gdk_ffi::GdkAtom, text: *const libc::c_char, length: libc::size_t, data: glib_ffi::gpointer) {
+            let clipboard = from_glib_none(clipboard);
+            let format = from_glib_none(format);
+            let text = from_glib_none(text);
+            let callback: Box_<Option<Q>> = Box_::from_raw(data as *mut _);
+            let callback = (*callback).expect("cannot get closure...");
+            callback(clipboard, format, text, length)
+        }
+        let callback = if callback_data.is_some() { Some(callback_func::<P, Q> as _) } else { None };
+        let super_callback0: Box_<Option<Q>> = callback_data;
+        unsafe {
+            ffi::gtk_clipboard_request_rich_text(self.as_ref().to_glib_none().0, buffer.as_ref().to_glib_none().0, callback, Box::into_raw(super_callback0) as *mut _);
+        }
+    }
 
-    //fn request_text(&self, callback: /*Unknown conversion*//*Unimplemented*/ClipboardTextReceivedFunc) {
-    //    unsafe { TODO: call ffi::gtk_clipboard_request_text() }
-    //}
+    fn request_text<P: FnOnce(Clipboard, GString) + 'static>(&self, callback: P) {
+        let callback_data: Box_<Option<P>> = Box::new(callback.into());
+        unsafe extern "C" fn callback_func<P: FnOnce(Clipboard, GString) + 'static>(clipboard: *mut ffi::GtkClipboard, text: *const libc::c_char, data: glib_ffi::gpointer) {
+            let clipboard = from_glib_none(clipboard);
+            let text = from_glib_none(text);
+            let callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+            let callback = (*callback).expect("cannot get closure...");
+            callback(clipboard, text)
+        }
+        let callback = if callback_data.is_some() { Some(callback_func::<P> as _) } else { None };
+        let super_callback0: Box_<Option<P>> = callback_data;
+        unsafe {
+            ffi::gtk_clipboard_request_text(self.as_ref().to_glib_none().0, callback, Box::into_raw(super_callback0) as *mut _);
+        }
+    }
 
     fn set_image<P: IsA<gdk_pixbuf::Pixbuf>>(&self, pixbuf: &P) {
         unsafe {

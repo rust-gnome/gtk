@@ -11,6 +11,7 @@ use glib::signal::SignalHandlerId;
 use glib::signal::connect_raw;
 use glib::translate::*;
 use glib_ffi;
+use glib_ffi::gpointer;
 use std::boxed::Box as Box_;
 use std::fmt;
 use std::mem::transmute;
@@ -43,7 +44,7 @@ pub const NONE_TEXT_TAG_TABLE: Option<&TextTagTable> = None;
 pub trait TextTagTableExt: 'static {
     fn add<P: IsA<TextTag>>(&self, tag: &P) -> bool;
 
-    //fn foreach<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TextTagTableForeach, data: P);
+    fn foreach<P: FnMut(TextTag)>(&self, func: P);
 
     fn get_size(&self) -> i32;
 
@@ -65,9 +66,19 @@ impl<O: IsA<TextTagTable>> TextTagTableExt for O {
         }
     }
 
-    //fn foreach<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TextTagTableForeach, data: P) {
-    //    unsafe { TODO: call ffi::gtk_text_tag_table_foreach() }
-    //}
+    fn foreach<P: FnMut(TextTag)>(&self, func: P) {
+        let func_data: Option<P> = func.into();
+        unsafe extern "C" fn func_func<P: FnMut(TextTag)>(tag: *mut ffi::GtkTextTag, data: glib_ffi::gpointer) {
+            let tag = from_glib_none(tag);
+            let callback: *mut P = data as *const _ as usize as *mut P;
+            (*callback)(tag);
+        }
+        let func = Some(func_func::<P> as _);
+        let super_callback0: &Option<P> = &func_data;
+        unsafe {
+            ffi::gtk_text_tag_table_foreach(self.as_ref().to_glib_none().0, func, super_callback0 as *const _ as usize as *mut _);
+        }
+    }
 
     fn get_size(&self) -> i32 {
         unsafe {

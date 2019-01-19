@@ -46,7 +46,7 @@ impl Default for FileFilter {
 pub const NONE_FILE_FILTER: Option<&FileFilter> = None;
 
 pub trait FileFilterExt: 'static {
-    //fn add_custom<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, needed: FileFilterFlags, func: /*Unknown conversion*//*Unimplemented*/FileFilterFunc, data: P, notify: /*Unknown conversion*//*Unimplemented*/DestroyNotify);
+    //fn add_custom(&self, needed: FileFilterFlags, func: /*Unimplemented*/Fn(/*Ignored*/FileFilterInfo) -> bool, data: /*Unimplemented*/Option<Fundamental: Pointer>);
 
     fn add_mime_type(&self, mime_type: &str);
 
@@ -67,7 +67,7 @@ pub trait FileFilterExt: 'static {
 }
 
 impl<O: IsA<FileFilter>> FileFilterExt for O {
-    //fn add_custom<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, needed: FileFilterFlags, func: /*Unknown conversion*//*Unimplemented*/FileFilterFunc, data: P, notify: /*Unknown conversion*//*Unimplemented*/DestroyNotify) {
+    //fn add_custom(&self, needed: FileFilterFlags, func: /*Unimplemented*/Fn(/*Ignored*/FileFilterInfo) -> bool, data: /*Unimplemented*/Option<Fundamental: Pointer>) {
     //    unsafe { TODO: call ffi::gtk_file_filter_add_custom() }
     //}
 

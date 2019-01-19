@@ -27,6 +27,7 @@ use glib::signal::SignalHandlerId;
 use glib::signal::connect_raw;
 use glib::translate::*;
 use glib_ffi;
+use glib_ffi::gpointer;
 use gobject_ffi;
 use libc;
 use std::boxed::Box as Box_;
@@ -121,7 +122,7 @@ pub trait ComboBoxExt: 'static {
 
     fn get_popup_fixed_width(&self) -> bool;
 
-    //fn get_row_separator_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewRowSeparatorFunc;
+    //fn get_row_separator_func(&self) -> Fn(TreeModel, TreeIter) -> bool + 'static;
 
     fn get_row_span_column(&self) -> i32;
 
@@ -159,7 +160,7 @@ pub trait ComboBoxExt: 'static {
 
     fn set_popup_fixed_width(&self, fixed: bool);
 
-    //fn set_row_separator_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TreeViewRowSeparatorFunc, data: P, destroy: Q);
+    fn set_row_separator_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(&self, func: P);
 
     fn set_row_span_column(&self, row_span: i32);
 
@@ -305,7 +306,7 @@ impl<O: IsA<ComboBox>> ComboBoxExt for O {
         }
     }
 
-    //fn get_row_separator_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewRowSeparatorFunc {
+    //fn get_row_separator_func(&self) -> Fn(TreeModel, TreeIter) -> bool + 'static {
     //    unsafe { TODO: call ffi::gtk_combo_box_get_row_separator_func() }
     //}
 
@@ -409,9 +410,29 @@ impl<O: IsA<ComboBox>> ComboBoxExt for O {
         }
     }
 
-    //fn set_row_separator_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TreeViewRowSeparatorFunc, data: P, destroy: Q) {
-    //    unsafe { TODO: call ffi::gtk_combo_box_set_row_separator_func() }
-    //}
+    fn set_row_separator_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(&self, func: P) {
+        let func_data: Box_<Option<P>> = Box::new(func.into());
+        unsafe extern "C" fn func_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(model: *mut ffi::GtkTreeModel, iter: *mut ffi::GtkTreeIter, data: glib_ffi::gpointer) -> glib_ffi::gboolean {
+            let model = from_glib_none(model);
+            let iter = from_glib_none(iter);
+            let callback: &Box_<Option<P>> = &*(data as *mut _);
+            let res = if let Some(ref callback) = **callback {
+                callback(model, iter)
+            } else {
+                panic!("cannot get closure...")
+            };
+            res.to_glib()
+        }
+        let func = if func_data.is_some() { Some(func_func::<P> as _) } else { None };
+        unsafe extern "C" fn destroy_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = func_data;
+        unsafe {
+            ffi::gtk_combo_box_set_row_separator_func(self.as_ref().to_glib_none().0, func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
     fn set_row_span_column(&self, row_span: i32) {
         unsafe {

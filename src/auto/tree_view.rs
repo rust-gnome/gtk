@@ -21,6 +21,7 @@ use cairo;
 use ffi;
 use gdk;
 use glib;
+use glib::GString;
 use glib::StaticType;
 use glib::Value;
 use glib::object::Cast;
@@ -30,6 +31,7 @@ use glib::signal::SignalHandlerId;
 use glib::signal::connect_raw;
 use glib::translate::*;
 use glib_ffi;
+use glib_ffi::gpointer;
 use gobject_ffi;
 use libc;
 use signal::Inhibit;
@@ -147,7 +149,7 @@ pub trait TreeViewExt: 'static {
 
     fn get_reorderable(&self) -> bool;
 
-    //fn get_row_separator_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewRowSeparatorFunc;
+    //fn get_row_separator_func(&self) -> Fn(TreeModel, TreeIter) -> bool + 'static;
 
     fn get_rubber_banding(&self) -> bool;
 
@@ -158,9 +160,9 @@ pub trait TreeViewExt: 'static {
 
     fn get_search_entry(&self) -> Option<Entry>;
 
-    //fn get_search_equal_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewSearchEqualFunc;
+    //fn get_search_equal_func(&self) -> Fn(TreeModel, i32, GString, TreeIter) -> bool + 'static;
 
-    //fn get_search_position_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewSearchPositionFunc;
+    //fn get_search_position_func(&self) -> Fn(TreeView, Widget) + 'static;
 
     fn get_selection(&self) -> TreeSelection;
 
@@ -178,13 +180,13 @@ pub trait TreeViewExt: 'static {
 
     //fn insert_column_with_attributes<P: IsA<CellRenderer>>(&self, position: i32, title: &str, cell: &P, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs) -> i32;
 
-    //fn insert_column_with_data_func<P: IsA<CellRenderer>, Q: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, position: i32, title: &str, cell: &P, func: /*Unknown conversion*//*Unimplemented*/TreeCellDataFunc, data: Q, dnotify: /*Unknown conversion*//*Unimplemented*/DestroyNotify) -> i32;
+    fn insert_column_with_data_func<P: IsA<CellRenderer>, Q: Fn(TreeViewColumn, CellRenderer, TreeModel, TreeIter) + 'static>(&self, position: i32, title: &str, cell: &P, func: Q) -> i32;
 
     fn is_blank_at_pos(&self, x: i32, y: i32) -> Option<(Option<TreePath>, Option<TreeViewColumn>, i32, i32)>;
 
     fn is_rubber_banding_active(&self) -> bool;
 
-    //fn map_expanded_rows<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TreeViewMappingFunc, data: P);
+    fn map_expanded_rows<P: FnMut(TreeView, TreePath)>(&self, func: P);
 
     fn move_column_after<'a, P: IsA<TreeViewColumn>, Q: IsA<TreeViewColumn> + 'a, R: Into<Option<&'a Q>>>(&self, column: &P, base_column: R);
 
@@ -201,7 +203,7 @@ pub trait TreeViewExt: 'static {
     #[cfg(any(feature = "v3_8", feature = "dox"))]
     fn set_activate_on_single_click(&self, single: bool);
 
-    //fn set_column_drag_function<'a, 'b, P: Into<Option<&'a /*Unimplemented*/TreeViewColumnDropFunc>>, Q: Into<Option<&'b /*Ignored*/glib::DestroyNotify>>>(&self, func: P, destroy: Q);
+    fn set_column_drag_function<P: Fn(TreeView, TreeViewColumn, TreeViewColumn, TreeViewColumn) -> bool + 'static, Q: Into<Option<P>>>(&self, func: Q);
 
     fn set_cursor<'a, P: IsA<TreeViewColumn> + 'a, Q: Into<Option<&'a P>>>(&self, path: &TreePath, focus_column: Q, start_editing: bool);
 
@@ -233,7 +235,7 @@ pub trait TreeViewExt: 'static {
 
     fn set_reorderable(&self, reorderable: bool);
 
-    //fn set_row_separator_func<'a, 'b, P: Into<Option<&'a /*Unimplemented*/TreeViewRowSeparatorFunc>>, Q: Into<Option</*Unimplemented*/Fundamental: Pointer>>, R: Into<Option<&'b /*Ignored*/glib::DestroyNotify>>>(&self, func: P, data: Q, destroy: R);
+    fn set_row_separator_func<P: Fn(TreeModel, TreeIter) -> bool + 'static, Q: Into<Option<P>>>(&self, func: Q);
 
     fn set_rubber_banding(&self, enable: bool);
 
@@ -244,9 +246,9 @@ pub trait TreeViewExt: 'static {
 
     fn set_search_entry<'a, P: IsA<Entry> + 'a, Q: Into<Option<&'a P>>>(&self, entry: Q);
 
-    //fn set_search_equal_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, search_equal_func: /*Unknown conversion*//*Unimplemented*/TreeViewSearchEqualFunc, search_user_data: P, search_destroy: Q);
+    fn set_search_equal_func<P: Fn(TreeModel, i32, GString, TreeIter) -> bool + 'static>(&self, search_equal_func: P);
 
-    //fn set_search_position_func<'a, 'b, P: Into<Option<&'a /*Unimplemented*/TreeViewSearchPositionFunc>>, Q: Into<Option</*Unimplemented*/Fundamental: Pointer>>, R: Into<Option<&'b /*Ignored*/glib::DestroyNotify>>>(&self, func: P, data: Q, destroy: R);
+    fn set_search_position_func<P: Fn(TreeView, Widget) + 'static, Q: Into<Option<P>>>(&self, func: Q);
 
     fn set_show_expanders(&self, enabled: bool);
 
@@ -619,7 +621,7 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
         }
     }
 
-    //fn get_row_separator_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewRowSeparatorFunc {
+    //fn get_row_separator_func(&self) -> Fn(TreeModel, TreeIter) -> bool + 'static {
     //    unsafe { TODO: call ffi::gtk_tree_view_get_row_separator_func() }
     //}
 
@@ -647,11 +649,11 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
         }
     }
 
-    //fn get_search_equal_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewSearchEqualFunc {
+    //fn get_search_equal_func(&self) -> Fn(TreeModel, i32, GString, TreeIter) -> bool + 'static {
     //    unsafe { TODO: call ffi::gtk_tree_view_get_search_equal_func() }
     //}
 
-    //fn get_search_position_func(&self) -> /*Unknown conversion*//*Unimplemented*/TreeViewSearchPositionFunc {
+    //fn get_search_position_func(&self) -> Fn(TreeView, Widget) + 'static {
     //    unsafe { TODO: call ffi::gtk_tree_view_get_search_position_func() }
     //}
 
@@ -710,9 +712,30 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
     //    unsafe { TODO: call ffi::gtk_tree_view_insert_column_with_attributes() }
     //}
 
-    //fn insert_column_with_data_func<P: IsA<CellRenderer>, Q: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, position: i32, title: &str, cell: &P, func: /*Unknown conversion*//*Unimplemented*/TreeCellDataFunc, data: Q, dnotify: /*Unknown conversion*//*Unimplemented*/DestroyNotify) -> i32 {
-    //    unsafe { TODO: call ffi::gtk_tree_view_insert_column_with_data_func() }
-    //}
+    fn insert_column_with_data_func<P: IsA<CellRenderer>, Q: Fn(TreeViewColumn, CellRenderer, TreeModel, TreeIter) + 'static>(&self, position: i32, title: &str, cell: &P, func: Q) -> i32 {
+        let func_data: Box_<Option<Q>> = Box::new(func.into());
+        unsafe extern "C" fn func_func<P: IsA<CellRenderer>, Q: Fn(TreeViewColumn, CellRenderer, TreeModel, TreeIter) + 'static>(tree_column: *mut ffi::GtkTreeViewColumn, cell: *mut ffi::GtkCellRenderer, tree_model: *mut ffi::GtkTreeModel, iter: *mut ffi::GtkTreeIter, data: glib_ffi::gpointer) {
+            let tree_column = from_glib_none(tree_column);
+            let cell = from_glib_none(cell);
+            let tree_model = from_glib_none(tree_model);
+            let iter = from_glib_none(iter);
+            let callback: &Box_<Option<Q>> = &*(data as *mut _);
+            if let Some(ref callback) = **callback {
+                callback(tree_column, cell, tree_model, iter)
+            } else {
+                panic!("cannot get closure...")
+            };
+        }
+        let func = if func_data.is_some() { Some(func_func::<P, Q> as _) } else { None };
+        unsafe extern "C" fn dnotify_func<P: IsA<CellRenderer>, Q: Fn(TreeViewColumn, CellRenderer, TreeModel, TreeIter) + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<Q>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call6 = Some(dnotify_func::<P, Q> as _);
+        let super_callback0: Box_<Option<Q>> = func_data;
+        unsafe {
+            ffi::gtk_tree_view_insert_column_with_data_func(self.as_ref().to_glib_none().0, position, title.to_glib_none().0, cell.as_ref().to_glib_none().0, func, Box::into_raw(super_callback0) as *mut _, destroy_call6)
+        }
+    }
 
     fn is_blank_at_pos(&self, x: i32, y: i32) -> Option<(Option<TreePath>, Option<TreeViewColumn>, i32, i32)> {
         unsafe {
@@ -731,9 +754,20 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
         }
     }
 
-    //fn map_expanded_rows<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TreeViewMappingFunc, data: P) {
-    //    unsafe { TODO: call ffi::gtk_tree_view_map_expanded_rows() }
-    //}
+    fn map_expanded_rows<P: FnMut(TreeView, TreePath)>(&self, func: P) {
+        let func_data: Option<P> = func.into();
+        unsafe extern "C" fn func_func<P: FnMut(TreeView, TreePath)>(tree_view: *mut ffi::GtkTreeView, path: *mut ffi::GtkTreePath, user_data: glib_ffi::gpointer) {
+            let tree_view = from_glib_none(tree_view);
+            let path = from_glib_none(path);
+            let callback: *mut P = user_data as *const _ as usize as *mut P;
+            (*callback)(tree_view, path);
+        }
+        let func = Some(func_func::<P> as _);
+        let super_callback0: &Option<P> = &func_data;
+        unsafe {
+            ffi::gtk_tree_view_map_expanded_rows(self.as_ref().to_glib_none().0, func, super_callback0 as *const _ as usize as *mut _);
+        }
+    }
 
     fn move_column_after<'a, P: IsA<TreeViewColumn>, Q: IsA<TreeViewColumn> + 'a, R: Into<Option<&'a Q>>>(&self, column: &P, base_column: R) {
         let base_column = base_column.into();
@@ -781,9 +815,32 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
         }
     }
 
-    //fn set_column_drag_function<'a, 'b, P: Into<Option<&'a /*Unimplemented*/TreeViewColumnDropFunc>>, Q: Into<Option<&'b /*Ignored*/glib::DestroyNotify>>>(&self, func: P, destroy: Q) {
-    //    unsafe { TODO: call ffi::gtk_tree_view_set_column_drag_function() }
-    //}
+    fn set_column_drag_function<P: Fn(TreeView, TreeViewColumn, TreeViewColumn, TreeViewColumn) -> bool + 'static, Q: Into<Option<P>>>(&self, func: Q) {
+        let func = func.into();
+        let func_data: Box_<Option<P>> = Box::new(func.into());
+        unsafe extern "C" fn func_func<P: Fn(TreeView, TreeViewColumn, TreeViewColumn, TreeViewColumn) -> bool + 'static>(tree_view: *mut ffi::GtkTreeView, column: *mut ffi::GtkTreeViewColumn, prev_column: *mut ffi::GtkTreeViewColumn, next_column: *mut ffi::GtkTreeViewColumn, data: glib_ffi::gpointer) -> glib_ffi::gboolean {
+            let tree_view = from_glib_none(tree_view);
+            let column = from_glib_none(column);
+            let prev_column = from_glib_none(prev_column);
+            let next_column = from_glib_none(next_column);
+            let callback: &Box_<Option<P>> = &*(data as *mut _);
+            let res = if let Some(ref callback) = **callback {
+                callback(tree_view, column, prev_column, next_column)
+            } else {
+                panic!("cannot get closure...")
+            };
+            res.to_glib()
+        }
+        let func = if func_data.is_some() { Some(func_func::<P> as _) } else { None };
+        unsafe extern "C" fn destroy_func<P: Fn(TreeView, TreeViewColumn, TreeViewColumn, TreeViewColumn) -> bool + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = func_data;
+        unsafe {
+            ffi::gtk_tree_view_set_column_drag_function(self.as_ref().to_glib_none().0, func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
     fn set_cursor<'a, P: IsA<TreeViewColumn> + 'a, Q: Into<Option<&'a P>>>(&self, path: &TreePath, focus_column: Q, start_editing: bool) {
         let focus_column = focus_column.into();
@@ -880,9 +937,30 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
         }
     }
 
-    //fn set_row_separator_func<'a, 'b, P: Into<Option<&'a /*Unimplemented*/TreeViewRowSeparatorFunc>>, Q: Into<Option</*Unimplemented*/Fundamental: Pointer>>, R: Into<Option<&'b /*Ignored*/glib::DestroyNotify>>>(&self, func: P, data: Q, destroy: R) {
-    //    unsafe { TODO: call ffi::gtk_tree_view_set_row_separator_func() }
-    //}
+    fn set_row_separator_func<P: Fn(TreeModel, TreeIter) -> bool + 'static, Q: Into<Option<P>>>(&self, func: Q) {
+        let func = func.into();
+        let func_data: Box_<Option<P>> = Box::new(func.into());
+        unsafe extern "C" fn func_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(model: *mut ffi::GtkTreeModel, iter: *mut ffi::GtkTreeIter, data: glib_ffi::gpointer) -> glib_ffi::gboolean {
+            let model = from_glib_none(model);
+            let iter = from_glib_none(iter);
+            let callback: &Box_<Option<P>> = &*(data as *mut _);
+            let res = if let Some(ref callback) = **callback {
+                callback(model, iter)
+            } else {
+                panic!("cannot get closure...")
+            };
+            res.to_glib()
+        }
+        let func = if func_data.is_some() { Some(func_func::<P> as _) } else { None };
+        unsafe extern "C" fn destroy_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = func_data;
+        unsafe {
+            ffi::gtk_tree_view_set_row_separator_func(self.as_ref().to_glib_none().0, func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
     fn set_rubber_banding(&self, enable: bool) {
         unsafe {
@@ -909,13 +987,54 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
         }
     }
 
-    //fn set_search_equal_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, search_equal_func: /*Unknown conversion*//*Unimplemented*/TreeViewSearchEqualFunc, search_user_data: P, search_destroy: Q) {
-    //    unsafe { TODO: call ffi::gtk_tree_view_set_search_equal_func() }
-    //}
+    fn set_search_equal_func<P: Fn(TreeModel, i32, GString, TreeIter) -> bool + 'static>(&self, search_equal_func: P) {
+        let search_equal_func_data: Box_<Option<P>> = Box::new(search_equal_func.into());
+        unsafe extern "C" fn search_equal_func_func<P: Fn(TreeModel, i32, GString, TreeIter) -> bool + 'static>(model: *mut ffi::GtkTreeModel, column: libc::c_int, key: *const libc::c_char, iter: *mut ffi::GtkTreeIter, search_data: glib_ffi::gpointer) -> glib_ffi::gboolean {
+            let model = from_glib_none(model);
+            let key = from_glib_none(key);
+            let iter = from_glib_none(iter);
+            let callback: &Box_<Option<P>> = &*(search_data as *mut _);
+            let res = if let Some(ref callback) = **callback {
+                callback(model, column, key, iter)
+            } else {
+                panic!("cannot get closure...")
+            };
+            res.to_glib()
+        }
+        let search_equal_func = if search_equal_func_data.is_some() { Some(search_equal_func_func::<P> as _) } else { None };
+        unsafe extern "C" fn search_destroy_func<P: Fn(TreeModel, i32, GString, TreeIter) -> bool + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(search_destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = search_equal_func_data;
+        unsafe {
+            ffi::gtk_tree_view_set_search_equal_func(self.as_ref().to_glib_none().0, search_equal_func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
-    //fn set_search_position_func<'a, 'b, P: Into<Option<&'a /*Unimplemented*/TreeViewSearchPositionFunc>>, Q: Into<Option</*Unimplemented*/Fundamental: Pointer>>, R: Into<Option<&'b /*Ignored*/glib::DestroyNotify>>>(&self, func: P, data: Q, destroy: R) {
-    //    unsafe { TODO: call ffi::gtk_tree_view_set_search_position_func() }
-    //}
+    fn set_search_position_func<P: Fn(TreeView, Widget) + 'static, Q: Into<Option<P>>>(&self, func: Q) {
+        let func = func.into();
+        let func_data: Box_<Option<P>> = Box::new(func.into());
+        unsafe extern "C" fn func_func<P: Fn(TreeView, Widget) + 'static>(tree_view: *mut ffi::GtkTreeView, search_dialog: *mut ffi::GtkWidget, user_data: glib_ffi::gpointer) {
+            let tree_view = from_glib_none(tree_view);
+            let search_dialog = from_glib_none(search_dialog);
+            let callback: &Box_<Option<P>> = &*(user_data as *mut _);
+            if let Some(ref callback) = **callback {
+                callback(tree_view, search_dialog)
+            } else {
+                panic!("cannot get closure...")
+            };
+        }
+        let func = if func_data.is_some() { Some(func_func::<P> as _) } else { None };
+        unsafe extern "C" fn destroy_func<P: Fn(TreeView, Widget) + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = func_data;
+        unsafe {
+            ffi::gtk_tree_view_set_search_position_func(self.as_ref().to_glib_none().0, func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
     fn set_show_expanders(&self, enabled: bool) {
         unsafe {

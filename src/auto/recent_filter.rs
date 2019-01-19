@@ -40,7 +40,7 @@ pub trait RecentFilterExt: 'static {
 
     fn add_application(&self, application: &str);
 
-    //fn add_custom<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, needed: RecentFilterFlags, func: /*Unknown conversion*//*Unimplemented*/RecentFilterFunc, data: P, data_destroy: /*Unknown conversion*//*Unimplemented*/DestroyNotify);
+    //fn add_custom(&self, needed: RecentFilterFlags, func: /*Unimplemented*/Fn(/*Ignored*/RecentFilterInfo) -> bool, data: /*Unimplemented*/Option<Fundamental: Pointer>);
 
     fn add_group(&self, group: &str);
 
@@ -72,7 +72,7 @@ impl<O: IsA<RecentFilter>> RecentFilterExt for O {
         }
     }
 
-    //fn add_custom<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, needed: RecentFilterFlags, func: /*Unknown conversion*//*Unimplemented*/RecentFilterFunc, data: P, data_destroy: /*Unknown conversion*//*Unimplemented*/DestroyNotify) {
+    //fn add_custom(&self, needed: RecentFilterFlags, func: /*Unimplemented*/Fn(/*Ignored*/RecentFilterInfo) -> bool, data: /*Unimplemented*/Option<Fundamental: Pointer>) {
     //    unsafe { TODO: call ffi::gtk_recent_filter_add_custom() }
     //}
 

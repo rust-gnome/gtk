@@ -14,6 +14,7 @@ use glib::signal::SignalHandlerId;
 use glib::signal::connect_raw;
 use glib::translate::*;
 use glib_ffi;
+use glib_ffi::gpointer;
 use std::boxed::Box as Box_;
 use std::fmt;
 use std::mem;
@@ -85,7 +86,7 @@ pub trait RecentChooserExt: 'static {
 
     fn set_show_tips(&self, show_tips: bool);
 
-    //fn set_sort_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, sort_func: /*Unknown conversion*//*Unimplemented*/RecentSortFunc, sort_data: P, data_destroy: Q);
+    fn set_sort_func<P: Fn(RecentInfo, RecentInfo) -> i32 + Send + Sync + 'static>(&self, sort_func: P);
 
     fn set_sort_type(&self, sort_type: RecentSortType);
 
@@ -286,9 +287,29 @@ impl<O: IsA<RecentChooser>> RecentChooserExt for O {
         }
     }
 
-    //fn set_sort_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, sort_func: /*Unknown conversion*//*Unimplemented*/RecentSortFunc, sort_data: P, data_destroy: Q) {
-    //    unsafe { TODO: call ffi::gtk_recent_chooser_set_sort_func() }
-    //}
+    fn set_sort_func<P: Fn(RecentInfo, RecentInfo) -> i32 + Send + Sync + 'static>(&self, sort_func: P) {
+        let sort_func_data: Box_<Option<P>> = Box::new(sort_func.into());
+        unsafe extern "C" fn sort_func_func<P: Fn(RecentInfo, RecentInfo) -> i32 + Send + Sync + 'static>(a: *mut ffi::GtkRecentInfo, b: *mut ffi::GtkRecentInfo, user_data: glib_ffi::gpointer) -> libc::c_int {
+            let a = from_glib_none(a);
+            let b = from_glib_none(b);
+            let callback: &Box_<Option<P>> = &*(user_data as *mut _);
+            let res = if let Some(ref callback) = **callback {
+                callback(a, b)
+            } else {
+                panic!("cannot get closure...")
+            };
+            res
+        }
+        let sort_func = if sort_func_data.is_some() { Some(sort_func_func::<P> as _) } else { None };
+        unsafe extern "C" fn data_destroy_func<P: Fn(RecentInfo, RecentInfo) -> i32 + Send + Sync + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(data_destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = sort_func_data;
+        unsafe {
+            ffi::gtk_recent_chooser_set_sort_func(self.as_ref().to_glib_none().0, sort_func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
     fn set_sort_type(&self, sort_type: RecentSortType) {
         unsafe {

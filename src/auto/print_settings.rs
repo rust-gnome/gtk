@@ -17,6 +17,7 @@ use glib;
 use glib::GString;
 use glib::object::IsA;
 use glib::translate::*;
+use glib_ffi::gpointer;
 use std;
 use std::fmt;
 use std::mem;
@@ -77,7 +78,7 @@ pub const NONE_PRINT_SETTINGS: Option<&PrintSettings> = None;
 pub trait PrintSettingsExt: 'static {
     fn copy(&self) -> Option<PrintSettings>;
 
-    //fn foreach<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/PrintSettingsFunc, user_data: P);
+    fn foreach<P: FnMut(GString, GString)>(&self, func: P);
 
     fn get(&self, key: &str) -> Option<GString>;
 
@@ -226,9 +227,20 @@ impl<O: IsA<PrintSettings>> PrintSettingsExt for O {
         }
     }
 
-    //fn foreach<P: Into<Option</*Unimplemented*/Fundamental: Pointer>>>(&self, func: /*Unknown conversion*//*Unimplemented*/PrintSettingsFunc, user_data: P) {
-    //    unsafe { TODO: call ffi::gtk_print_settings_foreach() }
-    //}
+    fn foreach<P: FnMut(GString, GString)>(&self, func: P) {
+        let func_data: Option<P> = func.into();
+        unsafe extern "C" fn func_func<P: FnMut(GString, GString)>(key: *const libc::c_char, value: *const libc::c_char, user_data: glib_ffi::gpointer) {
+            let key = from_glib_none(key);
+            let value = from_glib_none(value);
+            let callback: *mut P = user_data as *const _ as usize as *mut P;
+            (*callback)(key, value);
+        }
+        let func = Some(func_func::<P> as _);
+        let super_callback0: &Option<P> = &func_data;
+        unsafe {
+            ffi::gtk_print_settings_foreach(self.as_ref().to_glib_none().0, func, super_callback0 as *const _ as usize as *mut _);
+        }
+    }
 
     fn get(&self, key: &str) -> Option<GString> {
         unsafe {

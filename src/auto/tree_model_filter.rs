@@ -7,11 +7,14 @@ use TreeIter;
 use TreeModel;
 use TreePath;
 use ffi;
+use glib;
 use glib::StaticType;
 use glib::Value;
 use glib::object::IsA;
 use glib::translate::*;
+use glib_ffi::gpointer;
 use gobject_ffi;
+use std::boxed::Box as Box_;
 use std::fmt;
 
 glib_wrapper! {
@@ -39,11 +42,11 @@ pub trait TreeModelFilterExt: 'static {
 
     fn refilter(&self);
 
-    //fn set_modify_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, types: /*Unimplemented*/&CArray TypeId { ns_id: 0, id: 30 }, func: /*Unknown conversion*//*Unimplemented*/TreeModelFilterModifyFunc, data: P, destroy: Q);
+    //fn set_modify_func<P: Fn(TreeModel, TreeIter, glib::Value, i32) + 'static>(&self, types: /*Unimplemented*/&CArray TypeId { ns_id: 0, id: 30 }, func: P);
 
     fn set_visible_column(&self, column: i32);
 
-    //fn set_visible_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TreeModelFilterVisibleFunc, data: P, destroy: Q);
+    fn set_visible_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(&self, func: P);
 
     fn get_property_child_model(&self) -> Option<TreeModel>;
 }
@@ -95,7 +98,7 @@ impl<O: IsA<TreeModelFilter>> TreeModelFilterExt for O {
         }
     }
 
-    //fn set_modify_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, types: /*Unimplemented*/&CArray TypeId { ns_id: 0, id: 30 }, func: /*Unknown conversion*//*Unimplemented*/TreeModelFilterModifyFunc, data: P, destroy: Q) {
+    //fn set_modify_func<P: Fn(TreeModel, TreeIter, glib::Value, i32) + 'static>(&self, types: /*Unimplemented*/&CArray TypeId { ns_id: 0, id: 30 }, func: P) {
     //    unsafe { TODO: call ffi::gtk_tree_model_filter_set_modify_func() }
     //}
 
@@ -105,9 +108,29 @@ impl<O: IsA<TreeModelFilter>> TreeModelFilterExt for O {
         }
     }
 
-    //fn set_visible_func<'a, P: Into<Option</*Unimplemented*/Fundamental: Pointer>>, Q: Into<Option<&'a /*Ignored*/glib::DestroyNotify>>>(&self, func: /*Unknown conversion*//*Unimplemented*/TreeModelFilterVisibleFunc, data: P, destroy: Q) {
-    //    unsafe { TODO: call ffi::gtk_tree_model_filter_set_visible_func() }
-    //}
+    fn set_visible_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(&self, func: P) {
+        let func_data: Box_<Option<P>> = Box::new(func.into());
+        unsafe extern "C" fn func_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(model: *mut ffi::GtkTreeModel, iter: *mut ffi::GtkTreeIter, data: glib_ffi::gpointer) -> glib_ffi::gboolean {
+            let model = from_glib_none(model);
+            let iter = from_glib_none(iter);
+            let callback: &Box_<Option<P>> = &*(data as *mut _);
+            let res = if let Some(ref callback) = **callback {
+                callback(model, iter)
+            } else {
+                panic!("cannot get closure...")
+            };
+            res.to_glib()
+        }
+        let func = if func_data.is_some() { Some(func_func::<P> as _) } else { None };
+        unsafe extern "C" fn destroy_func<P: Fn(TreeModel, TreeIter) -> bool + 'static>(data: glib_ffi::gpointer) {
+            let _callback: Box_<Option<P>> = Box_::from_raw(data as *mut _);
+        }
+        let destroy_call3 = Some(destroy_func::<P> as _);
+        let super_callback0: Box_<Option<P>> = func_data;
+        unsafe {
+            ffi::gtk_tree_model_filter_set_visible_func(self.as_ref().to_glib_none().0, func, Box::into_raw(super_callback0) as *mut _, destroy_call3);
+        }
+    }
 
     fn get_property_child_model(&self) -> Option<TreeModel> {
         unsafe {
