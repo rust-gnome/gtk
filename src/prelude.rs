@@ -31,6 +31,7 @@ pub use pad_controller::PadControllerExtManual;
 pub use switch::SwitchExtManual;
 pub use text_buffer::TextBufferExtManual;
 pub use tree_model_filter::TreeModelFilterExtManual;
+pub use tree_selection::TreeSelectionExtManual;
 pub use tree_sortable::TreeSortableExtManual;
 pub use tree_store::TreeStoreExtManual;
 pub use widget::WidgetExtManual;
