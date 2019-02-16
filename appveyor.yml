@@ -2,6 +2,10 @@ environment:
   matrix:
     - RUST: stable
       BITS: 32
+    - RUST: beta
+      BITS: 32
+    - RUST: nightly
+      BITS: 32
     - RUST: stable
       BITS: 64
 
