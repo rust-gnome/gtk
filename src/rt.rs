@@ -151,12 +151,7 @@ fn pre_init() -> bool {
 pub fn main_quit() {
     assert_initialized_main_thread!();
     unsafe {
-        if gtk_sys::gtk_main_level() > 0 {
-            gtk_sys::gtk_main_quit();
-        }
-        else if cfg!(debug_assertions) {
-            panic!("Attempted to quit a GTK main loop when none is running.");
-        }
+        gtk_sys::gtk_main_quit();
     }
 }
 
