@@ -64,7 +64,7 @@ impl EntryBuffer {
         unsafe { from_glib_none(gtk_sys::gtk_entry_buffer_get_text(self.to_glib_none().0)) }
     }
 
-    pub fn insert_text(&self, position: u16, chars: &str) -> u16 {
+    pub fn insert_text(&self, chars: &str, position: u16) -> u16 {
         unsafe {
             to_u16!(
                 gtk_sys::gtk_entry_buffer_insert_text(self.to_glib_none().0, position as c_uint,

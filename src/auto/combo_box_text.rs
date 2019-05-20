@@ -57,7 +57,7 @@ pub trait ComboBoxTextExt: 'static {
 
     fn insert(&self, position: i32, id: Option<&str>, text: &str);
 
-    fn insert_text(&self, position: i32, text: &str);
+    fn insert_text(&self, text: &str, position: i32);
 
     fn prepend(&self, id: Option<&str>, text: &str);
 
@@ -93,7 +93,7 @@ impl<O: IsA<ComboBoxText>> ComboBoxTextExt for O {
         }
     }
 
-    fn insert_text(&self, position: i32, text: &str) {
+    fn insert_text(&self, text: &str, position: i32) {
         unsafe {
             gtk_sys::gtk_combo_box_text_insert_text(self.as_ref().to_glib_none().0, position, text.to_glib_none().0);
         }
