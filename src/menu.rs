@@ -4,6 +4,7 @@
 
 use glib::object::Cast;
 use glib::translate::*;
+use glib::Value;
 use glib_sys;
 use gtk_sys;
 use libc::c_int;
@@ -12,6 +13,7 @@ use std::ptr;
 use IsA;
 use Menu;
 use Widget;
+use glib::value::SetValueOptional;
 
 pub trait GtkMenuExtManual: 'static {
     fn popup<T: IsA<Widget>, U: IsA<Widget>, F: Fn(&Self, &mut i32, &mut i32) -> bool + 'static>(
@@ -24,6 +26,8 @@ pub trait GtkMenuExtManual: 'static {
     );
 
     fn popup_easy(&self, button: u32, activate_time: u32);
+
+    fn set_property_attach_widget<T: IsA<Widget> + SetValueOptional>(&self, attach_widget: Option<&T>);
 }
 
 impl<O: IsA<Menu>> GtkMenuExtManual for O {
@@ -85,6 +89,16 @@ impl<O: IsA<Menu>> GtkMenuExtManual for O {
                 button,
                 activate_time,
             )
+        }
+    }
+
+    fn set_property_attach_widget<T: IsA<Widget> + SetValueOptional>(&self, attach_widget: Option<&T>) {
+        unsafe {
+            gobject_sys::g_object_set_property(
+                self.to_glib_none().0 as *mut gobject_sys::GObject,
+                b"attach-widget\0".as_ptr() as *const _,
+                Value::from(attach_widget).to_glib_none().0,
+            );
         }
     }
 }

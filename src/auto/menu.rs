@@ -663,8 +663,6 @@ pub trait GtkMenuExt: 'static {
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     fn set_property_anchor_hints(&self, anchor_hints: gdk::AnchorHints);
 
-    fn set_property_attach_widget(&self, attach_widget: Option<&Widget>);
-
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     fn get_property_menu_type_hint(&self) -> gdk::WindowTypeHint;
 
@@ -976,16 +974,6 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 self.to_glib_none().0 as *mut gobject_sys::GObject,
                 b"anchor-hints\0".as_ptr() as *const _,
                 Value::from(&anchor_hints).to_glib_none().0,
-            );
-        }
-    }
-
-    fn set_property_attach_widget(&self, attach_widget: Option<&Widget>) {
-        unsafe {
-            gobject_sys::g_object_set_property(
-                self.to_glib_none().0 as *mut gobject_sys::GObject,
-                b"attach-widget\0".as_ptr() as *const _,
-                Value::from(attach_widget).to_glib_none().0,
             );
         }
     }

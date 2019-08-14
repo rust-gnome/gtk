@@ -1334,6 +1334,9 @@ manual_traits = ["GtkMenuExtManual"]
     [[object.function]]
     name = "place_on_monitor"
     version = "3.22"
+    [[object.function]]
+    name = "set_property_attach_widget"
+    ignore = true
 
 [[object]]
 name = "Gtk.MenuItem"
