@@ -26,7 +26,7 @@ Avoid mixing versioned and git crates like this:
 ```toml
 # This will not compile
 [dependencies]
-gdk = "0.2"
+gtk = "0.2"
 gtk = { git = "https://github.com/gtk-rs/gtk.git" }
 ```
 
