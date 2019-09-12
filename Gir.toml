@@ -1771,9 +1771,6 @@ status = "ignore"
 name = "Gtk.StyleContext"
 status = "generate"
     [[object.function]]
-    pattern = "get_(style_)?property"
-    ignore = true
-    [[object.function]]
     name = "get_font"
     ignore = true #returning Pango.FontDescription from *const
     [[object.property]]
