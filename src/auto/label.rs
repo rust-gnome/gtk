@@ -380,8 +380,8 @@ impl LabelBuilder {
         self
     }
 
-    pub fn mnemonic_widget(mut self, mnemonic_widget: &Widget) -> Self {
-        self.mnemonic_widget = Some(mnemonic_widget.clone());
+    pub fn mnemonic_widget<P: IsA<Widget>>(mut self, mnemonic_widget: &P) -> Self {
+        self.mnemonic_widget = Some(mnemonic_widget.clone().upcast());
         self
     }
 
@@ -553,8 +553,8 @@ impl LabelBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 

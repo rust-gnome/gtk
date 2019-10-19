@@ -406,8 +406,8 @@ impl TreeViewBuilder {
         self
     }
 
-    pub fn expander_column(mut self, expander_column: &TreeViewColumn) -> Self {
-        self.expander_column = Some(expander_column.clone());
+    pub fn expander_column<P: IsA<TreeViewColumn>>(mut self, expander_column: &P) -> Self {
+        self.expander_column = Some(expander_column.clone().upcast());
         self
     }
 
@@ -441,8 +441,8 @@ impl TreeViewBuilder {
         self
     }
 
-    pub fn model(mut self, model: &TreeModel) -> Self {
-        self.model = Some(model.clone());
+    pub fn model<P: IsA<TreeModel>>(mut self, model: &P) -> Self {
+        self.model = Some(model.clone().upcast());
         self
     }
 
@@ -484,8 +484,8 @@ impl TreeViewBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -605,8 +605,8 @@ impl TreeViewBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -655,8 +655,8 @@ impl TreeViewBuilder {
         self
     }
 
-    pub fn hadjustment(mut self, hadjustment: &Adjustment) -> Self {
-        self.hadjustment = Some(hadjustment.clone());
+    pub fn hadjustment<P: IsA<Adjustment>>(mut self, hadjustment: &P) -> Self {
+        self.hadjustment = Some(hadjustment.clone().upcast());
         self
     }
 
@@ -665,8 +665,8 @@ impl TreeViewBuilder {
         self
     }
 
-    pub fn vadjustment(mut self, vadjustment: &Adjustment) -> Self {
-        self.vadjustment = Some(vadjustment.clone());
+    pub fn vadjustment<P: IsA<Adjustment>>(mut self, vadjustment: &P) -> Self {
+        self.vadjustment = Some(vadjustment.clone().upcast());
         self
     }
 
@@ -1870,12 +1870,7 @@ impl<O: IsA<TreeView>> TreeViewExt for O {
             let _callback: Box_<
                 Option<
                     Box_<
-                        dyn Fn(
-                                &TreeView,
-                                &TreeViewColumn,
-                                &TreeViewColumn,
-                                &TreeViewColumn,
-                            ) -> bool
+                        dyn Fn(&TreeView, &TreeViewColumn, &TreeViewColumn, &TreeViewColumn) -> bool
                             + 'static,
                     >,
                 >,

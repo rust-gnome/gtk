@@ -77,8 +77,8 @@ impl TextBufferBuilder {
             .expect("downcast")
     }
 
-    pub fn tag_table(mut self, tag_table: &TextTagTable) -> Self {
-        self.tag_table = Some(tag_table.clone());
+    pub fn tag_table<P: IsA<TextTagTable>>(mut self, tag_table: &P) -> Self {
+        self.tag_table = Some(tag_table.clone().upcast());
         self
     }
 
