@@ -2,6 +2,14 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
+use gdk;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use glib::StaticType;
+use glib::ToValue;
+use gtk_sys;
+use std::fmt;
 use Align;
 use BaselinePosition;
 use Box;
@@ -15,14 +23,6 @@ use RecentManager;
 use RecentSortType;
 use ResizeMode;
 use Widget;
-use gdk;
-use glib::StaticType;
-use glib::ToValue;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::translate::*;
-use gtk_sys;
-use std::fmt;
 
 glib_wrapper! {
     pub struct RecentChooserWidget(Object<gtk_sys::GtkRecentChooserWidget, gtk_sys::GtkRecentChooserWidgetClass, RecentChooserWidgetClass>) @extends Box, Container, Widget, @implements Buildable, Orientable, RecentChooser;
@@ -35,15 +35,16 @@ glib_wrapper! {
 impl RecentChooserWidget {
     pub fn new() -> RecentChooserWidget {
         assert_initialized_main_thread!();
-        unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_recent_chooser_widget_new()).unsafe_cast()
-        }
+        unsafe { Widget::from_glib_none(gtk_sys::gtk_recent_chooser_widget_new()).unsafe_cast() }
     }
 
     pub fn new_for_manager<P: IsA<RecentManager>>(manager: &P) -> RecentChooserWidget {
         skip_assert_initialized!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_recent_chooser_widget_new_for_manager(manager.as_ref().to_glib_none().0)).unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_recent_chooser_widget_new_for_manager(
+                manager.as_ref().to_glib_none().0,
+            ))
+            .unsafe_cast()
         }
     }
 }
@@ -310,7 +311,10 @@ impl RecentChooserWidgetBuilder {
         if let Some(ref sort_type) = self.sort_type {
             properties.push(("sort-type", sort_type));
         }
-        glib::Object::new(RecentChooserWidget::static_type(), &properties).expect("object new").downcast().expect("downcast")
+        glib::Object::new(RecentChooserWidget::static_type(), &properties)
+            .expect("object new")
+            .downcast()
+            .expect("downcast")
     }
 
     pub fn baseline_position(mut self, baseline_position: BaselinePosition) -> Self {
