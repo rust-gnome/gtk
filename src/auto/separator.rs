@@ -2,19 +2,20 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib::object::Cast;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use Align;
 use Buildable;
 use Container;
 use Orientable;
 use Orientation;
 use Widget;
+use gdk;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct Separator(Object<gtk_sys::GtkSeparator, gtk_sys::GtkSeparatorClass, SeparatorClass>) @extends Widget, @implements Buildable, Orientable;
@@ -214,10 +215,7 @@ impl SeparatorBuilder {
         if let Some(ref orientation) = self.orientation {
             properties.push(("orientation", orientation));
         }
-        glib::Object::new(Separator::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(Separator::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn app_paintable(mut self, app_paintable: bool) -> Self {
@@ -331,8 +329,8 @@ impl SeparatorBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 

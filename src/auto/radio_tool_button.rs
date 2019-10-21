@@ -2,15 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use Actionable;
 use Align;
 use Bin;
@@ -22,6 +13,15 @@ use ToggleToolButton;
 use ToolButton;
 use ToolItem;
 use Widget;
+use gdk;
+use glib;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct RadioToolButton(Object<gtk_sys::GtkRadioToolButton, gtk_sys::GtkRadioToolButtonClass, RadioToolButtonClass>) @extends ToggleToolButton, ToolButton, ToolItem, Bin, Container, Widget, @implements Buildable, Actionable;
@@ -35,10 +35,7 @@ impl RadioToolButton {
     pub fn new_from_widget<P: IsA<RadioToolButton>>(group: &P) -> RadioToolButton {
         skip_assert_initialized!();
         unsafe {
-            ToolItem::from_glib_none(gtk_sys::gtk_radio_tool_button_new_from_widget(
-                group.as_ref().to_glib_none().0,
-            ))
-            .unsafe_cast()
+            ToolItem::from_glib_none(gtk_sys::gtk_radio_tool_button_new_from_widget(group.as_ref().to_glib_none().0)).unsafe_cast()
         }
     }
 }
@@ -289,10 +286,7 @@ impl RadioToolButtonBuilder {
         if let Some(ref action_target) = self.action_target {
             properties.push(("action-target", action_target));
         }
-        glib::Object::new(RadioToolButton::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(RadioToolButton::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn active(mut self, active: bool) -> Self {
@@ -305,8 +299,8 @@ impl RadioToolButtonBuilder {
         self
     }
 
-    pub fn icon_widget(mut self, icon_widget: &Widget) -> Self {
-        self.icon_widget = Some(icon_widget.clone());
+    pub fn icon_widget<P: IsA<Widget>>(mut self, icon_widget: &P) -> Self {
+        self.icon_widget = Some(icon_widget.clone().upcast());
         self
     }
 
@@ -315,8 +309,8 @@ impl RadioToolButtonBuilder {
         self
     }
 
-    pub fn label_widget(mut self, label_widget: &Widget) -> Self {
-        self.label_widget = Some(label_widget.clone());
+    pub fn label_widget<P: IsA<Widget>>(mut self, label_widget: &P) -> Self {
+        self.label_widget = Some(label_widget.clone().upcast());
         self
     }
 
@@ -345,8 +339,8 @@ impl RadioToolButtonBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -466,8 +460,8 @@ impl RadioToolButtonBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -536,9 +530,7 @@ pub trait RadioToolButtonExt: 'static {
 impl<O: IsA<RadioToolButton>> RadioToolButtonExt for O {
     fn get_group(&self) -> Vec<RadioButton> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(gtk_sys::gtk_radio_tool_button_get_group(
-                self.as_ref().to_glib_none().0,
-            ))
+            FromGlibPtrContainer::from_glib_none(gtk_sys::gtk_radio_tool_button_get_group(self.as_ref().to_glib_none().0))
         }
     }
 }

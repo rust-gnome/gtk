@@ -2,14 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use Adjustment;
 use Align;
 use Buildable;
@@ -19,6 +11,14 @@ use Orientation;
 use Range;
 use SensitivityType;
 use Widget;
+use gdk;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct Scrollbar(Object<gtk_sys::GtkScrollbar, gtk_sys::GtkScrollbarClass, ScrollbarClass>) @extends Range, Widget, @implements Buildable, Orientable;
@@ -32,11 +32,7 @@ impl Scrollbar {
     pub fn new<P: IsA<Adjustment>>(orientation: Orientation, adjustment: Option<&P>) -> Scrollbar {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_scrollbar_new(
-                orientation.to_glib(),
-                adjustment.map(|p| p.as_ref()).to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_scrollbar_new(orientation.to_glib(), adjustment.map(|p| p.as_ref()).to_glib_none().0)).unsafe_cast()
         }
     }
 }
@@ -262,14 +258,11 @@ impl ScrollbarBuilder {
         if let Some(ref orientation) = self.orientation {
             properties.push(("orientation", orientation));
         }
-        glib::Object::new(Scrollbar::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(Scrollbar::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
-    pub fn adjustment(mut self, adjustment: &Adjustment) -> Self {
-        self.adjustment = Some(adjustment.clone());
+    pub fn adjustment<P: IsA<Adjustment>>(mut self, adjustment: &P) -> Self {
+        self.adjustment = Some(adjustment.clone().upcast());
         self
     }
 
@@ -419,8 +412,8 @@ impl ScrollbarBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 

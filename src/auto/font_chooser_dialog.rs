@@ -2,16 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use gdk_pixbuf;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use pango;
-use std::fmt;
 use Align;
 use Application;
 use Bin;
@@ -26,6 +16,16 @@ use Widget;
 use Window;
 use WindowPosition;
 use WindowType;
+use gdk;
+use gdk_pixbuf;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use pango;
+use std::fmt;
 
 glib_wrapper! {
     pub struct FontChooserDialog(Object<gtk_sys::GtkFontChooserDialog, gtk_sys::GtkFontChooserDialogClass, FontChooserDialogClass>) @extends Dialog, Window, Bin, Container, Widget, @implements Buildable, FontChooser;
@@ -39,11 +39,7 @@ impl FontChooserDialog {
     pub fn new<P: IsA<Window>>(title: Option<&str>, parent: Option<&P>) -> FontChooserDialog {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_font_chooser_dialog_new(
-                title.to_glib_none().0,
-                parent.map(|p| p.as_ref()).to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_font_chooser_dialog_new(title.to_glib_none().0, parent.map(|p| p.as_ref()).to_glib_none().0)).unsafe_cast()
         }
     }
 }
@@ -424,10 +420,7 @@ impl FontChooserDialogBuilder {
         if let Some(ref show_preview_entry) = self.show_preview_entry {
             properties.push(("show-preview-entry", show_preview_entry));
         }
-        glib::Object::new(FontChooserDialog::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(FontChooserDialog::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn use_header_bar(mut self, use_header_bar: i32) -> Self {
@@ -440,13 +433,13 @@ impl FontChooserDialogBuilder {
         self
     }
 
-    pub fn application(mut self, application: &Application) -> Self {
-        self.application = Some(application.clone());
+    pub fn application<P: IsA<Application>>(mut self, application: &P) -> Self {
+        self.application = Some(application.clone().upcast());
         self
     }
 
-    pub fn attached_to(mut self, attached_to: &Widget) -> Self {
-        self.attached_to = Some(attached_to.clone());
+    pub fn attached_to<P: IsA<Widget>>(mut self, attached_to: &P) -> Self {
+        self.attached_to = Some(attached_to.clone().upcast());
         self
     }
 
@@ -550,8 +543,8 @@ impl FontChooserDialogBuilder {
         self
     }
 
-    pub fn transient_for(mut self, transient_for: &Window) -> Self {
-        self.transient_for = Some(transient_for.clone());
+    pub fn transient_for<P: IsA<Window>>(mut self, transient_for: &P) -> Self {
+        self.transient_for = Some(transient_for.clone().upcast());
         self
     }
 
@@ -580,8 +573,8 @@ impl FontChooserDialogBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -701,8 +694,8 @@ impl FontChooserDialogBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 

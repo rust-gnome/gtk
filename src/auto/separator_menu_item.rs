@@ -2,14 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib;
-use glib::object::Cast;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use Actionable;
 use Align;
 use Bin;
@@ -19,6 +11,15 @@ use Menu;
 use MenuItem;
 use ResizeMode;
 use Widget;
+use gdk;
+use glib;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct SeparatorMenuItem(Object<gtk_sys::GtkSeparatorMenuItem, gtk_sys::GtkSeparatorMenuItemClass, SeparatorMenuItemClass>) @extends MenuItem, Bin, Container, Widget, @implements Buildable, Actionable;
@@ -31,16 +32,13 @@ glib_wrapper! {
 impl SeparatorMenuItem {
     pub fn new() -> SeparatorMenuItem {
         assert_initialized_main_thread!();
-        unsafe { Widget::from_glib_none(gtk_sys::gtk_separator_menu_item_new()).unsafe_cast() }
+        unsafe {
+            Widget::from_glib_none(gtk_sys::gtk_separator_menu_item_new()).unsafe_cast()
+        }
     }
 }
 
-impl Default for SeparatorMenuItem {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct SeparatorMenuItemBuilder {
     accel_path: Option<String>,
     label: Option<String>,
@@ -267,10 +265,7 @@ impl SeparatorMenuItemBuilder {
         if let Some(ref action_target) = self.action_target {
             properties.push(("action-target", action_target));
         }
-        glib::Object::new(SeparatorMenuItem::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(SeparatorMenuItem::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn accel_path(mut self, accel_path: &str) -> Self {
@@ -288,8 +283,8 @@ impl SeparatorMenuItemBuilder {
         self
     }
 
-    pub fn submenu(mut self, submenu: &Menu) -> Self {
-        self.submenu = Some(submenu.clone());
+    pub fn submenu<P: IsA<Menu>>(mut self, submenu: &P) -> Self {
+        self.submenu = Some(submenu.clone().upcast());
         self
     }
 
@@ -303,8 +298,8 @@ impl SeparatorMenuItemBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -424,8 +419,8 @@ impl SeparatorMenuItemBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 

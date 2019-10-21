@@ -2,16 +2,16 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use glib::object::IsA;
-use glib::translate::*;
-use gtk_sys;
-use std::fmt;
 use Buildable;
 use TreeDragDest;
 use TreeDragSource;
 use TreeIter;
 use TreeModel;
 use TreeSortable;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct TreeStore(Object<gtk_sys::GtkTreeStore, gtk_sys::GtkTreeStoreClass, TreeStoreClass>) @implements Buildable, TreeDragDest, TreeDragSource, TreeModel, TreeSortable;
@@ -77,11 +77,7 @@ impl<O: IsA<TreeStore>> TreeStoreExt for O {
     fn append(&self, parent: Option<&TreeIter>) -> TreeIter {
         unsafe {
             let mut iter = TreeIter::uninitialized();
-            gtk_sys::gtk_tree_store_append(
-                self.as_ref().to_glib_none().0,
-                iter.to_glib_none_mut().0,
-                mut_override(parent.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_append(self.as_ref().to_glib_none().0, iter.to_glib_none_mut().0, mut_override(parent.to_glib_none().0));
             iter
         }
     }
@@ -95,12 +91,7 @@ impl<O: IsA<TreeStore>> TreeStoreExt for O {
     fn insert(&self, parent: Option<&TreeIter>, position: i32) -> TreeIter {
         unsafe {
             let mut iter = TreeIter::uninitialized();
-            gtk_sys::gtk_tree_store_insert(
-                self.as_ref().to_glib_none().0,
-                iter.to_glib_none_mut().0,
-                mut_override(parent.to_glib_none().0),
-                position,
-            );
+            gtk_sys::gtk_tree_store_insert(self.as_ref().to_glib_none().0, iter.to_glib_none_mut().0, mut_override(parent.to_glib_none().0), position);
             iter
         }
     }
@@ -108,12 +99,7 @@ impl<O: IsA<TreeStore>> TreeStoreExt for O {
     fn insert_after(&self, parent: Option<&TreeIter>, sibling: Option<&TreeIter>) -> TreeIter {
         unsafe {
             let mut iter = TreeIter::uninitialized();
-            gtk_sys::gtk_tree_store_insert_after(
-                self.as_ref().to_glib_none().0,
-                iter.to_glib_none_mut().0,
-                mut_override(parent.to_glib_none().0),
-                mut_override(sibling.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_insert_after(self.as_ref().to_glib_none().0, iter.to_glib_none_mut().0, mut_override(parent.to_glib_none().0), mut_override(sibling.to_glib_none().0));
             iter
         }
     }
@@ -121,12 +107,7 @@ impl<O: IsA<TreeStore>> TreeStoreExt for O {
     fn insert_before(&self, parent: Option<&TreeIter>, sibling: Option<&TreeIter>) -> TreeIter {
         unsafe {
             let mut iter = TreeIter::uninitialized();
-            gtk_sys::gtk_tree_store_insert_before(
-                self.as_ref().to_glib_none().0,
-                iter.to_glib_none_mut().0,
-                mut_override(parent.to_glib_none().0),
-                mut_override(sibling.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_insert_before(self.as_ref().to_glib_none().0, iter.to_glib_none_mut().0, mut_override(parent.to_glib_none().0), mut_override(sibling.to_glib_none().0));
             iter
         }
     }
@@ -141,70 +122,45 @@ impl<O: IsA<TreeStore>> TreeStoreExt for O {
 
     fn is_ancestor(&self, iter: &TreeIter, descendant: &TreeIter) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_tree_store_is_ancestor(
-                self.as_ref().to_glib_none().0,
-                mut_override(iter.to_glib_none().0),
-                mut_override(descendant.to_glib_none().0),
-            ))
+            from_glib(gtk_sys::gtk_tree_store_is_ancestor(self.as_ref().to_glib_none().0, mut_override(iter.to_glib_none().0), mut_override(descendant.to_glib_none().0)))
         }
     }
 
     fn iter_depth(&self, iter: &TreeIter) -> i32 {
         unsafe {
-            gtk_sys::gtk_tree_store_iter_depth(
-                self.as_ref().to_glib_none().0,
-                mut_override(iter.to_glib_none().0),
-            )
+            gtk_sys::gtk_tree_store_iter_depth(self.as_ref().to_glib_none().0, mut_override(iter.to_glib_none().0))
         }
     }
 
     fn iter_is_valid(&self, iter: &TreeIter) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_tree_store_iter_is_valid(
-                self.as_ref().to_glib_none().0,
-                mut_override(iter.to_glib_none().0),
-            ))
+            from_glib(gtk_sys::gtk_tree_store_iter_is_valid(self.as_ref().to_glib_none().0, mut_override(iter.to_glib_none().0)))
         }
     }
 
     fn move_after(&self, iter: &TreeIter, position: Option<&TreeIter>) {
         unsafe {
-            gtk_sys::gtk_tree_store_move_after(
-                self.as_ref().to_glib_none().0,
-                mut_override(iter.to_glib_none().0),
-                mut_override(position.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_move_after(self.as_ref().to_glib_none().0, mut_override(iter.to_glib_none().0), mut_override(position.to_glib_none().0));
         }
     }
 
     fn move_before(&self, iter: &TreeIter, position: Option<&TreeIter>) {
         unsafe {
-            gtk_sys::gtk_tree_store_move_before(
-                self.as_ref().to_glib_none().0,
-                mut_override(iter.to_glib_none().0),
-                mut_override(position.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_move_before(self.as_ref().to_glib_none().0, mut_override(iter.to_glib_none().0), mut_override(position.to_glib_none().0));
         }
     }
 
     fn prepend(&self, parent: Option<&TreeIter>) -> TreeIter {
         unsafe {
             let mut iter = TreeIter::uninitialized();
-            gtk_sys::gtk_tree_store_prepend(
-                self.as_ref().to_glib_none().0,
-                iter.to_glib_none_mut().0,
-                mut_override(parent.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_prepend(self.as_ref().to_glib_none().0, iter.to_glib_none_mut().0, mut_override(parent.to_glib_none().0));
             iter
         }
     }
 
     fn remove(&self, iter: &TreeIter) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_tree_store_remove(
-                self.as_ref().to_glib_none().0,
-                mut_override(iter.to_glib_none().0),
-            ))
+            from_glib(gtk_sys::gtk_tree_store_remove(self.as_ref().to_glib_none().0, mut_override(iter.to_glib_none().0)))
         }
     }
 
@@ -226,11 +182,7 @@ impl<O: IsA<TreeStore>> TreeStoreExt for O {
 
     fn swap(&self, a: &TreeIter, b: &TreeIter) {
         unsafe {
-            gtk_sys::gtk_tree_store_swap(
-                self.as_ref().to_glib_none().0,
-                mut_override(a.to_glib_none().0),
-                mut_override(b.to_glib_none().0),
-            );
+            gtk_sys::gtk_tree_store_swap(self.as_ref().to_glib_none().0, mut_override(a.to_glib_none().0), mut_override(b.to_glib_none().0));
         }
     }
 }

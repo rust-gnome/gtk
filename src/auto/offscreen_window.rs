@@ -2,16 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use cairo;
-use gdk;
-use gdk_pixbuf;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use Align;
 use Application;
 use Bin;
@@ -22,6 +12,16 @@ use Widget;
 use Window;
 use WindowPosition;
 use WindowType;
+use cairo;
+use gdk;
+use gdk_pixbuf;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct OffscreenWindow(Object<gtk_sys::GtkOffscreenWindow, gtk_sys::GtkOffscreenWindowClass, OffscreenWindowClass>) @extends Window, Bin, Container, Widget, @implements Buildable;
@@ -34,16 +34,13 @@ glib_wrapper! {
 impl OffscreenWindow {
     pub fn new() -> OffscreenWindow {
         assert_initialized_main_thread!();
-        unsafe { Widget::from_glib_none(gtk_sys::gtk_offscreen_window_new()).unsafe_cast() }
+        unsafe {
+            Widget::from_glib_none(gtk_sys::gtk_offscreen_window_new()).unsafe_cast()
+        }
     }
 }
 
-impl Default for OffscreenWindow {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct OffscreenWindowBuilder {
     accept_focus: Option<bool>,
     application: Option<Application>,
@@ -375,10 +372,7 @@ impl OffscreenWindowBuilder {
         if let Some(ref width_request) = self.width_request {
             properties.push(("width-request", width_request));
         }
-        glib::Object::new(OffscreenWindow::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(OffscreenWindow::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn accept_focus(mut self, accept_focus: bool) -> Self {
@@ -386,13 +380,13 @@ impl OffscreenWindowBuilder {
         self
     }
 
-    pub fn application(mut self, application: &Application) -> Self {
-        self.application = Some(application.clone());
+    pub fn application<P: IsA<Application>>(mut self, application: &P) -> Self {
+        self.application = Some(application.clone().upcast());
         self
     }
 
-    pub fn attached_to(mut self, attached_to: &Widget) -> Self {
-        self.attached_to = Some(attached_to.clone());
+    pub fn attached_to<P: IsA<Widget>>(mut self, attached_to: &P) -> Self {
+        self.attached_to = Some(attached_to.clone().upcast());
         self
     }
 
@@ -496,8 +490,8 @@ impl OffscreenWindowBuilder {
         self
     }
 
-    pub fn transient_for(mut self, transient_for: &Window) -> Self {
-        self.transient_for = Some(transient_for.clone());
+    pub fn transient_for<P: IsA<Window>>(mut self, transient_for: &P) -> Self {
+        self.transient_for = Some(transient_for.clone().upcast());
         self
     }
 
@@ -526,8 +520,8 @@ impl OffscreenWindowBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -647,8 +641,8 @@ impl OffscreenWindowBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -709,17 +703,13 @@ pub trait OffscreenWindowExt: 'static {
 impl<O: IsA<OffscreenWindow>> OffscreenWindowExt for O {
     fn get_pixbuf(&self) -> Option<gdk_pixbuf::Pixbuf> {
         unsafe {
-            from_glib_full(gtk_sys::gtk_offscreen_window_get_pixbuf(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_full(gtk_sys::gtk_offscreen_window_get_pixbuf(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_surface(&self) -> Option<cairo::Surface> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_offscreen_window_get_surface(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_offscreen_window_get_surface(self.as_ref().to_glib_none().0))
         }
     }
 }

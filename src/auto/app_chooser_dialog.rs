@@ -2,24 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use gdk_pixbuf;
-use gio;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::signal::connect_raw;
-use glib::signal::SignalHandlerId;
-use glib::translate::*;
-use glib::GString;
-use glib::StaticType;
-use glib::ToValue;
-use glib::Value;
-use glib_sys;
-use gobject_sys;
-use gtk_sys;
-use std::boxed::Box as Box_;
-use std::fmt;
-use std::mem::transmute;
 use Align;
 use AppChooser;
 use Application;
@@ -33,6 +15,24 @@ use Widget;
 use Window;
 use WindowPosition;
 use WindowType;
+use gdk;
+use gdk_pixbuf;
+use gio;
+use glib::GString;
+use glib::StaticType;
+use glib::ToValue;
+use glib::Value;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::signal::SignalHandlerId;
+use glib::signal::connect_raw;
+use glib::translate::*;
+use glib_sys;
+use gobject_sys;
+use gtk_sys;
+use std::boxed::Box as Box_;
+use std::fmt;
+use std::mem::transmute;
 
 glib_wrapper! {
     pub struct AppChooserDialog(Object<gtk_sys::GtkAppChooserDialog, gtk_sys::GtkAppChooserDialogClass, AppChooserDialogClass>) @extends Dialog, Window, Bin, Container, Widget, @implements Buildable, AppChooser;
@@ -43,35 +43,17 @@ glib_wrapper! {
 }
 
 impl AppChooserDialog {
-    pub fn new<P: IsA<Window>, Q: IsA<gio::File>>(
-        parent: Option<&P>,
-        flags: DialogFlags,
-        file: &Q,
-    ) -> AppChooserDialog {
+    pub fn new<P: IsA<Window>, Q: IsA<gio::File>>(parent: Option<&P>, flags: DialogFlags, file: &Q) -> AppChooserDialog {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_app_chooser_dialog_new(
-                parent.map(|p| p.as_ref()).to_glib_none().0,
-                flags.to_glib(),
-                file.as_ref().to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_app_chooser_dialog_new(parent.map(|p| p.as_ref()).to_glib_none().0, flags.to_glib(), file.as_ref().to_glib_none().0)).unsafe_cast()
         }
     }
 
-    pub fn new_for_content_type<P: IsA<Window>>(
-        parent: Option<&P>,
-        flags: DialogFlags,
-        content_type: &str,
-    ) -> AppChooserDialog {
+    pub fn new_for_content_type<P: IsA<Window>>(parent: Option<&P>, flags: DialogFlags, content_type: &str) -> AppChooserDialog {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_app_chooser_dialog_new_for_content_type(
-                parent.map(|p| p.as_ref()).to_glib_none().0,
-                flags.to_glib(),
-                content_type.to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_app_chooser_dialog_new_for_content_type(parent.map(|p| p.as_ref()).to_glib_none().0, flags.to_glib(), content_type.to_glib_none().0)).unsafe_cast()
         }
     }
 }
@@ -427,14 +409,11 @@ impl AppChooserDialogBuilder {
         if let Some(ref content_type) = self.content_type {
             properties.push(("content-type", content_type));
         }
-        glib::Object::new(AppChooserDialog::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(AppChooserDialog::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
-    pub fn gfile(mut self, gfile: &gio::File) -> Self {
-        self.gfile = Some(gfile.clone());
+    pub fn gfile<P: IsA<gio::File>>(mut self, gfile: &P) -> Self {
+        self.gfile = Some(gfile.clone().upcast());
         self
     }
 
@@ -453,13 +432,13 @@ impl AppChooserDialogBuilder {
         self
     }
 
-    pub fn application(mut self, application: &Application) -> Self {
-        self.application = Some(application.clone());
+    pub fn application<P: IsA<Application>>(mut self, application: &P) -> Self {
+        self.application = Some(application.clone().upcast());
         self
     }
 
-    pub fn attached_to(mut self, attached_to: &Widget) -> Self {
-        self.attached_to = Some(attached_to.clone());
+    pub fn attached_to<P: IsA<Widget>>(mut self, attached_to: &P) -> Self {
+        self.attached_to = Some(attached_to.clone().upcast());
         self
     }
 
@@ -563,8 +542,8 @@ impl AppChooserDialogBuilder {
         self
     }
 
-    pub fn transient_for(mut self, transient_for: &Window) -> Self {
-        self.transient_for = Some(transient_for.clone());
+    pub fn transient_for<P: IsA<Window>>(mut self, transient_for: &P) -> Self {
+        self.transient_for = Some(transient_for.clone().upcast());
         self
     }
 
@@ -593,8 +572,8 @@ impl AppChooserDialogBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -714,8 +693,8 @@ impl AppChooserDialogBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -787,62 +766,41 @@ pub trait AppChooserDialogExt: 'static {
 impl<O: IsA<AppChooserDialog>> AppChooserDialogExt for O {
     fn get_heading(&self) -> Option<GString> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_app_chooser_dialog_get_heading(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_app_chooser_dialog_get_heading(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_widget(&self) -> Widget {
         unsafe {
-            from_glib_none(gtk_sys::gtk_app_chooser_dialog_get_widget(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_app_chooser_dialog_get_widget(self.as_ref().to_glib_none().0))
         }
     }
 
     fn set_heading(&self, heading: &str) {
         unsafe {
-            gtk_sys::gtk_app_chooser_dialog_set_heading(
-                self.as_ref().to_glib_none().0,
-                heading.to_glib_none().0,
-            );
+            gtk_sys::gtk_app_chooser_dialog_set_heading(self.as_ref().to_glib_none().0, heading.to_glib_none().0);
         }
     }
 
     fn get_property_gfile(&self) -> Option<gio::File> {
         unsafe {
             let mut value = Value::from_type(<gio::File as StaticType>::static_type());
-            gobject_sys::g_object_get_property(
-                self.to_glib_none().0 as *mut gobject_sys::GObject,
-                b"gfile\0".as_ptr() as *const _,
-                value.to_glib_none_mut().0,
-            );
-            value
-                .get()
-                .expect("Return Value for property `gfile` getter")
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"gfile\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `gfile` getter")
         }
     }
 
     fn connect_property_heading_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_heading_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkAppChooserDialog,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<AppChooserDialog>,
+        unsafe extern "C" fn notify_heading_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkAppChooserDialog, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<AppChooserDialog>
         {
             let f: &F = &*(f as *const F);
             f(&AppChooserDialog::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::heading\0".as_ptr() as *const _,
-                Some(transmute(notify_heading_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::heading\0".as_ptr() as *const _,
+                Some(transmute(notify_heading_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 }

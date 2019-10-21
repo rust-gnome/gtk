@@ -2,19 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::signal::connect_raw;
-use glib::signal::SignalHandlerId;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use glib_sys;
-use gtk_sys;
-use std::boxed::Box as Box_;
-use std::fmt;
-use std::mem::transmute;
 use AccelGroup;
 use Align;
 use Buildable;
@@ -27,6 +14,19 @@ use RecentManager;
 use RecentSortType;
 use ResizeMode;
 use Widget;
+use gdk;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::signal::SignalHandlerId;
+use glib::signal::connect_raw;
+use glib::translate::*;
+use glib_sys;
+use gtk_sys;
+use std::boxed::Box as Box_;
+use std::fmt;
+use std::mem::transmute;
 
 glib_wrapper! {
     pub struct RecentChooserMenu(Object<gtk_sys::GtkRecentChooserMenu, gtk_sys::GtkRecentChooserMenuClass, RecentChooserMenuClass>) @extends Menu, MenuShell, Container, Widget, @implements Buildable, RecentChooser;
@@ -39,26 +39,20 @@ glib_wrapper! {
 impl RecentChooserMenu {
     pub fn new() -> RecentChooserMenu {
         assert_initialized_main_thread!();
-        unsafe { Widget::from_glib_none(gtk_sys::gtk_recent_chooser_menu_new()).unsafe_cast() }
+        unsafe {
+            Widget::from_glib_none(gtk_sys::gtk_recent_chooser_menu_new()).unsafe_cast()
+        }
     }
 
     pub fn new_for_manager<P: IsA<RecentManager>>(manager: &P) -> RecentChooserMenu {
         skip_assert_initialized!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_recent_chooser_menu_new_for_manager(
-                manager.as_ref().to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_recent_chooser_menu_new_for_manager(manager.as_ref().to_glib_none().0)).unsafe_cast()
         }
     }
 }
 
-impl Default for RecentChooserMenu {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct RecentChooserMenuBuilder {
     show_numbers: Option<bool>,
     accel_group: Option<AccelGroup>,
@@ -380,10 +374,7 @@ impl RecentChooserMenuBuilder {
         if let Some(ref sort_type) = self.sort_type {
             properties.push(("sort-type", sort_type));
         }
-        glib::Object::new(RecentChooserMenu::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(RecentChooserMenu::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn show_numbers(mut self, show_numbers: bool) -> Self {
@@ -391,8 +382,8 @@ impl RecentChooserMenuBuilder {
         self
     }
 
-    pub fn accel_group(mut self, accel_group: &AccelGroup) -> Self {
-        self.accel_group = Some(accel_group.clone());
+    pub fn accel_group<P: IsA<AccelGroup>>(mut self, accel_group: &P) -> Self {
+        self.accel_group = Some(accel_group.clone().upcast());
         self
     }
 
@@ -412,8 +403,8 @@ impl RecentChooserMenuBuilder {
         self
     }
 
-    pub fn attach_widget(mut self, attach_widget: &Widget) -> Self {
-        self.attach_widget = Some(attach_widget.clone());
+    pub fn attach_widget<P: IsA<Widget>>(mut self, attach_widget: &P) -> Self {
+        self.attach_widget = Some(attach_widget.clone().upcast());
         self
     }
 
@@ -455,8 +446,8 @@ impl RecentChooserMenuBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -576,8 +567,8 @@ impl RecentChooserMenuBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -641,8 +632,8 @@ impl RecentChooserMenuBuilder {
         self
     }
 
-    pub fn recent_manager(mut self, recent_manager: &RecentManager) -> Self {
-        self.recent_manager = Some(recent_manager.clone());
+    pub fn recent_manager<P: IsA<RecentManager>>(mut self, recent_manager: &P) -> Self {
+        self.recent_manager = Some(recent_manager.clone().upcast());
         self
     }
 
@@ -684,52 +675,33 @@ pub trait RecentChooserMenuExt: 'static {
 
     fn set_show_numbers(&self, show_numbers: bool);
 
-    fn connect_property_show_numbers_notify<F: Fn(&Self) + 'static>(&self, f: F)
-        -> SignalHandlerId;
+    fn connect_property_show_numbers_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId;
 }
 
 impl<O: IsA<RecentChooserMenu>> RecentChooserMenuExt for O {
     fn get_show_numbers(&self) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_recent_chooser_menu_get_show_numbers(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib(gtk_sys::gtk_recent_chooser_menu_get_show_numbers(self.as_ref().to_glib_none().0))
         }
     }
 
     fn set_show_numbers(&self, show_numbers: bool) {
         unsafe {
-            gtk_sys::gtk_recent_chooser_menu_set_show_numbers(
-                self.as_ref().to_glib_none().0,
-                show_numbers.to_glib(),
-            );
+            gtk_sys::gtk_recent_chooser_menu_set_show_numbers(self.as_ref().to_glib_none().0, show_numbers.to_glib());
         }
     }
 
-    fn connect_property_show_numbers_notify<F: Fn(&Self) + 'static>(
-        &self,
-        f: F,
-    ) -> SignalHandlerId {
-        unsafe extern "C" fn notify_show_numbers_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkRecentChooserMenu,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<RecentChooserMenu>,
+    fn connect_property_show_numbers_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
+        unsafe extern "C" fn notify_show_numbers_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkRecentChooserMenu, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<RecentChooserMenu>
         {
             let f: &F = &*(f as *const F);
             f(&RecentChooserMenu::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::show-numbers\0".as_ptr() as *const _,
-                Some(transmute(
-                    notify_show_numbers_trampoline::<Self, F> as usize,
-                )),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::show-numbers\0".as_ptr() as *const _,
+                Some(transmute(notify_show_numbers_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 }

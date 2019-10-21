@@ -2,14 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib;
-use glib::object::Cast;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use Actionable;
 use Align;
 use Bin;
@@ -21,6 +13,15 @@ use ReliefStyle;
 use ResizeMode;
 use ToggleButton;
 use Widget;
+use gdk;
+use glib;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct CheckButton(Object<gtk_sys::GtkCheckButton, gtk_sys::GtkCheckButtonClass, CheckButtonClass>) @extends ToggleButton, Button, Bin, Container, Widget, @implements Buildable, Actionable;
@@ -33,36 +34,27 @@ glib_wrapper! {
 impl CheckButton {
     pub fn new() -> CheckButton {
         assert_initialized_main_thread!();
-        unsafe { Widget::from_glib_none(gtk_sys::gtk_check_button_new()).unsafe_cast() }
+        unsafe {
+            Widget::from_glib_none(gtk_sys::gtk_check_button_new()).unsafe_cast()
+        }
     }
 
     pub fn new_with_label(label: &str) -> CheckButton {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_check_button_new_with_label(
-                label.to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_check_button_new_with_label(label.to_glib_none().0)).unsafe_cast()
         }
     }
 
     pub fn new_with_mnemonic(label: &str) -> CheckButton {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_check_button_new_with_mnemonic(
-                label.to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_check_button_new_with_mnemonic(label.to_glib_none().0)).unsafe_cast()
         }
     }
 }
 
-impl Default for CheckButton {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct CheckButtonBuilder {
     active: Option<bool>,
     draw_indicator: Option<bool>,
@@ -309,10 +301,7 @@ impl CheckButtonBuilder {
         if let Some(ref action_target) = self.action_target {
             properties.push(("action-target", action_target));
         }
-        glib::Object::new(CheckButton::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(CheckButton::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn active(mut self, active: bool) -> Self {
@@ -335,8 +324,8 @@ impl CheckButtonBuilder {
         self
     }
 
-    pub fn image(mut self, image: &Widget) -> Self {
-        self.image = Some(image.clone());
+    pub fn image<P: IsA<Widget>>(mut self, image: &P) -> Self {
+        self.image = Some(image.clone().upcast());
         self
     }
 
@@ -365,8 +354,8 @@ impl CheckButtonBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -486,8 +475,8 @@ impl CheckButtonBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 

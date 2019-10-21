@@ -2,17 +2,17 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::translate::*;
-use glib::GString;
-use glib::StaticType;
-use glib::ToValue;
-use gtk_sys;
-use std::fmt;
 use IMContext;
 use InputHints;
 use InputPurpose;
+use glib::GString;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::translate::*;
+use gtk_sys;
+use std::fmt;
 
 glib_wrapper! {
     pub struct IMMulticontext(Object<gtk_sys::GtkIMMulticontext, gtk_sys::GtkIMMulticontextClass, IMMulticontextClass>) @extends IMContext;
@@ -25,16 +25,13 @@ glib_wrapper! {
 impl IMMulticontext {
     pub fn new() -> IMMulticontext {
         assert_initialized_main_thread!();
-        unsafe { IMContext::from_glib_full(gtk_sys::gtk_im_multicontext_new()).unsafe_cast() }
+        unsafe {
+            IMContext::from_glib_full(gtk_sys::gtk_im_multicontext_new()).unsafe_cast()
+        }
     }
 }
 
-impl Default for IMMulticontext {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct IMMulticontextBuilder {
     input_hints: Option<InputHints>,
     input_purpose: Option<InputPurpose>,
@@ -56,10 +53,7 @@ impl IMMulticontextBuilder {
         if let Some(ref input_purpose) = self.input_purpose {
             properties.push(("input-purpose", input_purpose));
         }
-        glib::Object::new(IMMulticontext::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(IMMulticontext::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn input_hints(mut self, input_hints: InputHints) -> Self {
@@ -84,18 +78,13 @@ pub trait IMMulticontextExt: 'static {
 impl<O: IsA<IMMulticontext>> IMMulticontextExt for O {
     fn get_context_id(&self) -> Option<GString> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_im_multicontext_get_context_id(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_im_multicontext_get_context_id(self.as_ref().to_glib_none().0))
         }
     }
 
     fn set_context_id(&self, context_id: &str) {
         unsafe {
-            gtk_sys::gtk_im_multicontext_set_context_id(
-                self.as_ref().to_glib_none().0,
-                context_id.to_glib_none().0,
-            );
+            gtk_sys::gtk_im_multicontext_set_context_id(self.as_ref().to_glib_none().0, context_id.to_glib_none().0);
         }
     }
 }

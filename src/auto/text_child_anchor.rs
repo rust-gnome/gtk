@@ -2,11 +2,11 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
+use Widget;
 use glib::object::IsA;
 use glib::translate::*;
 use gtk_sys;
 use std::fmt;
-use Widget;
 
 glib_wrapper! {
     pub struct TextChildAnchor(Object<gtk_sys::GtkTextChildAnchor, gtk_sys::GtkTextChildAnchorClass, TextChildAnchorClass>);
@@ -19,13 +19,9 @@ glib_wrapper! {
 impl TextChildAnchor {
     pub fn new() -> TextChildAnchor {
         assert_initialized_main_thread!();
-        unsafe { from_glib_full(gtk_sys::gtk_text_child_anchor_new()) }
-    }
-}
-
-impl Default for TextChildAnchor {
-    fn default() -> Self {
-        Self::new()
+        unsafe {
+            from_glib_full(gtk_sys::gtk_text_child_anchor_new())
+        }
     }
 }
 
@@ -40,17 +36,13 @@ pub trait TextChildAnchorExt: 'static {
 impl<O: IsA<TextChildAnchor>> TextChildAnchorExt for O {
     fn get_deleted(&self) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_text_child_anchor_get_deleted(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib(gtk_sys::gtk_text_child_anchor_get_deleted(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_widgets(&self) -> Vec<Widget> {
         unsafe {
-            FromGlibPtrContainer::from_glib_container(gtk_sys::gtk_text_child_anchor_get_widgets(
-                self.as_ref().to_glib_none().0,
-            ))
+            FromGlibPtrContainer::from_glib_container(gtk_sys::gtk_text_child_anchor_get_widgets(self.as_ref().to_glib_none().0))
         }
     }
 }

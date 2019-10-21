@@ -2,23 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::signal::connect_raw;
-use glib::signal::SignalHandlerId;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-#[cfg(any(feature = "v3_20", feature = "dox"))]
-use glib::Value;
-use glib_sys;
-#[cfg(any(feature = "v3_20", feature = "dox"))]
-use gobject_sys;
-use gtk_sys;
-use std::boxed::Box as Box_;
-use std::fmt;
-use std::mem::transmute;
 use Align;
 use BaselinePosition;
 use Box;
@@ -29,6 +12,23 @@ use Orientation;
 use ResizeMode;
 use Stack;
 use Widget;
+use gdk;
+use glib::StaticType;
+use glib::ToValue;
+#[cfg(any(feature = "v3_20", feature = "dox"))]
+use glib::Value;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::signal::SignalHandlerId;
+use glib::signal::connect_raw;
+use glib::translate::*;
+use glib_sys;
+#[cfg(any(feature = "v3_20", feature = "dox"))]
+use gobject_sys;
+use gtk_sys;
+use std::boxed::Box as Box_;
+use std::fmt;
+use std::mem::transmute;
 
 glib_wrapper! {
     pub struct StackSwitcher(Object<gtk_sys::GtkStackSwitcher, gtk_sys::GtkStackSwitcherClass, StackSwitcherClass>) @extends Box, Container, Widget, @implements Buildable, Orientable;
@@ -41,16 +41,13 @@ glib_wrapper! {
 impl StackSwitcher {
     pub fn new() -> StackSwitcher {
         assert_initialized_main_thread!();
-        unsafe { Widget::from_glib_none(gtk_sys::gtk_stack_switcher_new()).unsafe_cast() }
+        unsafe {
+            Widget::from_glib_none(gtk_sys::gtk_stack_switcher_new()).unsafe_cast()
+        }
     }
 }
 
-impl Default for StackSwitcher {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct StackSwitcherBuilder {
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     icon_size: Option<i32>,
@@ -277,10 +274,7 @@ impl StackSwitcherBuilder {
         if let Some(ref orientation) = self.orientation {
             properties.push(("orientation", orientation));
         }
-        glib::Object::new(StackSwitcher::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(StackSwitcher::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
@@ -289,8 +283,8 @@ impl StackSwitcherBuilder {
         self
     }
 
-    pub fn stack(mut self, stack: &Stack) -> Self {
-        self.stack = Some(stack.clone());
+    pub fn stack<P: IsA<Stack>>(mut self, stack: &P) -> Self {
+        self.stack = Some(stack.clone().upcast());
         self
     }
 
@@ -314,8 +308,8 @@ impl StackSwitcherBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -435,8 +429,8 @@ impl StackSwitcherBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -513,18 +507,13 @@ pub trait StackSwitcherExt: 'static {
 impl<O: IsA<StackSwitcher>> StackSwitcherExt for O {
     fn get_stack(&self) -> Option<Stack> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_stack_switcher_get_stack(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_stack_switcher_get_stack(self.as_ref().to_glib_none().0))
         }
     }
 
     fn set_stack<P: IsA<Stack>>(&self, stack: Option<&P>) {
         unsafe {
-            gtk_sys::gtk_stack_switcher_set_stack(
-                self.as_ref().to_glib_none().0,
-                stack.map(|p| p.as_ref()).to_glib_none().0,
-            );
+            gtk_sys::gtk_stack_switcher_set_stack(self.as_ref().to_glib_none().0, stack.map(|p| p.as_ref()).to_glib_none().0);
         }
     }
 
@@ -532,71 +521,44 @@ impl<O: IsA<StackSwitcher>> StackSwitcherExt for O {
     fn get_property_icon_size(&self) -> i32 {
         unsafe {
             let mut value = Value::from_type(<i32 as StaticType>::static_type());
-            gobject_sys::g_object_get_property(
-                self.to_glib_none().0 as *mut gobject_sys::GObject,
-                b"icon-size\0".as_ptr() as *const _,
-                value.to_glib_none_mut().0,
-            );
-            value
-                .get()
-                .expect("Return Value for property `icon-size` getter")
-                .unwrap()
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"icon-size\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `icon-size` getter").unwrap()
         }
     }
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     fn set_property_icon_size(&self, icon_size: i32) {
         unsafe {
-            gobject_sys::g_object_set_property(
-                self.to_glib_none().0 as *mut gobject_sys::GObject,
-                b"icon-size\0".as_ptr() as *const _,
-                Value::from(&icon_size).to_glib_none().0,
-            );
+            gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"icon-size\0".as_ptr() as *const _, Value::from(&icon_size).to_glib_none().0);
         }
     }
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     fn connect_property_icon_size_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_icon_size_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkStackSwitcher,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<StackSwitcher>,
+        unsafe extern "C" fn notify_icon_size_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkStackSwitcher, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<StackSwitcher>
         {
             let f: &F = &*(f as *const F);
             f(&StackSwitcher::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::icon-size\0".as_ptr() as *const _,
-                Some(transmute(notify_icon_size_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::icon-size\0".as_ptr() as *const _,
+                Some(transmute(notify_icon_size_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     fn connect_property_stack_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_stack_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkStackSwitcher,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<StackSwitcher>,
+        unsafe extern "C" fn notify_stack_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkStackSwitcher, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<StackSwitcher>
         {
             let f: &F = &*(f as *const F);
             f(&StackSwitcher::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::stack\0".as_ptr() as *const _,
-                Some(transmute(notify_stack_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::stack\0".as_ptr() as *const _,
+                Some(transmute(notify_stack_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 }

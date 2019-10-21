@@ -2,20 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::signal::connect_raw;
-use glib::signal::SignalHandlerId;
-use glib::translate::*;
-use glib::GString;
-use glib::StaticType;
-use glib::ToValue;
-use glib_sys;
-use gtk_sys;
-use std::boxed::Box as Box_;
-use std::fmt;
-use std::mem::transmute;
 use Align;
 use BaselinePosition;
 use Box;
@@ -29,6 +15,20 @@ use Orientable;
 use Orientation;
 use ResizeMode;
 use Widget;
+use gdk;
+use glib::GString;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::signal::SignalHandlerId;
+use glib::signal::connect_raw;
+use glib::translate::*;
+use glib_sys;
+use gtk_sys;
+use std::boxed::Box as Box_;
+use std::fmt;
+use std::mem::transmute;
 
 glib_wrapper! {
     pub struct FileChooserButton(Object<gtk_sys::GtkFileChooserButton, gtk_sys::GtkFileChooserButtonClass, FileChooserButtonClass>) @extends Box, Container, Widget, @implements Buildable, Orientable, FileChooser;
@@ -42,21 +42,14 @@ impl FileChooserButton {
     pub fn new(title: &str, action: FileChooserAction) -> FileChooserButton {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_file_chooser_button_new(
-                title.to_glib_none().0,
-                action.to_glib(),
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_file_chooser_button_new(title.to_glib_none().0, action.to_glib())).unsafe_cast()
         }
     }
 
     pub fn new_with_dialog<P: IsA<Dialog>>(dialog: &P) -> FileChooserButton {
         skip_assert_initialized!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_file_chooser_button_new_with_dialog(
-                dialog.as_ref().to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_file_chooser_button_new_with_dialog(dialog.as_ref().to_glib_none().0)).unsafe_cast()
         }
     }
 }
@@ -342,14 +335,11 @@ impl FileChooserButtonBuilder {
         if let Some(ref use_preview_label) = self.use_preview_label {
             properties.push(("use-preview-label", use_preview_label));
         }
-        glib::Object::new(FileChooserButton::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(FileChooserButton::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
-    pub fn dialog(mut self, dialog: &FileChooser) -> Self {
-        self.dialog = Some(dialog.clone());
+    pub fn dialog<P: IsA<FileChooser>>(mut self, dialog: &P) -> Self {
+        self.dialog = Some(dialog.clone().upcast());
         self
     }
 
@@ -383,8 +373,8 @@ impl FileChooserButtonBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -504,8 +494,8 @@ impl FileChooserButtonBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -574,8 +564,8 @@ impl FileChooserButtonBuilder {
         self
     }
 
-    pub fn extra_widget(mut self, extra_widget: &Widget) -> Self {
-        self.extra_widget = Some(extra_widget.clone());
+    pub fn extra_widget<P: IsA<Widget>>(mut self, extra_widget: &P) -> Self {
+        self.extra_widget = Some(extra_widget.clone().upcast());
         self
     }
 
@@ -589,8 +579,8 @@ impl FileChooserButtonBuilder {
         self
     }
 
-    pub fn preview_widget(mut self, preview_widget: &Widget) -> Self {
-        self.preview_widget = Some(preview_widget.clone());
+    pub fn preview_widget<P: IsA<Widget>>(mut self, preview_widget: &P) -> Self {
+        self.preview_widget = Some(preview_widget.clone().upcast());
         self
     }
 
@@ -645,114 +635,80 @@ impl<O: IsA<FileChooserButton>> FileChooserButtonExt for O {
     #[cfg(any(not(feature = "v3_20"), feature = "dox"))]
     fn get_focus_on_click(&self) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_file_chooser_button_get_focus_on_click(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib(gtk_sys::gtk_file_chooser_button_get_focus_on_click(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_title(&self) -> Option<GString> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_file_chooser_button_get_title(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_file_chooser_button_get_title(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_width_chars(&self) -> i32 {
-        unsafe { gtk_sys::gtk_file_chooser_button_get_width_chars(self.as_ref().to_glib_none().0) }
+        unsafe {
+            gtk_sys::gtk_file_chooser_button_get_width_chars(self.as_ref().to_glib_none().0)
+        }
     }
 
     #[cfg(any(not(feature = "v3_20"), feature = "dox"))]
     fn set_focus_on_click(&self, focus_on_click: bool) {
         unsafe {
-            gtk_sys::gtk_file_chooser_button_set_focus_on_click(
-                self.as_ref().to_glib_none().0,
-                focus_on_click.to_glib(),
-            );
+            gtk_sys::gtk_file_chooser_button_set_focus_on_click(self.as_ref().to_glib_none().0, focus_on_click.to_glib());
         }
     }
 
     fn set_title(&self, title: &str) {
         unsafe {
-            gtk_sys::gtk_file_chooser_button_set_title(
-                self.as_ref().to_glib_none().0,
-                title.to_glib_none().0,
-            );
+            gtk_sys::gtk_file_chooser_button_set_title(self.as_ref().to_glib_none().0, title.to_glib_none().0);
         }
     }
 
     fn set_width_chars(&self, n_chars: i32) {
         unsafe {
-            gtk_sys::gtk_file_chooser_button_set_width_chars(
-                self.as_ref().to_glib_none().0,
-                n_chars,
-            );
+            gtk_sys::gtk_file_chooser_button_set_width_chars(self.as_ref().to_glib_none().0, n_chars);
         }
     }
 
     fn connect_file_set<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn file_set_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkFileChooserButton,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<FileChooserButton>,
+        unsafe extern "C" fn file_set_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkFileChooserButton, f: glib_sys::gpointer)
+            where P: IsA<FileChooserButton>
         {
             let f: &F = &*(f as *const F);
             f(&FileChooserButton::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"file-set\0".as_ptr() as *const _,
-                Some(transmute(file_set_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"file-set\0".as_ptr() as *const _,
+                Some(transmute(file_set_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     fn connect_property_title_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_title_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkFileChooserButton,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<FileChooserButton>,
+        unsafe extern "C" fn notify_title_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkFileChooserButton, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<FileChooserButton>
         {
             let f: &F = &*(f as *const F);
             f(&FileChooserButton::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::title\0".as_ptr() as *const _,
-                Some(transmute(notify_title_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::title\0".as_ptr() as *const _,
+                Some(transmute(notify_title_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     fn connect_property_width_chars_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_width_chars_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkFileChooserButton,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<FileChooserButton>,
+        unsafe extern "C" fn notify_width_chars_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkFileChooserButton, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<FileChooserButton>
         {
             let f: &F = &*(f as *const F);
             f(&FileChooserButton::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::width-chars\0".as_ptr() as *const _,
-                Some(transmute(notify_width_chars_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::width-chars\0".as_ptr() as *const _,
+                Some(transmute(notify_width_chars_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 }

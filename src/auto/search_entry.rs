@@ -2,28 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use gdk_pixbuf;
-use gio;
-#[cfg(any(feature = "v3_16", feature = "dox"))]
-use glib;
-use glib::object::Cast;
-use glib::object::IsA;
-#[cfg(any(feature = "v3_16", feature = "dox"))]
-use glib::object::ObjectExt;
-use glib::signal::connect_raw;
-use glib::signal::SignalHandlerId;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use glib_sys;
-#[cfg(any(feature = "v3_16", feature = "dox"))]
-use gobject_sys;
-use gtk_sys;
-use pango;
-use std::boxed::Box as Box_;
-use std::fmt;
-use std::mem::transmute;
 use Align;
 use Buildable;
 use CellEditable;
@@ -36,6 +14,28 @@ use InputHints;
 use InputPurpose;
 use ShadowType;
 use Widget;
+use gdk;
+use gdk_pixbuf;
+use gio;
+#[cfg(any(feature = "v3_16", feature = "dox"))]
+use glib;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+#[cfg(any(feature = "v3_16", feature = "dox"))]
+use glib::object::ObjectExt;
+use glib::signal::SignalHandlerId;
+use glib::signal::connect_raw;
+use glib::translate::*;
+use glib_sys;
+#[cfg(any(feature = "v3_16", feature = "dox"))]
+use gobject_sys;
+use gtk_sys;
+use pango;
+use std::boxed::Box as Box_;
+use std::fmt;
+use std::mem::transmute;
 
 glib_wrapper! {
     pub struct SearchEntry(Object<gtk_sys::GtkSearchEntry, gtk_sys::GtkSearchEntryClass, SearchEntryClass>) @extends Entry, Widget, @implements Buildable, CellEditable, Editable;
@@ -48,16 +48,13 @@ glib_wrapper! {
 impl SearchEntry {
     pub fn new() -> SearchEntry {
         assert_initialized_main_thread!();
-        unsafe { Widget::from_glib_none(gtk_sys::gtk_search_entry_new()).unsafe_cast() }
+        unsafe {
+            Widget::from_glib_none(gtk_sys::gtk_search_entry_new()).unsafe_cast()
+        }
     }
 }
 
-impl Default for SearchEntry {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Default)]
 pub struct SearchEntryBuilder {
     activates_default: Option<bool>,
     attributes: Option<pango::AttrList>,
@@ -318,10 +315,7 @@ impl SearchEntryBuilder {
             properties.push(("secondary-icon-sensitive", secondary_icon_sensitive));
         }
         if let Some(ref secondary_icon_tooltip_markup) = self.secondary_icon_tooltip_markup {
-            properties.push((
-                "secondary-icon-tooltip-markup",
-                secondary_icon_tooltip_markup,
-            ));
+            properties.push(("secondary-icon-tooltip-markup", secondary_icon_tooltip_markup));
         }
         if let Some(ref secondary_icon_tooltip_text) = self.secondary_icon_tooltip_text {
             properties.push(("secondary-icon-tooltip-text", secondary_icon_tooltip_text));
@@ -452,10 +446,7 @@ impl SearchEntryBuilder {
         if let Some(ref editing_canceled) = self.editing_canceled {
             properties.push(("editing-canceled", editing_canceled));
         }
-        glib::Object::new(SearchEntry::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(SearchEntry::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn activates_default(mut self, activates_default: bool) -> Self {
@@ -468,8 +459,8 @@ impl SearchEntryBuilder {
         self
     }
 
-    pub fn buffer(mut self, buffer: &EntryBuffer) -> Self {
-        self.buffer = Some(buffer.clone());
+    pub fn buffer<P: IsA<EntryBuffer>>(mut self, buffer: &P) -> Self {
+        self.buffer = Some(buffer.clone().upcast());
         self
     }
 
@@ -478,8 +469,8 @@ impl SearchEntryBuilder {
         self
     }
 
-    pub fn completion(mut self, completion: &EntryCompletion) -> Self {
-        self.completion = Some(completion.clone());
+    pub fn completion<P: IsA<EntryCompletion>>(mut self, completion: &P) -> Self {
+        self.completion = Some(completion.clone().upcast());
         self
     }
 
@@ -553,8 +544,8 @@ impl SearchEntryBuilder {
         self
     }
 
-    pub fn primary_icon_gicon(mut self, primary_icon_gicon: &gio::Icon) -> Self {
-        self.primary_icon_gicon = Some(primary_icon_gicon.clone());
+    pub fn primary_icon_gicon<P: IsA<gio::Icon>>(mut self, primary_icon_gicon: &P) -> Self {
+        self.primary_icon_gicon = Some(primary_icon_gicon.clone().upcast());
         self
     }
 
@@ -598,8 +589,8 @@ impl SearchEntryBuilder {
         self
     }
 
-    pub fn secondary_icon_gicon(mut self, secondary_icon_gicon: &gio::Icon) -> Self {
-        self.secondary_icon_gicon = Some(secondary_icon_gicon.clone());
+    pub fn secondary_icon_gicon<P: IsA<gio::Icon>>(mut self, secondary_icon_gicon: &P) -> Self {
+        self.secondary_icon_gicon = Some(secondary_icon_gicon.clone().upcast());
         self
     }
 
@@ -779,8 +770,8 @@ impl SearchEntryBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -866,125 +857,82 @@ impl<O: IsA<SearchEntry>> SearchEntryExt for O {
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn handle_event(&self, event: &gdk::Event) -> bool {
         unsafe {
-            from_glib(gtk_sys::gtk_search_entry_handle_event(
-                self.as_ref().to_glib_none().0,
-                mut_override(event.to_glib_none().0),
-            ))
+            from_glib(gtk_sys::gtk_search_entry_handle_event(self.as_ref().to_glib_none().0, mut_override(event.to_glib_none().0)))
         }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn connect_next_match<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn next_match_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkSearchEntry,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<SearchEntry>,
+        unsafe extern "C" fn next_match_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkSearchEntry, f: glib_sys::gpointer)
+            where P: IsA<SearchEntry>
         {
             let f: &F = &*(f as *const F);
             f(&SearchEntry::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"next-match\0".as_ptr() as *const _,
-                Some(transmute(next_match_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"next-match\0".as_ptr() as *const _,
+                Some(transmute(next_match_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn emit_next_match(&self) {
-        let _ = unsafe {
-            glib::Object::from_glib_borrow(self.to_glib_none().0 as *mut gobject_sys::GObject)
-                .emit("next-match", &[])
-                .unwrap()
-        };
+        let _ = unsafe { glib::Object::from_glib_borrow(self.to_glib_none().0 as *mut gobject_sys::GObject).emit("next-match", &[]).unwrap() };
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn connect_previous_match<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn previous_match_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkSearchEntry,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<SearchEntry>,
+        unsafe extern "C" fn previous_match_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkSearchEntry, f: glib_sys::gpointer)
+            where P: IsA<SearchEntry>
         {
             let f: &F = &*(f as *const F);
             f(&SearchEntry::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"previous-match\0".as_ptr() as *const _,
-                Some(transmute(previous_match_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"previous-match\0".as_ptr() as *const _,
+                Some(transmute(previous_match_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn emit_previous_match(&self) {
-        let _ = unsafe {
-            glib::Object::from_glib_borrow(self.to_glib_none().0 as *mut gobject_sys::GObject)
-                .emit("previous-match", &[])
-                .unwrap()
-        };
+        let _ = unsafe { glib::Object::from_glib_borrow(self.to_glib_none().0 as *mut gobject_sys::GObject).emit("previous-match", &[]).unwrap() };
     }
 
     fn connect_search_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn search_changed_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkSearchEntry,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<SearchEntry>,
+        unsafe extern "C" fn search_changed_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkSearchEntry, f: glib_sys::gpointer)
+            where P: IsA<SearchEntry>
         {
             let f: &F = &*(f as *const F);
             f(&SearchEntry::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"search-changed\0".as_ptr() as *const _,
-                Some(transmute(search_changed_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"search-changed\0".as_ptr() as *const _,
+                Some(transmute(search_changed_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn connect_stop_search<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn stop_search_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkSearchEntry,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<SearchEntry>,
+        unsafe extern "C" fn stop_search_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkSearchEntry, f: glib_sys::gpointer)
+            where P: IsA<SearchEntry>
         {
             let f: &F = &*(f as *const F);
             f(&SearchEntry::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"stop-search\0".as_ptr() as *const _,
-                Some(transmute(stop_search_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"stop-search\0".as_ptr() as *const _,
+                Some(transmute(stop_search_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     fn emit_stop_search(&self) {
-        let _ = unsafe {
-            glib::Object::from_glib_borrow(self.to_glib_none().0 as *mut gobject_sys::GObject)
-                .emit("stop-search", &[])
-                .unwrap()
-        };
+        let _ = unsafe { glib::Object::from_glib_borrow(self.to_glib_none().0 as *mut gobject_sys::GObject).emit("stop-search", &[]).unwrap() };
     }
 }
 

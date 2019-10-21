@@ -2,19 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use gdk;
-use glib::object::Cast;
-use glib::object::IsA;
-use glib::signal::connect_raw;
-use glib::signal::SignalHandlerId;
-use glib::translate::*;
-use glib::StaticType;
-use glib::ToValue;
-use glib_sys;
-use gtk_sys;
-use std::boxed::Box as Box_;
-use std::fmt;
-use std::mem::transmute;
 use Adjustment;
 use Align;
 use Bin;
@@ -25,6 +12,19 @@ use Scrollable;
 use ScrollablePolicy;
 use ShadowType;
 use Widget;
+use gdk;
+use glib::StaticType;
+use glib::ToValue;
+use glib::object::Cast;
+use glib::object::IsA;
+use glib::signal::SignalHandlerId;
+use glib::signal::connect_raw;
+use glib::translate::*;
+use glib_sys;
+use gtk_sys;
+use std::boxed::Box as Box_;
+use std::fmt;
+use std::mem::transmute;
 
 glib_wrapper! {
     pub struct Viewport(Object<gtk_sys::GtkViewport, gtk_sys::GtkViewportClass, ViewportClass>) @extends Bin, Container, Widget, @implements Buildable, Scrollable;
@@ -35,17 +35,10 @@ glib_wrapper! {
 }
 
 impl Viewport {
-    pub fn new<P: IsA<Adjustment>, Q: IsA<Adjustment>>(
-        hadjustment: Option<&P>,
-        vadjustment: Option<&Q>,
-    ) -> Viewport {
+    pub fn new<P: IsA<Adjustment>, Q: IsA<Adjustment>>(hadjustment: Option<&P>, vadjustment: Option<&Q>) -> Viewport {
         assert_initialized_main_thread!();
         unsafe {
-            Widget::from_glib_none(gtk_sys::gtk_viewport_new(
-                hadjustment.map(|p| p.as_ref()).to_glib_none().0,
-                vadjustment.map(|p| p.as_ref()).to_glib_none().0,
-            ))
-            .unsafe_cast()
+            Widget::from_glib_none(gtk_sys::gtk_viewport_new(hadjustment.map(|p| p.as_ref()).to_glib_none().0, vadjustment.map(|p| p.as_ref()).to_glib_none().0)).unsafe_cast()
         }
     }
 }
@@ -266,10 +259,7 @@ impl ViewportBuilder {
         if let Some(ref vscroll_policy) = self.vscroll_policy {
             properties.push(("vscroll-policy", vscroll_policy));
         }
-        glib::Object::new(Viewport::static_type(), &properties)
-            .expect("object new")
-            .downcast()
-            .expect("downcast")
+        glib::Object::new(Viewport::static_type(), &properties).expect("object new").downcast().expect("downcast")
     }
 
     pub fn shadow_type(mut self, shadow_type: ShadowType) -> Self {
@@ -282,8 +272,8 @@ impl ViewportBuilder {
         self
     }
 
-    pub fn child(mut self, child: &Widget) -> Self {
-        self.child = Some(child.clone());
+    pub fn child<P: IsA<Widget>>(mut self, child: &P) -> Self {
+        self.child = Some(child.clone().upcast());
         self
     }
 
@@ -403,8 +393,8 @@ impl ViewportBuilder {
         self
     }
 
-    pub fn parent(mut self, parent: &Container) -> Self {
-        self.parent = Some(parent.clone());
+    pub fn parent<P: IsA<Container>>(mut self, parent: &P) -> Self {
+        self.parent = Some(parent.clone().upcast());
         self
     }
 
@@ -453,8 +443,8 @@ impl ViewportBuilder {
         self
     }
 
-    pub fn hadjustment(mut self, hadjustment: &Adjustment) -> Self {
-        self.hadjustment = Some(hadjustment.clone());
+    pub fn hadjustment<P: IsA<Adjustment>>(mut self, hadjustment: &P) -> Self {
+        self.hadjustment = Some(hadjustment.clone().upcast());
         self
     }
 
@@ -463,8 +453,8 @@ impl ViewportBuilder {
         self
     }
 
-    pub fn vadjustment(mut self, vadjustment: &Adjustment) -> Self {
-        self.vadjustment = Some(vadjustment.clone());
+    pub fn vadjustment<P: IsA<Adjustment>>(mut self, vadjustment: &P) -> Self {
+        self.vadjustment = Some(vadjustment.clone().upcast());
         self
     }
 
@@ -491,25 +481,19 @@ pub trait ViewportExt: 'static {
 impl<O: IsA<Viewport>> ViewportExt for O {
     fn get_bin_window(&self) -> Option<gdk::Window> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_viewport_get_bin_window(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_viewport_get_bin_window(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_shadow_type(&self) -> ShadowType {
         unsafe {
-            from_glib(gtk_sys::gtk_viewport_get_shadow_type(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib(gtk_sys::gtk_viewport_get_shadow_type(self.as_ref().to_glib_none().0))
         }
     }
 
     fn get_view_window(&self) -> Option<gdk::Window> {
         unsafe {
-            from_glib_none(gtk_sys::gtk_viewport_get_view_window(
-                self.as_ref().to_glib_none().0,
-            ))
+            from_glib_none(gtk_sys::gtk_viewport_get_view_window(self.as_ref().to_glib_none().0))
         }
     }
 
@@ -520,24 +504,16 @@ impl<O: IsA<Viewport>> ViewportExt for O {
     }
 
     fn connect_property_shadow_type_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_shadow_type_trampoline<P, F: Fn(&P) + 'static>(
-            this: *mut gtk_sys::GtkViewport,
-            _param_spec: glib_sys::gpointer,
-            f: glib_sys::gpointer,
-        ) where
-            P: IsA<Viewport>,
+        unsafe extern "C" fn notify_shadow_type_trampoline<P, F: Fn(&P) + 'static>(this: *mut gtk_sys::GtkViewport, _param_spec: glib_sys::gpointer, f: glib_sys::gpointer)
+            where P: IsA<Viewport>
         {
             let f: &F = &*(f as *const F);
             f(&Viewport::from_glib_borrow(this).unsafe_cast())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(
-                self.as_ptr() as *mut _,
-                b"notify::shadow-type\0".as_ptr() as *const _,
-                Some(transmute(notify_shadow_type_trampoline::<Self, F> as usize)),
-                Box_::into_raw(f),
-            )
+            connect_raw(self.as_ptr() as *mut _, b"notify::shadow-type\0".as_ptr() as *const _,
+                Some(transmute(notify_shadow_type_trampoline::<Self, F> as usize)), Box_::into_raw(f))
         }
     }
 }
