@@ -5,8 +5,8 @@
 use glib::subclass::prelude::*;
 
 use super::container::ContainerImpl;
-use FixedClass;
 use ContainerClass;
+use FixedClass;
 
 pub trait FixedImpl: ContainerImpl + 'static {}
 
