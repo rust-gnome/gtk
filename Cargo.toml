@@ -74,3 +74,12 @@ pango = { git = "https://github.com/gtk-rs/pango" }
 
 [dev-dependencies]
 gir-format-check = "^0.1"
+
+[patch.'https://github.com/gtk-rs/sys']
+gdk-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
+gdk-pixbuf-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
+gio-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
+glib-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
+gobject-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
+gtk-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
+pango-sys = { git = "https://github.com/gdesmott/sys.git", branch = "wip-metadeps" }
