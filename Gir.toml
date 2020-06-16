@@ -547,6 +547,11 @@ manual_traits = ["AccelGroupExtManual"]
     ignore = true
 
 [[object]]
+name = "Gtk.Action"
+#deprecated since 3.10
+status = "ignore"
+
+[[object]]
 name = "Gtk.Actionable"
 status = "generate"
     [[object.property]]
@@ -563,6 +568,11 @@ status = "generate"
     [[object.child_prop]]
     name = "position"
     type = "gint"
+
+[[object]]
+name = "Gtk.ActionGroup"
+#deprecated since 3.10
+status = "ignore"
 
 [[object]]
 name = "Gtk.Alignment"
@@ -877,6 +887,16 @@ manual_traits = ["ColorChooserExtManual"]
     doc_trait_name = "ColorChooserExtManual"
 
 [[object]]
+name = "Gtk.ColorSelection"
+# deprecated since 3.3.16
+status = "ignore"
+
+[[object]]
+name = "Gtk.ColorSelectionDialog"
+# deprecated since 3.3.16
+status = "ignore"
+
+[[object]]
 name = "Gtk.ComboBox"
 status = "generate"
 manual_traits = ["ComboBoxExtManual"]
@@ -1055,6 +1075,16 @@ status = "generate"
 version = "3.24"
 
 [[object]]
+name = "Gtk.FontSelection"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.FontSelectionDialog"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
 name = "Gtk.Gesture"
 status = "generate"
 version = "3.14"
@@ -1094,6 +1124,21 @@ child_name = "cell"
     type = "gint"
 
 [[object]]
+name = "Gtk.HandleBox"
+# deprecated since 3.4
+status = "ignore"
+
+[[object]]
+name = "Gtk.HBox"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.HButtonBox"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
 name = "Gtk.HeaderBar"
 status = "generate"
     [[object.child_prop]]
@@ -1102,6 +1147,32 @@ status = "generate"
     [[object.child_prop]]
     name = "position"
     type = "gint"
+
+[[object]]
+name = "Gtk.HPaned"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.HScale"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.HScrollbar"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.HSeparator"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.HSV"
+# deprecated since 3.3.16
+status = "ignore"
+
 
 [[object]]
 name = "Gtk.IconFactory"
@@ -1459,6 +1530,11 @@ manual_traits = ["NotebookExtManual"]
     doc_hidden=true
 
 [[object]]
+name = "Gtk.NumerableIcon"
+# deprecated since 3.14
+status = "ignore"
+
+[[object]]
 name = "Gtk.Overlay"
 status = "generate"
 manual_traits = ["OverlaySignals"]
@@ -1589,6 +1665,11 @@ status = "generate"
         const = true
 
 [[object]]
+name = "Gtk.RadioAction"
+# deprecated since 3.10
+status = "ignore"
+
+[[object]]
 name = "Gtk.RadioButton"
 status = "generate"
     [[object.function]]
@@ -1667,6 +1748,36 @@ status = "generate"
     [[object.signal]]
     name = "change-value"
     inhibit = true
+
+[[object]]
+name = "Gtk.RcContext"
+# deprecated since 3.0
+status = "ignore"
+
+[[object]]
+name = "Gtk.RcFlags"
+# deprecated since 3.0
+status = "ignore"
+
+[[object]]
+name = "Gtk.RcProperty"
+# deprecated since 3.0
+status = "ignore"
+
+[[object]]
+name = "Gtk.RcPropertyParser"
+# deprecated since 3.0
+status = "ignore"
+
+[[object]]
+name = "Gtk.RcStyle"
+# deprecated since 3.0
+status = "ignore"
+
+[[object]]
+name = "Gtk.RecentAction"
+# deprecated since 3.10
+status = "ignore"
 
 [[object]]
 name = "Gtk.ScaleButton"
@@ -1798,6 +1909,16 @@ name = "Gtk.StatusIcon"
 status = "ignore"
 
 [[object]]
+name = "Gtk.Stock"
+#deprecated since 3.10
+status = "ignore"
+
+[[object]]
+name = "Gtk.Style"
+# deprecated since 3.0
+status = "ignore"
+
+[[object]]
 name = "Gtk.StyleContext"
 status = "generate"
 manual_traits = ["StyleContextExtManual"]
@@ -1824,6 +1945,21 @@ name = "Gtk.SymbolicColor"
 status = "ignore"
 
 [[object]]
+name = "Gtk.Table"
+# deprecated since 3.4
+status = "ignore"
+
+[[object]]
+name = "Gtk.TableChild"
+# deprecated since 3.4
+status = "ignore"
+
+[[object]]
+name = "Gtk.TableRowCol"
+# deprecated since 3.4
+status = "ignore"
+
+[[object]]
 name = "Gtk.TargetList"
 status = "generate"
     [[object.function]]
@@ -1834,6 +1970,11 @@ status = "generate"
     name = "new"
     #array with size
     ignore = true
+
+[[object]]
+name = "Gtk.TearoffMenuItem"
+# deprecated since 3.2
+status = "ignore"
 
 [[object]]
 name = "Gtk.TextBuffer"
@@ -1942,6 +2083,16 @@ status = "generate"
 name = "Gtk.TextViewLayer"
 status = "generate"
 version = "3.14"
+
+[[object]]
+name = "Gtk.ThemingEngine"
+# deprecated since 3.14
+status = "ignore"
+
+[[object]]
+name = "Gtk.ToggleAction"
+# deprecated since 3.10
+status = "ignore"
 
 [[object]]
 name = "Gtk.Toolbar"
@@ -2301,6 +2452,41 @@ status = "generate"
         [[object.function.parameter]]
         name = "iter"
         const = true
+
+[[object]]
+name = "Gtk.UIManager"
+# deprecated since 3.10
+status = "ignore"
+
+[[object]]
+name = "Gtk.VBox"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.VButtonBox"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.VPaned"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.VScale"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.VScrollbar"
+# deprecated since 3.2
+status = "ignore"
+
+[[object]]
+name = "Gtk.VSeparator"
+# deprecated since 3.2
+status = "ignore"
 
 [[object]]
 name = "Gtk.Widget"
