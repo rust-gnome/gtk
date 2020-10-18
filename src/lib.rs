@@ -1,11 +1,11 @@
 // Copyright 2013-2018, The Gtk-rs Project Developers.
 // See the COPYRIGHT file at the top-level directory of this distribution.
-// Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
+// Licensed under the MIT license, see the LICENSE file or <https://opensource.org/licenses/MIT>
 
 //! # GTK+ 3 bindings
 //!
-//! This library contains safe Rust bindings for [GTK+ 3](http://www.gtk.org), a
-//! multi-platform GUI toolkit. It's a part of [Gtk-rs](http://gtk-rs.org/).
+//! This library contains safe Rust bindings for [GTK+ 3](https://www.gtk.org), a
+//! multi-platform GUI toolkit. It's a part of [Gtk-rs](https://gtk-rs.org/).
 //!
 //! The library is a work in progress: expect missing bindings and breaking
 //! changes. A steadily increasing share of the code is machine-generated from
